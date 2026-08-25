@@ -431,8 +431,8 @@
 <script>
     const DEFAULT_TEAM = ["Filipšek", "Fidler", "Pirnat", "Oprešnik", "Govedić", "Fendre", "Šetina", "Vrtačnik", "Gračner", "Rihter"];
     
-    // URL z dodanimi narekovaji:
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlTtKeAxRkVf5qUjL9ZLxaQCsOboZU9JpXHtWrC5H_MUb1BAwl9dQ-vtxLJwJbWynH/exec";
+    // Posodobljen Google Apps Script URL:
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4H0GzARyLrWQov36Ukf-vpF2pTbwYHBBOEvswLgi0qQqzCnS_Mka2HRyg_3Gwvu4F/exec";
 
     let teamsWebhookUrl = "https://default3caae3ec12124a678d46afe2847c45.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/806a9b79b01b4219bc66ed4d449ffbfd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTxW5wgDGp3I9TXnX6fSdLQ2r7sBnumVkzROnPYLIig";
     let teamsMsgConfirm = "✅ **{ime}** je potrdil/a rundo za danes ob 12:00! Pripravite skodelice. ☕";
@@ -763,6 +763,7 @@
 
             const payload = { team, counts, absent, currentRoundPaid, dailyUnavailable, todayPayer, currentIndex, lastRotationDate, timestamp: appTimestamp, teamsWebhookUrl, teamsMsgConfirm, teamsMsgCant, teamsMsgSponsor, teamsMsgInvite };
 
+            // Uporaba 'text/plain;charset=utf-8' prepreči nastanek zahtevka preflight OPTIONS in s tem reši CORS težave v brskalniku
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
