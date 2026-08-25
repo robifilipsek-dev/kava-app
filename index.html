@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>☕ Odmor za kavo</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --primary: #f8fafc;
+            --text: #94a3b8;
+            --text-bright: #f1f5f9;
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text);
+            margin: 0;
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 580px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--text-bright);
+            font-size: 20px;
+            margin: 0;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            color: var(--text-bright);
+            font-weight: 600;
+        }
+
+        .status-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 18px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .status-box span {
+            font-size: 11px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            display: block;
+        }
+
+        .status-box strong {
+            font-size: 26px;
+            color: var(--text-bright);
+            display: block;
+            margin: 8px 0 10px 0;
+            font-weight: 900;
+        }
+
+        .next-person-info {
+            font-size: 12px;
+            color: var(--text);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 12px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-confirm { background: var(--accent); color: #0f172a; }
+        .btn-confirm:hover { background: #34d399; }
+
+        .btn-cant { background: var(--danger); color: white; }
+        .btn-cant:hover { background: #f87171; }
+
+        .btn-sponsor { background: var(--info); color: white; grid-column: span 2; }
+        .btn-sponsor:hover { background: #60a5fa; }
+
+        .btn-invite { background: #8b5cf6; color: white; grid-column: span 2; }
+        .btn-invite:hover { background: #a78bfa; }
+
+        .btn-undo { background: #334155; color: var(--text-bright); grid-column: span 2; }
+        .btn-undo:hover { background: #475569; }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .member-card {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 60px;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .member-card.is-next { background: rgba(16, 185, 129, 0.05); border-color: var(--accent); }
+        .member-card.is-paid { background: rgba(59, 130, 246, 0.05); border-color: var(--info); }
+        .member-card.is-unavailable { background: rgba(239, 68, 68, 0.05); border-color: var(--danger); opacity: 0.7; }
+        .member-card.is-absent { background: rgba(15, 23, 42, 0.6); border-style: dashed; opacity: 0.4; filter: grayscale(80%); }
+
+        .member-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-bright);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-meta {
+            font-size: 11px;
+            color: var(--text);
+            margin-top: 4px;
+        }
+
+        .absent-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text);
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .absent-toggle-btn:hover {
+            background: var(--card-border);
+            color: var(--text-bright);
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--card-border);
+            padding-top: 15px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .user-info span { font-weight: 700; color: var(--text-bright); }
+        .link-btn { color: var(--info); cursor: pointer; text-decoration: underline; margin-left: 5px; }
+
+        .icon-btn {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--text-bright);
+            transition: background 0.2s;
+        }
+        .icon-btn:hover { background: var(--card-border); }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 24px;
+            border-radius: 20px;
+            max-width: 820px;
+            width: 95%;
+            box-shadow: var(--shadow);
+            max-height: 90vh;
+            overflow-y: auto;
+            color: var(--text-bright);
+            box-sizing: border-box;
+        }
+
+        .modal h2 { margin-top: 0; color: var(--text-bright); font-size: 18px; }
+        
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: #0f172a;
+            color: var(--text-bright);
+            font-size: 13px;
+            margin: 6px 0 12px 0;
+            box-sizing: border-box;
+            font-weight: 600;
+        }
+
+        label { font-size: 12px; font-weight: 700; color: var(--text); }
+
+        .admin-members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .admin-member-row {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .admin-member-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .admin-member-name-input { 
+            flex: 1; 
+            margin: 0 !important; 
+            padding: 4px 8px; 
+            font-size: 12px; 
+            height: 30px;
+        }
+
+        .admin-controls-inline { 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            flex-wrap: wrap; 
+        }
+
+        .mini-btn {
+            padding: 4px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .admin-section {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay" id="loginOverlay" style="display: flex;">
+    <div class="modal" style="text-align: center; max-width: 400px;">
+        <h2>☕ Kdo se prijavlja?</h2>
+        <p style="font-size: 13px; color: var(--text);">Izberi svoje ime za sodelovanje v aplikaciji:</p>
+        <select id="loginSelect"></select>
+        <button class="btn btn-confirm" style="width: 100%; margin-top: 10px;" onclick="handleLogin()">Prijava v aplikacijo</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="header">
+        <h1>☕ Odmor za kavo</h1>
+        <div class="header-info">
+            <span id="dateBadge" class="badge">-</span>
+            <span id="syncStatus" class="badge">Nalagam...</span>
+        </div>
+    </div>
+
+    <div class="status-box">
+        <span id="statusSubtitle">Danes je na vrsti za kavo:</span>
+        <strong id="currentPersonName">-</strong>
+        <div id="nextPersonSubtext" class="next-person-info" style="display: none;"></div>
+        <div class="action-buttons">
+            <button class="btn btn-confirm" onclick="confirmMyCoffee()">✅ Potrjujem rundo</button>
+            <button class="btn btn-cant" onclick="cantGiveCoffee()">❌ Danes ne morem</button>
+            <button class="btn btn-sponsor" onclick="sponsorCoffee()">⭐ Jaz častim danes</button>
+            <button class="btn btn-invite" onclick="inviteToCoffee()">⏰ Povabi na kavo (Teams)</button>
+            <button class="btn btn-undo" onclick="undoLastAction()">↩️ Razveljavi (Undo)</button>
+        </div>
+    </div>
+
+    <div class="members-grid" id="membersGrid"></div>
+
+    <div class="footer">
+        <div class="user-info">
+            Prijavljen: <span id="loggedInUserDisplay">-</span>
+            <span class="link-btn" onclick="openLoginModal()">(Zamenjaj)</span>
+        </div>
+        <div style="display: flex; gap: 6px;">
+            <button class="icon-btn" onclick="syncWithCloud(null, true)" title="Osveži podatke s strežnika">🔄</button>
+            <button class="icon-btn" id="settingsBtn" onclick="openAdminModal()" title="Nastavitve" style="display: none;">⚙️</button>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="adminModal">
+    <div class="modal">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; margin-bottom: 15px;">
+            <h2 style="margin:0;">⚙️ Skrbniške nastavitve</h2>
+            <span style="cursor: pointer; font-size: 18px; font-weight: bold; color:var(--text);" onclick="closeAdminModal()">✕</span>
+        </div>
+
+        <div id="settingsContent">
+            <h3 style="font-size: 13px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 1px;">Urejanje ekipe</h3>
+            <div id="adminMembersList" class="admin-members-grid"></div>
+
+            <div style="display: flex; gap: 6px; margin-bottom: 20px;" id="addMemberBox">
+                <input type="text" id="newMemberNameInput" placeholder="Ime novega sodelavca" style="margin:0; flex:1;">
+                <button class="btn btn-confirm" style="padding: 10px 15px;" onclick="addMember()">➕ Dodaj</button>
+            </div>
+
+            <h3 style="font-size: 13px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 1px;">🔔 Teams Webhook in sporočila</h3>
+            <div class="admin-section">
+                <label for="teamsWebhookInput">Power Automate Webhook URL:</label>
+                <input type="text" id="teamsWebhookInput" placeholder="https://...">
+
+                <label for="teamsMsgConfirmInput">1. Potrditev runde (✅):</label>
+                <input type="text" id="teamsMsgConfirmInput">
+
+                <label for="teamsMsgCantInput">2. Oseba danes ne more (❌):</label>
+                <input type="text" id="teamsMsgCantInput">
+
+                <label for="teamsMsgSponsorInput">3. Prostovoljna častitka (⭐):</label>
+                <input type="text" id="teamsMsgSponsorInput">
+
+                <label for="teamsMsgInviteInput">4. Vabilo na kavo (⏰):</label>
+                <input type="text" id="teamsMsgInviteInput">
+            </div>
+
+            <button class="btn btn-confirm" style="width: 100%; margin-top: 5px; padding: 14px; font-size: 14px;" onclick="saveAllAdminChanges()">💾 Shrani vse spremembe</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const DEFAULT_TEAM = ["Filipšek", "Fidler", "Pirnat", "Oprešnik", "Govedić", "Fendre", "Šetina", "Vrtačnik", "Gračner", "Rihter"];
+    
+    // URL z dodanimi narekovaji:
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlTtKeAxRkVf5qUjL9ZLxaQCsOboZU9JpXHtWrC5H_MUb1BAwl9dQ-vtxLJwJbWynH/exec";
+
+    let teamsWebhookUrl = "https://default3caae3ec12124a678d46afe2847c45.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/806a9b79b01b4219bc66ed4d449ffbfd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTxW5wgDGp3I9TXnX6fSdLQ2r7sBnumVkzROnPYLIig";
+    let teamsMsgConfirm = "✅ **{ime}** je potrdil/a rundo za danes ob 12:00! Pripravite skodelice. ☕";
+    let teamsMsgCant = "❌ **{ime}** danes ne more častiti. Naslednji na vrsti je **{naslednji}**.";
+    let teamsMsgSponsor = "⭐ **{ime}** se je javil/a in danes prostovoljno časti kavo! ☕🥳";
+    let teamsMsgInvite = "☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!";
+
+    let team = [...DEFAULT_TEAM];
+    let counts = {};
+    let absent = {};
+    let currentRoundPaid = {};
+    let dailyUnavailable = {}; 
+    let todayPayer = null; 
+    let currentIndex = 0;
+    let lastRotationDate = "";
+    
+    let loggedInUser = "";
+    let appTimestamp = Date.now();
+    let syncTimer = null;
+    let historyStack = [];
+
+    function sendTeamsNotification(message) {
+        if (!teamsWebhookUrl || teamsWebhookUrl.trim() === "") return;
+        const payload = {
+            "type": "message",
+            "attachments": [{
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "contentUrl": null,
+                "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.2",
+                    "body": [{ "type": "TextBlock", "text": message, "wrap": true }]
+                }
+            }]
+        };
+        fetch(teamsWebhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(err => console.error("Napaka Teams:", err));
+    }
+
+    function saveStateSnapshot() {
+        historyStack.push({
+            team: [...team],
+            counts: { ...counts },
+            absent: { ...absent },
+            currentRoundPaid: { ...currentRoundPaid },
+            dailyUnavailable: { ...dailyUnavailable },
+            todayPayer: todayPayer,
+            currentIndex: currentIndex,
+            lastRotationDate: lastRotationDate
+        });
+        if (historyStack.length > 20) historyStack.shift();
+    }
+
+    function undoLastAction() {
+        if (historyStack.length === 0) {
+            alert("Ni prejšnjih dejanj za povrnitev.");
+            return;
+        }
+        const previousState = historyStack.pop();
+        team = previousState.team;
+        counts = previousState.counts;
+        absent = previousState.absent;
+        currentRoundPaid = previousState.currentRoundPaid;
+        dailyUnavailable = previousState.dailyUnavailable;
+        todayPayer = previousState.todayPayer || null;
+        currentIndex = previousState.currentIndex;
+        lastRotationDate = previousState.lastRotationDate;
+
+        clampIndex();
+        renderUI();
+        pushToCloud();
+        alert("Stanje je bilo uspešno povrnjeno!");
+    }
+
+    function init() {
+        loadLocalStorage();
+        setupLoginDropdown(); 
+        
+        if (!loggedInUser) {
+            document.getElementById('loginOverlay').style.display = 'flex';
+        } else {
+            document.getElementById('loggedInUserDisplay').innerText = loggedInUser;
+            document.getElementById('loginOverlay').style.display = 'none';
+        }
+        
+        syncWithCloud(() => {
+            setupLoginDropdown(); 
+            checkDateRollover();
+            renderUI();
+        }, true);
+
+        setInterval(() => { syncWithCloud(null, false); }, 5000);
+    }
+
+    function clampIndex() {
+        if (team.length === 0) {
+            currentIndex = 0;
+            return;
+        }
+        if (currentIndex < 0 || currentIndex >= team.length) {
+            currentIndex = Math.max(0, Math.min(currentIndex, team.length - 1));
+        }
+    }
+
+    function loadLocalStorage() {
+        try {
+            const saved = localStorage.getItem('COFFEE_APP_STATE_GSHEETS');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.team?.length > 0) team = data.team;
+                if (data.counts) counts = data.counts;
+                if (data.absent) absent = data.absent;
+                if (data.currentRoundPaid) currentRoundPaid = data.currentRoundPaid;
+                if (data.dailyUnavailable) dailyUnavailable = data.dailyUnavailable;
+                if (data.todayPayer !== undefined) todayPayer = data.todayPayer;
+                if (typeof data.currentIndex === 'number') currentIndex = data.currentIndex;
+                if (data.lastRotationDate) lastRotationDate = data.lastRotationDate;
+                if (data.timestamp) appTimestamp = data.timestamp;
+                if (data.teamsWebhookUrl !== undefined) teamsWebhookUrl = data.teamsWebhookUrl;
+                if (data.teamsMsgConfirm !== undefined) teamsMsgConfirm = data.teamsMsgConfirm;
+                if (data.teamsMsgCant !== undefined) teamsMsgCant = data.teamsMsgCant;
+                if (data.teamsMsgSponsor !== undefined) teamsMsgSponsor = data.teamsMsgSponsor;
+                if (data.teamsMsgInvite !== undefined) teamsMsgInvite = data.teamsMsgInvite;
+                if (data.loggedInUser) loggedInUser = data.loggedInUser;
+            }
+        } catch(e) {}
+
+        clampIndex();
+        team.forEach(name => {
+            if (!(name in counts)) counts[name] = 0;
+            if (!(name in absent)) absent[name] = false;
+            if (!(name in currentRoundPaid)) currentRoundPaid[name] = false;
+            if (!(name in dailyUnavailable)) dailyUnavailable[name] = false;
+        });
+    }
+
+    function saveLocalStorage() {
+        clampIndex();
+        const state = { team, counts, absent, currentRoundPaid, dailyUnavailable, todayPayer, currentIndex, lastRotationDate, timestamp: appTimestamp, teamsWebhookUrl, teamsMsgConfirm, teamsMsgCant, teamsMsgSponsor, teamsMsgInvite, loggedInUser };
+        localStorage.setItem('COFFEE_APP_STATE_GSHEETS', JSON.stringify(state));
+    }
+
+    function setupLoginDropdown() {
+        const select = document.getElementById('loginSelect');
+        if (!select) return;
+        select.innerHTML = '';
+        (team.length > 0 ? team : DEFAULT_TEAM).forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.innerText = name;
+            select.appendChild(opt);
+        });
+        if (loggedInUser && team.includes(loggedInUser)) {
+            select.value = loggedInUser;
+        }
+    }
+
+    function handleLogin() {
+        const select = document.getElementById('loginSelect');
+        if (!select) return;
+        loggedInUser = select.value;
+        if (!loggedInUser) return;
+        
+        document.getElementById('loggedInUserDisplay').innerText = loggedInUser;
+        document.getElementById('loginOverlay').style.display = 'none';
+
+        renderUI();
+        pushToCloud();
+    }
+
+    function openLoginModal() {
+        setupLoginDropdown();
+        document.getElementById('loginOverlay').style.display = 'flex';
+    }
+
+    function checkDateRollover() {
+        const now = new Date();
+        const todayStr = now.toDateString();
+        let needsCloudPush = false;
+
+        const dateBadge = document.getElementById('dateBadge');
+        if (dateBadge) {
+            dateBadge.innerText = now.toLocaleDateString('sl-SI', { weekday: 'short', day: 'numeric', month: 'numeric' });
+        }
+
+        if (lastRotationDate && lastRotationDate !== todayStr) {
+            team.forEach(name => { dailyUnavailable[name] = false; });
+            todayPayer = null;
+            needsCloudPush = true;
+        }
+        
+        lastRotationDate = todayStr;
+        saveLocalStorage();
+        if (needsCloudPush) pushToCloud();
+    }
+
+    function isPersonValid(name) {
+        return !absent[name] && !dailyUnavailable[name];
+    }
+
+    function getNextEligiblePerson() {
+        if (team.length === 0) return "-";
+        clampIndex();
+
+        for (let i = 0; i < team.length; i++) {
+            let idx = (currentIndex + i) % team.length;
+            let name = team[idx];
+            if (isPersonValid(name) && !currentRoundPaid[name]) {
+                return name;
+            }
+        }
+
+        for (let i = 0; i < team.length; i++) {
+            let idx = (currentIndex + i) % team.length;
+            let name = team[idx];
+            if (isPersonValid(name)) {
+                return name;
+            }
+        }
+
+        return "-";
+    }
+
+    function advanceToNextEligiblePerson() {
+        if (team.length === 0) return;
+        clampIndex();
+
+        for (let i = 1; i <= team.length; i++) {
+            let idx = (currentIndex + i) % team.length;
+            let name = team[idx];
+            if (isPersonValid(name) && !currentRoundPaid[name]) {
+                currentIndex = idx;
+                return;
+            }
+        }
+
+        for (let i = 1; i <= team.length; i++) {
+            let idx = (currentIndex + i) % team.length;
+            if (isPersonValid(team[idx])) {
+                currentIndex = idx;
+                return;
+            }
+        }
+    }
+
+    function checkRoundCompletion() {
+        const activeMembers = team.filter(m => !absent[m]);
+        if (activeMembers.length > 0 && activeMembers.every(m => currentRoundPaid[m])) {
+            team.forEach(m => { currentRoundPaid[m] = false; });
+            return true;
+        }
+        return false;
+    }
+
+    function syncWithCloud(onComplete, forceServer = false) {
+        const syncStatus = document.getElementById('syncStatus');
+        if (syncStatus && forceServer) syncStatus.innerText = '⏳ Nalagam...';
+
+        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("TUKAJ_VNESI")) {
+            if (syncStatus) syncStatus.innerText = '⚠️ Brez URL';
+            if (onComplete) onComplete(false);
+            return;
+        }
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'GET',
+            cache: 'no-cache'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data && Object.keys(data).length > 0) {
+                const cloudData = data;
+                if (forceServer || !cloudData.timestamp || cloudData.timestamp > appTimestamp) {
+                    if (cloudData.team?.length > 0) team = cloudData.team;
+                    if (cloudData.counts) counts = cloudData.counts;
+                    if (cloudData.absent) absent = cloudData.absent;
+                    if (cloudData.currentRoundPaid) currentRoundPaid = cloudData.currentRoundPaid;
+                    if (cloudData.dailyUnavailable) dailyUnavailable = cloudData.dailyUnavailable;
+                    if (cloudData.todayPayer !== undefined) todayPayer = cloudData.todayPayer;
+                    if (typeof cloudData.currentIndex === 'number') currentIndex = cloudData.currentIndex;
+                    if (cloudData.lastRotationDate) lastRotationDate = cloudData.lastRotationDate;
+                    if (cloudData.teamsWebhookUrl !== undefined) teamsWebhookUrl = cloudData.teamsWebhookUrl;
+                    if (cloudData.teamsMsgConfirm !== undefined) teamsMsgConfirm = cloudData.teamsMsgConfirm;
+                    if (cloudData.teamsMsgCant !== undefined) teamsMsgCant = cloudData.teamsMsgCant;
+                    if (cloudData.teamsMsgSponsor !== undefined) teamsMsgSponsor = cloudData.teamsMsgSponsor;
+                    if (cloudData.teamsMsgInvite !== undefined) teamsMsgInvite = cloudData.teamsMsgInvite;
+                    
+                    appTimestamp = cloudData.timestamp || Date.now();
+                    clampIndex();
+                    saveLocalStorage();
+                }
+            }
+            if (syncStatus) syncStatus.innerText = '✅ Sinhronizirano';
+            setupLoginDropdown();
+            checkDateRollover();
+            renderUI();
+            if (onComplete) onComplete(true);
+        })
+        .catch((err) => {
+            console.error("Napaka nalaganja:", err);
+            if (syncStatus) syncStatus.innerText = '⚠️ Lokalno';
+            setupLoginDropdown();
+            renderUI();
+            if (onComplete) onComplete(false);
+        });
+    }
+
+    function performCloudAction(actionFn, onComplete) {
+        actionFn();
+        pushToCloud(onComplete);
+    }
+
+    function pushToCloud(onComplete) {
+        if (syncTimer) clearTimeout(syncTimer);
+        syncTimer = setTimeout(() => {
+            appTimestamp = Date.now();
+            clampIndex();
+            saveLocalStorage();
+            
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("TUKAJ_VNESI")) {
+                if (onComplete) onComplete(false);
+                return;
+            }
+
+            const payload = { team, counts, absent, currentRoundPaid, dailyUnavailable, todayPayer, currentIndex, lastRotationDate, timestamp: appTimestamp, teamsWebhookUrl, teamsMsgConfirm, teamsMsgCant, teamsMsgSponsor, teamsMsgInvite };
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                const syncStatus = document.getElementById('syncStatus');
+                if (data && data.status === 'success') {
+                    if (syncStatus) syncStatus.innerText = '✅ Sinhronizirano';
+                    if (onComplete) onComplete(true);
+                } else {
+                    if (syncStatus) syncStatus.innerText = '⚠️ Napaka';
+                    if (onComplete) onComplete(false);
+                }
+            })
+            .catch((err) => {
+                console.error("Napaka shranjevanja:", err);
+                const syncStatus = document.getElementById('syncStatus');
+                if (syncStatus) syncStatus.innerText = '⚠️ Brez povezave';
+                if (onComplete) onComplete(false);
+            });
+        }, 200);
+    }
+
+    function confirmMyCoffee() {
+        const active = todayPayer || getNextEligiblePerson();
+        if (active === "-") {
+            alert("Trenutno ni dostopnih članov za kavo.");
+            return;
+        }
+
+        if (confirm(`Ali potrjuješ, da bo ${active} danes ob 12:00 dal za kavo?`)) {
+            performCloudAction(() => {
+                saveStateSnapshot();
+                counts[active] = (counts[active] || 0) + 1;
+                currentRoundPaid[active] = true;
+                todayPayer = active;
+                dailyUnavailable[active] = false; 
+
+                checkRoundCompletion();
+                advanceToNextEligiblePerson();
+
+                renderUI();
+            }, (success) => {
+                if (success) {
+                    alert("Runda uspešno potrjena in sinhronizirana!");
+                    sendTeamsNotification(teamsMsgConfirm.replace(/{ime}/g, active));
+                }
+            });
+        }
+    }
+
+    function cantGiveCoffee() {
+        const active = getNextEligiblePerson();
+        if (active === "-") {
+            alert("Trenutno ni dostopnih članov za kavo.");
+            return;
+        }
+
+        if (confirm(`Označi, da ${active} danes ne more dati za kavo?`)) {
+            performCloudAction(() => {
+                saveStateSnapshot();
+                dailyUnavailable[active] = true; 
+                currentRoundPaid[active] = false;
+                
+                advanceToNextEligiblePerson(); 
+                renderUI();
+            }, (success) => {
+                const newActive = getNextEligiblePerson();
+                if (success) {
+                    alert("Zabeleženo, naslednji je na vrsti.");
+                    sendTeamsNotification(teamsMsgCant.replace(/{ime}/g, active).replace(/{naslednji}/g, newActive));
+                }
+            });
+        }
+    }
+
+    function sponsorCoffee() {
+        if (!loggedInUser) {
+            alert("Najprej se prijavi!");
+            return;
+        }
+        if (confirm(`Ali potrjuješ, da ${loggedInUser} danes prostovoljno časti kavo?`)) {
+            performCloudAction(() => {
+                saveStateSnapshot();
+                counts[loggedInUser] = (counts[loggedInUser] || 0) + 1;
+                currentRoundPaid[loggedInUser] = true;
+                todayPayer = loggedInUser;
+                dailyUnavailable[loggedInUser] = false;
+                
+                checkRoundCompletion();
+                advanceToNextEligiblePerson();
+
+                renderUI();
+            }, (success) => {
+                if (success) {
+                    alert("Hvala za častitko in sinhronizacijo!");
+                    sendTeamsNotification(teamsMsgSponsor.replace(/{ime}/g, loggedInUser));
+                }
+            });
+        }
+    }
+
+    function inviteToCoffee() {
+        let time = prompt("Ob kateri uri gremo danes na kavo?", "12:00");
+        if (time) {
+            let userToNotify = loggedInUser || "Neznano";
+            let msg = teamsMsgInvite.replace(/{ime}/g, userToNotify).replace(/{cas}/g, time);
+            sendTeamsNotification(msg);
+            alert(`Vabilo za ob ${time} je bilo uspešno poslano na Teams!`);
+        }
+    }
+
+    function toggleAbsence(name) {
+        performCloudAction(() => {
+            saveStateSnapshot();
+            dailyUnavailable[name] = !dailyUnavailable[name];
+            
+            const nextPerson = getNextEligiblePerson();
+            if (nextPerson === name && dailyUnavailable[name]) {
+                advanceToNextEligiblePerson();
+            }
+            renderUI();
+        });
+    }
+
+    function renderUI() {
+        clampIndex();
+        const nextPerson = getNextEligiblePerson();
+        
+        const subtitleEl = document.getElementById('statusSubtitle');
+        const nameEl = document.getElementById('currentPersonName');
+        const subtextEl = document.getElementById('nextPersonSubtext');
+
+        if (todayPayer) {
+            subtitleEl.innerText = "⭐ Danes potrjeno časti:";
+            nameEl.innerText = todayPayer;
+            nameEl.style.color = "var(--accent)";
+            if (subtextEl) {
+                subtextEl.style.display = "block";
+                subtextEl.innerText = `Naslednji na vrsti za kavo (jutri): ${nextPerson}`;
+            }
+        } else {
+            subtitleEl.innerText = "Danes je na vrsti za kavo:";
+            nameEl.innerText = nextPerson;
+            nameEl.style.color = "var(--text-bright)";
+            if (subtextEl) {
+                subtextEl.style.display = "none";
+            }
+        }
+
+        document.getElementById('settingsBtn').style.display = (loggedInUser === "Filipšek") ? 'flex' : 'none';
+
+        const grid = document.getElementById('membersGrid');
+        grid.innerHTML = '';
+
+        team.forEach(name => {
+            const isTodayPayer = (todayPayer && name === todayPayer);
+            const isNext = (!todayPayer && name === nextPerson);
+            const isTodayPaid = currentRoundPaid[name];
+            const isAbs = absent[name];
+            const isUnav = dailyUnavailable[name];
+
+            let cardClass = "member-card";
+            let statusText = "⏳ Čaka na vrsto";
+            
+            if (isAbs) {
+                cardClass += " is-absent";
+                statusText = "🌴 Dopust / Odsoten";
+            } else if (isUnav) {
+                cardClass += " is-unavailable";
+                statusText = "❌ Danes ne more";
+            } else if (isTodayPayer) {
+                cardClass += " is-paid";
+                statusText = "⭐ Častil danes";
+            } else if (isNext) {
+                cardClass += " is-next";
+                statusText = "👉 Na vrsti danes";
+            } else if (isTodayPaid) {
+                cardClass += " is-paid";
+                statusText = "✅ Že dal v tem krogu";
+            }
+
+            const card = document.createElement('div');
+            card.className = cardClass;
+            card.innerHTML = `
+                <div class="member-name">
+                    <span>${name}</span>
+                    <button class="absent-toggle-btn" onclick="toggleAbsence('${name}')" title="Preklopi odsotnost">
+                        ${dailyUnavailable[name] ? '❌ Odsoten' : '✔️ Prisoten'}
+                    </button>
+                </div>
+                <div class="member-meta">${statusText}</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function openAdminModal() {
+        if (loggedInUser !== "Filipšek") return;
+        document.getElementById('adminModal').style.display = 'flex';
+        document.getElementById('teamsWebhookInput').value = teamsWebhookUrl || '';
+        document.getElementById('teamsMsgConfirmInput').value = teamsMsgConfirm || '';
+        document.getElementById('teamsMsgCantInput').value = teamsMsgCant || '';
+        document.getElementById('teamsMsgSponsorInput').value = teamsMsgSponsor || '';
+        document.getElementById('teamsMsgInviteInput').value = teamsMsgInvite || '';
+        renderAdminMembers();
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModal').style.display = 'none';
+        renderUI();
+    }
+
+    function renderAdminMembers() {
+        const list = document.getElementById('adminMembersList');
+        if (!list) return;
+        list.innerHTML = '';
+
+        team.forEach((name, index) => {
+            const isAbs = absent[name];
+            const isPaid = currentRoundPaid[name];
+            const userCount = counts[name] || 0;
+
+            const row = document.createElement('div');
+            row.className = 'admin-member-row';
+            row.innerHTML = `
+                <div class="admin-member-top">
+                    <input type="text" class="admin-member-name-input" id="nameInput_${index}" value="${name}">
+                    <button class="mini-btn" style="background:#3b82f6; color:white;" onclick="renameMember(${index})">✏️</button>
+                    <button class="mini-btn" style="background:var(--danger); color:white;" onclick="removeMember('${name}')">🗑️</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                    <span style="font-size: 11px; font-weight: bold; color: var(--text);">Skupaj rund:</span>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <button class="mini-btn" style="background:#334155; color:white;" onclick="changeCount('${name}', -1)">➖</button>
+                        <span style="font-size: 12px; font-weight: bold; min-width: 20px; text-align: center; color: var(--text-bright);">${userCount}</span>
+                        <button class="mini-btn" style="background:#334155; color:white;" onclick="changeCount('${name}', 1)">➕</button>
+                    </div>
+                </div>
+                <div class="admin-controls-inline" style="justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 4px;">
+                    <button class="mini-btn" style="background:#3b82f6; color:white;" onclick="setAsNext(${index})" title="Nastavi kot naslednjega">👉 Naslednji</button>
+                    <button class="mini-btn" style="background: ${isPaid ? '#10b981' : '#334155'}; color:white;" onclick="togglePaid('${name}')">${isPaid ? '✅ Že dal' : '⭕ Že dal'}</button>
+                    <button class="mini-btn" style="background: ${isAbs ? '#ef4444' : '#334155'}; color:white;" onclick="toggleAbsent('${name}')">${isAbs ? '🌴 Dopust' : '⭕ Dopust'}</button>
+                    <button class="mini-btn" style="background:#334155; color:white;" onclick="moveMember(${index}, -1)">⬆️</button>
+                    <button class="mini-btn" style="background:#334155; color:white;" onclick="moveMember(${index}, 1)">⬇️</button>
+                </div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function changeCount(name, amount) {
+        saveStateSnapshot();
+        counts[name] = Math.max(0, (counts[name] || 0) + amount);
+        renderAdminMembers();
+    }
+
+    function setAsNext(index) {
+        saveStateSnapshot();
+        currentIndex = index;
+        clampIndex();
+        renderAdminMembers();
+        alert(`Član ${team[index]} je nastavljen kot naslednji!`);
+    }
+
+    function renameMember(index) {
+        const input = document.getElementById(`nameInput_${index}`);
+        if (!input) return;
+        const newName = input.value.trim();
+        const oldName = team[index];
+        if (!newName || newName === oldName || team.includes(newName)) return;
+
+        saveStateSnapshot();
+        team[index] = newName;
+        counts[newName] = counts[oldName] || 0; delete counts[oldName];
+        absent[newName] = absent[oldName] || false; delete absent[oldName];
+        currentRoundPaid[newName] = currentRoundPaid[oldName] || false; delete currentRoundPaid[oldName];
+        dailyUnavailable[newName] = dailyUnavailable[oldName] || false; delete dailyUnavailable[oldName];
+        if (todayPayer === oldName) todayPayer = newName;
+
+        setupLoginDropdown();
+        renderAdminMembers();
+    }
+
+    function toggleAbsent(name) {
+        saveStateSnapshot();
+        absent[name] = !absent[name];
+        renderAdminMembers();
+    }
+
+    function togglePaid(name) {
+        saveStateSnapshot();
+        currentRoundPaid[name] = !currentRoundPaid[name];
+        renderAdminMembers();
+    }
+
+    function moveMember(index, direction) {
+        const newIdx = index + direction;
+        if (newIdx < 0 || newIdx >= team.length) return;
+        saveStateSnapshot();
+        const temp = team[index];
+        team[index] = team[newIdx];
+        team[newIdx] = temp;
+        clampIndex();
+        renderAdminMembers();
+    }
+
+    function addMember() {
+        const input = document.getElementById('newMemberNameInput');
+        const name = input.value.trim();
+        if (!name || team.includes(name)) return;
+        saveStateSnapshot();
+        team.push(name);
+        counts[name] = 0; absent[name] = false; currentRoundPaid[name] = false; dailyUnavailable[name] = false;
+        input.value = '';
+        clampIndex();
+        setupLoginDropdown();
+        renderAdminMembers();
+    }
+
+    function removeMember(name) {
+        if (confirm(`Odstrani člana ${name}?`)) {
+            saveStateSnapshot();
+            team = team.filter(m => m !== name);
+            delete counts[name]; delete absent[name]; delete currentRoundPaid[name]; delete dailyUnavailable[name];
+            if (todayPayer === name) todayPayer = null;
+            clampIndex();
+            setupLoginDropdown();
+            renderAdminMembers();
+        }
+    }
+
+    function saveAllAdminChanges() {
+        performCloudAction(() => {
+            saveStateSnapshot();
+            teamsWebhookUrl = document.getElementById('teamsWebhookInput').value.trim();
+            teamsMsgConfirm = document.getElementById('teamsMsgConfirmInput').value.trim();
+            teamsMsgCant = document.getElementById('teamsMsgCantInput').value.trim();
+            teamsMsgSponsor = document.getElementById('teamsMsgSponsorInput').value.trim();
+            teamsMsgInvite = document.getElementById('teamsMsgInviteInput').value.trim();
+
+            saveLocalStorage();
+        }, (success) => {
+            alert(success ? "Spremembe uspešno shranjene in sinhronizirane!" : "Spremembe shranjene lokalno.");
+            closeAdminModal();
+            renderUI();
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
