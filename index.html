@@ -235,6 +235,11 @@ const A=window.A={
           ${S.team.map(n=>`<option value="${esc(n)}" ${n===me?'selected':''}>${esc(n)}</option>`).join('')}
         </select>
         <button id="pickSave" onclick="A.setMe()" ${hasMe?'':'disabled'} class="w-full mt-5 py-2.5 rounded-xl bg-kg text-white text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed">Vstopi v aplikacijo</button>
+        <div class="mt-3 pt-3 border-t border-slate-200">
+          <p class="text-xs text-slate-500 mb-2">Google prijava in izbira osebe sta ločeni. Če si prijavljen z napačnim računom, se lahko prijaviš znova.</p>
+          <button onclick="A.switchGoogle()" class="w-full py-2.5 rounded-xl bg-white border border-slate-300 text-slate-800 text-sm font-semibold">Prijava z drugim Google računom</button>
+          <button onclick="A.logout()" class="w-full mt-2 py-2 text-xs text-slate-500 underline">Odjava</button>
+        </div>
       </div></div>`;
   },
   pickChanged(){
@@ -305,6 +310,12 @@ const A=window.A={
       if(e.code==='auth/popup-blocked')return signInWithRedirect(auth,pr);
       if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast('Prijava ni uspela ('+(e.code||'napaka')+')','err');
     }
+  },
+  async switchGoogle(){
+    try{await signOut(auth)}catch(e){}
+    me='';
+    render();
+    setTimeout(()=>A.google(),120);
   },
   async guest(){try{await signInAnonymously(auth)}catch(e){toast('Gostujoča prijava ni uspela. Preverite, ali je v Firebase omogočen "Anonymous".','err')}},
   async logout(){
