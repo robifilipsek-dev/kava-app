@@ -527,17 +527,25 @@ function header(){
     </button>
   ` : '';
 
-  return `<header class="bg-kd text-white sticky top-0 z-30 shadow-md"><div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-    <div class="flex items-center gap-3 cursor-pointer" onclick="A.tab('main')"><img src="${ICON}" class="w-10 h-10 rounded-xl ring-2 ring-white/20"><span class="font-bold text-lg">Odmor za kavo</span></div>
-    <div class="flex items-center gap-2 text-xs">${showInst?`<button onclick="A.install()" class="p-2 rounded-xl bg-kg border border-ka/50" title="Namesti aplikacijo">📲 <span class="hidden sm:inline">Namesti</span></button>`:''}
-    <button onclick="A.toggleTheme()" class="p-2 rounded-xl bg-slate-800 border border-slate-700 text-white transition hover:bg-slate-700" title="Preklopi temno/svetlo temo">
-      ${isDark ? '☀️' : '🌙'}
-    </button>
-    <button onclick="A.pick()" class="px-3 py-2 rounded-xl bg-kg border border-slate-700 text-slate-200 flex items-center gap-1.5 hover:bg-slate-800 transition" title="Zamenjaj osebo na seznamu">
-      <span>👤 <strong>${esc(myName)}</strong></span>
-    </button>
-    ${adminBtn}
-    <button onclick="A.logout()" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-red-900/60 transition" title="Odjava">Odjava</button></div></div></header>`;
+  return `<header class="bg-kd text-white sticky top-0 z-30 shadow-md"><div class="max-w-4xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="A.tab('main')">
+      <img src="${ICON}" class="w-9 h-9 rounded-xl ring-2 ring-white/20">
+      <span class="font-bold text-base sm:text-lg hidden sm:inline">Odmor za kavo</span>
+    </div>
+    <div class="flex items-center gap-1.5 sm:gap-2 text-xs">
+      ${showInst?`<button onclick="A.install()" class="p-2 rounded-xl bg-kg border border-ka/50" title="Namesti aplikacijo">📲 <span class="hidden sm:inline">Namesti</span></button>`:''}
+      <button onclick="A.toggleTheme()" class="p-2 rounded-xl bg-slate-800 border border-slate-700 text-white transition hover:bg-slate-700" title="Preklopi temno/svetlo temo">
+        ${isDark ? '☀️' : '🌙'}
+      </button>
+      <button onclick="A.pick()" class="px-2.5 py-2 rounded-xl bg-kg border border-slate-700 text-slate-200 flex items-center gap-1 hover:bg-slate-800 transition max-w-[110px] sm:max-w-none" title="Zamenjaj osebo na seznamu">
+        <span>👤</span><strong class="truncate max-w-[65px] sm:max-w-none">${esc(myName)}</strong>
+      </button>
+      ${adminBtn}
+      <button onclick="A.logout()" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-red-900/60 transition flex items-center gap-1" title="Odjava">
+        🚪 <span class="hidden sm:inline font-semibold">Odjava</span>
+      </button>
+    </div>
+  </div></header>`;
 }
 
 function hero(){
