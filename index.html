@@ -1,2250 +1,443 @@
 <!DOCTYPE html>
 <html lang="sl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odmor za kavo - INEL</title>
-
-    <!-- Favicon & PWA meta -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='%230f172a'/%3E%3Cpath%20d='M18%2024h22v14a11%2011%200%200%201-22%200V24z'%20fill='%2310b981'/%3E%3Cpath%20d='M40%2027h5a5%205%200%200%201%200%2010h-5V27z'%20fill='none'%20stroke='%2310b981'%20stroke-width='3'/%3E%3Cpath%20d='M23%2018c0-3%202-3%202-6M29%2018c0-3%202-3%202-6M35%2018c0-3%202-3%202-6'%20fill='none'%20stroke='%2394a3b8'%20stroke-width='2'%20stroke-linecap='round'/%3E%3Crect%20x='14'%20y='42'%20width='30'%20height='4'%20rx='2'%20fill='%23cbd5e1'/%3E%3C/svg%3E">
-    <meta name="theme-color" content="#0f172a">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Kava INEL">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- PWA Dynamic Canvas Icon & Manifest -->
-    <script>
-        (function () {
-            function rr(ctx, x, y, w, h, r) {
-                ctx.beginPath();
-                ctx.moveTo(x + r, y);
-                ctx.arcTo(x + w, y, x + w, y + h, r);
-                ctx.arcTo(x + w, y + h, x, y + h, r);
-                ctx.arcTo(x, y + h, x, y, r);
-                ctx.arcTo(x, y, x + w, y, r);
-                ctx.closePath();
-            }
-
-            function drawCoffeePng(size, maskable) {
-                var canvas = document.createElement('canvas');
-                canvas.width = size; canvas.height = size;
-                var ctx = canvas.getContext('2d');
-                ctx.scale(size / 64, size / 64);
-
-                ctx.fillStyle = '#0f172a';
-                if (maskable) { ctx.fillRect(0, 0, 64, 64); } else { rr(ctx, 0, 0, 64, 64, 16); ctx.fill(); }
-
-                ctx.save();
-                if (maskable) { ctx.translate(32, 32); ctx.scale(0.8, 0.8); ctx.translate(-32, -32); }
-
-                // Steam lines
-                ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-                [[23, 18], [29, 18], [35, 18]].forEach(function(p) {
-                    ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.quadraticCurveTo(p[0] + 2, p[1] - 3, p[0], p[1] - 6); ctx.stroke();
-                });
-
-                // Cup Body
-                ctx.fillStyle = '#10b981';
-                ctx.beginPath();
-                ctx.moveTo(18, 24); ctx.lineTo(40, 24); ctx.lineTo(40, 31);
-                ctx.arcTo(40, 40, 29, 40, 11); ctx.arcTo(18, 40, 18, 31, 11);
-                ctx.lineTo(18, 24); ctx.closePath(); ctx.fill();
-
-                // Handle
-                ctx.strokeStyle = '#10b981'; ctx.lineWidth = 3.5;
-                ctx.beginPath(); ctx.moveTo(40, 27); ctx.arcTo(48, 27, 48, 37, 5); ctx.lineTo(40, 37); ctx.stroke();
-
-                // Plate
-                ctx.fillStyle = '#f1f5f9';
-                rr(ctx, 14, 43, 30, 4, 2); ctx.fill();
-
-                ctx.restore();
-                return canvas.toDataURL('image/png');
-            }
-
-            function setupPwa() {
-                try {
-                    var iconAny = drawCoffeePng(512, false);
-                    var iconMask = drawCoffeePng(512, true);
-
-                    var apple = document.querySelector('link[rel="apple-touch-icon"]');
-                    if (!apple) {
-                        apple = document.createElement('link');
-                        apple.rel = 'apple-touch-icon';
-                        document.head.appendChild(apple);
-                    }
-                    apple.href = drawCoffeePng(180, false);
-
-                    var manifest = {
-                        name: 'Odmor za kavo INEL',
-                        short_name: 'Kava INEL',
-                        start_url: location.href.split('#')[0],
-                        display: 'standalone',
-                        background_color: '#0f172a',
-                        theme_color: '#0f172a',
-                        icons: [
-                            { src: iconAny, sizes: '512x512', type: 'image/png', purpose: 'any' },
-                            { src: iconMask, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
-                        ]
-                    };
-                    var url = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/json' }));
-                    var link = document.querySelector('link[rel="manifest"]');
-                    if (!link) {
-                        link = document.createElement('link');
-                        link.rel = 'manifest';
-                        document.head.appendChild(link);
-                    }
-                    link.href = url;
-                } catch (e) {
-                    console.warn('PWA ikona/manifest ni bil ustvarjen:', e);
-                }
-            }
-            setupPwa();
-
-            window.__pwaPrompt = null;
-            window.addEventListener('beforeinstallprompt', function (e) {
-                e.preventDefault();
-                window.__pwaPrompt = e;
-                window.dispatchEvent(new Event('pwa-state-changed'));
-            });
-            window.addEventListener('appinstalled', function () {
-                window.__pwaPrompt = null;
-                window.__pwaInstalled = true;
-                window.dispatchEvent(new Event('pwa-state-changed'));
-            });
-        })();
-    </script>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts (Inter & Outfit) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        coffee: {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            200: '#fde68a',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                            700: '#b45309',
-                            800: '#92400e',
-                            900: '#78350f',
-                        },
-                        court: {
-                            dark: '#0f172a',
-                            green: '#1e293b',
-                            accent: '#334155',
-                            light: '#475569',
-                            grass: '#10b981',
-                            lime: '#34d399',
-                            highlight: '#d1fae5'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Outfit', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
-        }
-        .font-display {
-            font-family: 'Outfit', sans-serif;
-        }
-        [v-cloak] { display: none !important; }
-        
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
-
-        .date-picker-native { min-height: 42px; }
-        .date-picker-native::-webkit-calendar-picker-indicator { opacity: 0.9; filter: invert(1); cursor: pointer; padding: 2px; }
-        @media (max-width: 640px) { .date-picker-native { width: 10rem; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odmor za kavo</title>
+<meta name="theme-color" content="#0f291e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Kava">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{kd:'#0f291e',kg:'#1a4332',ka:'#2d6a4f',bean:'#8a5a34'}}}}</script>
+<style>
+body{font-family:Inter,system-ui,sans-serif;background:#f1f5f9}
+.mg{display:grid;gap:8px;grid-template-columns:repeat(var(--c),1fr)}
+@media(max-width:480px){.mg{grid-template-columns:repeat(2,1fr)!important}}
+.inp{width:100%;padding:.5rem .75rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.875rem;background:#fff}
+.b{padding:.6rem 1rem;border-radius:.75rem;font-weight:600;font-size:.8rem;color:#fff;transition:.15s}
+.b:hover{filter:brightness(.92)}
+</style>
 </head>
-<body class="text-slate-100 bg-slate-900 min-h-screen flex flex-col antialiased">
-
-    <div id="app" v-cloak class="flex-grow flex flex-col">
-        
-        <!-- TOP NAVIGATION HEADER -->
-        <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-30 shadow-lg">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    
-                    <!-- Logo & Brand -->
-                    <div class="flex items-center space-x-3 cursor-pointer" @click="activeTab = 'schedule'">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl shadow-lg">
-                            <i class="fa-solid fa-mug-hot"></i>
-                        </div>
-                        <div>
-                            <div class="font-display font-bold text-lg sm:text-xl tracking-tight leading-none text-white flex items-center gap-2">
-                                Odmor za kavo
-                                <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-semibold px-2 py-0.5 rounded-full">INEL</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right User Controls -->
-                    <div class="flex items-center space-x-2 sm:space-x-3">
-                        <button v-if="canInstall" @click="installApp" title="Namesti aplikacijo" class="p-2 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 transition flex items-center gap-2 border border-emerald-500/30 text-xs sm:text-sm">
-                            <i class="fa-solid fa-download"></i>
-                            <span class="hidden sm:inline">Namesti aplikacijo</span>
-                        </button>
-
-                        <template v-if="currentUser">
-                            <div class="hidden md:flex flex-col items-end mr-2">
-                                <span class="text-xs font-semibold text-slate-200">{{ userName || currentUser.email || 'Uporabnik' }}</span>
-                                <span class="text-[11px] text-emerald-400 flex items-center gap-1">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span> 
-                                    {{ currentUser.isAnonymous ? 'Prijavljen (Gost)' : 'Prijavljen' }}
-                                </span>
-                            </div>
-
-                            <button @click="openProfileModal" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition flex items-center gap-2 border border-slate-700 text-xs sm:text-sm">
-                                <i class="fa-solid fa-user-gear"></i>
-                                <span class="hidden sm:inline">Moj profil</span>
-                            </button>
-
-                            <button @click="logout" class="p-2 rounded-lg bg-slate-800 hover:bg-red-950/80 text-slate-300 hover:text-red-300 transition text-xs sm:text-sm flex items-center gap-1.5 border border-slate-700" title="Odjava">
-                                <i class="fa-solid fa-right-from-bracket"></i>
-                                <span class="hidden sm:inline">Odjava</span>
-                            </button>
-                        </template>
-
-                        <template v-else>
-                            <button @click="loginWithGoogle" class="px-3 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-semibold text-xs sm:text-sm shadow transition flex items-center gap-1.5">
-                                <i class="fa-brands fa-google text-amber-600"></i>
-                                <span class="hidden sm:inline">Google prijava</span>
-                                <span class="sm:hidden">Google</span>
-                            </button>
-                            <button @click="openGuestModal" class="px-3 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow transition flex items-center gap-1.5 border border-emerald-500/40">
-                                <i class="fa-solid fa-user"></i>
-                                <span>Gost</span>
-                            </button>
-                        </template>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- HERO BANNER & COFFEE ROTATION WIDGET -->
-        <section class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-800 text-white py-6 px-4 sm:px-6 lg:px-8 border-b border-slate-800 shadow-inner">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    
-                    <!-- Left Intro -->
-                    <div>
-                        <h1 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white flex items-center gap-3">
-                            <i class="fa-solid fa-mug-saucer text-amber-500"></i>
-                            Sistem beleženja in rotacije kav
-                        </h1>
-                        <p class="text-slate-400 text-xs sm:text-sm mt-1 max-w-xl leading-relaxed">
-                            Pravičen sistem zaporedja častitbe kave med sodelavci, urnik kuhanja in pošiljanje vabil na Teams.
-                        </p>
-                    </div>
-
-                    <!-- ROTATION WIDGET CARD -->
-                    <div class="bg-slate-950/80 backdrop-blur border border-emerald-500/30 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col justify-between gap-4 min-w-[280px] lg:max-w-md w-full">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fa-solid fa-crown text-amber-400"></i>
-                                {{ rotationState.todayPayer ? 'Danes potrjeno časti:' : 'Na vrsti da časti:' }}
-                            </span>
-                            <span class="text-[11px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-mono border border-slate-700">
-                                {{ getTodayString() }}
-                            </span>
-                        </div>
-
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="font-display font-extrabold text-2xl sm:text-3xl text-white truncate">
-                                {{ rotationState.todayPayer || nextEligiblePerson }}
-                            </div>
-                            <div class="text-xs text-slate-400 text-right flex-shrink-0">
-                                Skupaj častil: <strong class="text-emerald-400 font-mono">{{ getPayerCount(rotationState.todayPayer || nextEligiblePerson) }}x</strong>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons Grid -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold">
-                            <button @click="confirmCoffeeRound" class="col-span-2 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow transition flex items-center justify-center gap-1.5">
-                                <i class="fa-solid fa-check"></i> Potrdi rundo
-                            </button>
-
-                            <button @click="cantGiveCoffeeToday" class="py-2 px-2 rounded-xl bg-red-900/60 hover:bg-red-800/80 text-red-200 border border-red-700/50 transition flex items-center justify-center gap-1" title="Danes ne morem">
-                                <i class="fa-solid fa-user-slash"></i> Ne morem
-                            </button>
-
-                            <button @click="sponsorCoffeeOut" class="py-2 px-2 rounded-xl bg-amber-600/80 hover:bg-amber-500 text-white transition flex items-center justify-center gap-1" title="Jaz častim izven vrstnega reda">
-                                <i class="fa-solid fa-star"></i> Jaz častim
-                            </button>
-
-                            <button @click="openTeamsInviteModal" class="col-span-2 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white shadow transition flex items-center justify-center gap-1.5">
-                                <i class="fa-solid fa-paper-plane"></i> Povabi na Teams
-                            </button>
-
-                            <button @click="undoLastAction" class="col-span-2 py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center justify-center gap-1.5">
-                                <i class="fa-solid fa-rotate-left"></i> Razveljavi
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- MAIN CONTENT AREA -->
-        <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            
-            <div v-if="currentUser && statusBanner" class="mb-4 p-4 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-200 text-xs sm:text-sm flex items-start gap-3 shadow-sm">
-                <i class="fa-solid fa-circle-info text-emerald-400 mt-0.5"></i>
-                <div><strong>{{ statusBanner.title }}</strong><span v-if="statusBanner.text" class="block mt-0.5">{{ statusBanner.text }}</span></div>
-            </div>
-
-            <!-- NAVIGATION TABS -->
-            <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-slate-800 pb-3">
-                <nav class="flex w-full lg:w-auto gap-1.5 sm:gap-3">
-                    <button
-                        v-for="tab in tabs" :key="tab.id"
-                        @click="activeTab = tab.id"
-                        :class="activeTab === tab.id ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700'"
-                        class="flex-1 lg:flex-none px-2.5 sm:px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition flex items-center justify-center gap-1.5 sm:gap-2 border border-slate-700 relative whitespace-nowrap">
-                        <i :class="tab.icon"></i>
-                        <span class="sm:hidden">{{ tab.short }}</span>
-                        <span class="hidden sm:inline">{{ tab.label }}</span>
-                        <span v-if="tab.id === 'myBookings' && userFutureBookings.length > 0" class="bg-amber-500 text-slate-950 text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full">
-                            {{ userFutureBookings.length }}
-                        </span>
-                    </button>
-                </nav>
-
-                <!-- Status Legend (desktop) -->
-                <div class="hidden lg:flex items-center space-x-4 text-xs font-medium text-slate-300 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 shadow-sm">
-                    <span v-for="item in legendItems" :key="item.key" class="flex items-center gap-1.5">
-                        <span class="w-3 h-3 rounded border" :class="item.cls"></span> {{ item.label }}
-                    </span>
-                </div>
-            </div>
-
-            <!-- TAB 1: SCHEDULE & COFFEE LOGGING -->
-            <div v-show="activeTab === 'schedule'" class="space-y-6">
-                
-                <!-- DATE & MACHINE CONTROLS TOOLBAR -->
-                <div class="bg-slate-800/80 rounded-2xl p-4 sm:p-5 border border-slate-700 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-                    
-                    <!-- Date Selection -->
-                    <div class="flex items-center space-x-2">
-                        <button @click="changeDate(-1)" class="p-2.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-200 transition" title="Prejšnji dan">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-
-                        <div class="relative flex-grow sm:flex-grow-0 w-40 sm:w-36">
-                            <input
-                                type="text"
-                                inputmode="numeric"
-                                autocomplete="off"
-                                placeholder="dd.mm.llll"
-                                v-model="dateText"
-                                @input="onDateTextInput"
-                                @blur="commitDateText"
-                                @keyup.enter="$event.target.blur()"
-                                aria-label="Vnesi datum"
-                                class="w-full font-medium text-white bg-slate-900 border border-slate-700 rounded-xl pl-3 pr-10 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm"
-                            />
-                            <button
-                                type="button"
-                                @click="openDatePicker"
-                                title="Izberi datum iz koledarja"
-                                aria-label="Odpri koledar"
-                                class="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition"
-                            >
-                                <i class="fa-regular fa-calendar-days"></i>
-                            </button>
-                            <input id="nativeDate" type="date" v-model="selectedDate" tabindex="-1" aria-hidden="true" class="absolute pointer-events-none opacity-0 w-px h-px -z-10" />
-                        </div>
-
-                        <button @click="changeDate(1)" class="p-2.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-200 transition" title="Naslednji dan">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-
-                        <button @click="setToday" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700">
-                            Danes
-                        </button>
-                    </div>
-
-                    <!-- Formatted Date Display -->
-                    <div class="text-center md:text-left">
-                        <div class="font-display font-bold text-lg text-white">
-                            {{ formattedSelectedDate }}
-                        </div>
-                        <div class="text-xs text-slate-400 font-medium">
-                            Urnik terminov za kavo
-                        </div>
-                    </div>
-
-                    <!-- Machine Filter Buttons -->
-                    <div class="flex items-center justify-center bg-slate-900 p-1 rounded-xl border border-slate-700 self-center">
-                        <button 
-                            @click="courtFilter = 'all'" 
-                            :class="courtFilter === 'all' ? 'bg-slate-800 font-semibold text-white shadow-sm' : 'text-slate-400 hover:text-white'"
-                            class="px-3 py-1.5 rounded-lg text-xs transition">
-                            Vsi aparati
-                        </button>
-                        <button 
-                            @click="courtFilter = 'aparat1'" 
-                            :class="courtFilter === 'aparat1' ? 'bg-slate-800 font-semibold text-white shadow-sm' : 'text-slate-400 hover:text-white'"
-                            class="px-3 py-1.5 rounded-lg text-xs transition">
-                            Aparat 1 (Kuhinja)
-                        </button>
-                        <button 
-                            @click="courtFilter = 'aparat2'" 
-                            :class="courtFilter === 'aparat2' ? 'bg-slate-800 font-semibold text-white shadow-sm' : 'text-slate-400 hover:text-white'"
-                            class="px-3 py-1.5 rounded-lg text-xs transition">
-                            Aparat 2 (Pisarna)
-                        </button>
-                    </div>
-
-                </div>
-
-                <!-- LOGIN GATE -->
-                <div v-if="authReady && !currentUser" class="bg-slate-800/90 rounded-2xl border border-slate-700 shadow-sm p-8 text-center">
-                    <div class="w-16 h-16 rounded-2xl bg-slate-900 text-emerald-400 text-3xl flex items-center justify-center mx-auto mb-3 shadow">
-                        <i class="fa-solid fa-mug-hot"></i>
-                    </div>
-                    <h2 class="font-display font-bold text-xl text-white">Prijavite se za beleženje kav</h2>
-                    <p class="text-xs sm:text-sm text-slate-400 mt-1 mb-5">Za ogled zasedenosti in beleženje odmora za kavo se prijavite z Google računom ali nadaljujte kot gost.</p>
-                    <div class="flex flex-wrap items-center justify-center gap-3">
-                        <button @click="loginWithGoogle" class="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-semibold text-sm shadow transition inline-flex items-center gap-2">
-                            <i class="fa-brands fa-google text-amber-600"></i> Prijava z Google
-                        </button>
-                        <button @click="openGuestModal" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow transition inline-flex items-center gap-2">
-                            <i class="fa-solid fa-user"></i> Prijava kot gost
-                        </button>
-                    </div>
-                </div>
-
-                <!-- MACHINES SCHEDULE GRID -->
-                <div v-if="currentUser && bookingsLoaded" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                    <div v-for="court in visibleCourts" :key="court.id" class="bg-slate-800/90 rounded-2xl border border-slate-700 shadow-sm overflow-hidden flex flex-col">
-
-                        <!-- Machine Header -->
-                        <div class="bg-slate-950 p-4 text-white flex items-center justify-between border-b border-slate-800">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-amber-600/20 border border-amber-500/30 text-amber-400 flex items-center justify-center font-bold text-base shadow">
-                                    <i class="fa-solid fa-coffee"></i>
-                                </div>
-                                <div>
-                                    <h2 class="font-display font-bold text-base sm:text-lg">{{ court.name }}</h2>
-                                    <p class="text-xs text-slate-400 font-medium">Avtomatski kavni aparat</p>
-                                </div>
-                            </div>
-                            <span v-if="courtIsActive(court.id, selectedDate)" class="text-xs bg-emerald-900/60 border border-emerald-500/30 text-emerald-300 font-semibold px-2.5 py-1 rounded-full">
-                                Aktivno
-                            </span>
-                            <span v-else class="text-xs bg-slate-800 border border-slate-700 text-slate-400 font-semibold px-2.5 py-1 rounded-full">
-                                Neaktivno
-                            </span>
-                        </div>
-
-                        <!-- Slots List -->
-                        <div class="divide-y divide-slate-700/60 p-2 sm:p-3">
-                            <div v-for="slot in getTimeSlots(court.id)" :key="court.id + '_' + slot.startHour"
-                                 class="p-2.5 sm:p-3 rounded-xl transition flex items-center justify-between gap-3 my-1"
-                                 :class="getSlotBgClass(slot)">
-
-                                <!-- Time & Status -->
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-20 sm:w-24 font-mono font-bold text-xs sm:text-sm text-slate-300 flex items-center gap-1.5">
-                                        <i class="fa-regular fa-clock text-slate-400"></i>
-                                        {{ slot.label }}
-                                    </div>
-
-                                    <div>
-                                        <span v-if="slot.isUserBooking" class="inline-flex items-center gap-1 text-xs font-bold text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded-md border border-amber-600/60">
-                                            <i class="fa-solid fa-mug-hot"></i> Moja kava
-                                        </span>
-                                        <span v-else-if="slot.isOccupied" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-300 bg-slate-900/80 px-2 py-0.5 rounded-md border border-slate-700">
-                                            <i class="fa-solid fa-user text-slate-400"></i> {{ slot.booking.userName }}
-                                        </span>
-                                        <span v-else-if="slot.isClosed" :title="slot.closedNote" class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 italic">
-                                            Zaprt<span v-if="slot.closedNote" class="not-italic">({{ slot.closedNote }})</span>
-                                        </span>
-                                        <span v-else-if="slot.isPast" class="inline-flex items-center gap-1 text-xs font-medium text-slate-500 italic">
-                                            Potekel
-                                        </span>
-                                        <span v-else class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-600/40">
-                                            <i class="fa-solid fa-circle-check"></i> Prosto
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div>
-                                    <button
-                                        v-if="slot.isUserBooking && !slot.isPast"
-                                        @click="promptCancelBooking(slot.booking)"
-                                        class="px-3 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-900 text-red-300 text-xs font-semibold border border-red-700/60 transition flex items-center gap-1">
-                                        <i class="fa-solid fa-xmark"></i> Prekliči
-                                    </button>
-
-                                    <button
-                                        v-else-if="!slot.isOccupied && !slot.isPast && !slot.isClosed"
-                                        @click="promptBookSlot(court.id, slot)"
-                                        class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-sm transition flex items-center gap-1">
-                                        <i class="fa-solid fa-plus"></i> Rezerviraj / Zabeleži
-                                    </button>
-
-                                    <button
-                                        v-else-if="isAdmin && slot.isOccupied"
-                                        @click="promptCancelBooking(slot.booking)"
-                                        class="px-3 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-900 text-red-300 text-xs font-semibold border border-red-700/60 transition flex items-center gap-1">
-                                        <i class="fa-solid fa-trash-can"></i> Izbriši
-                                    </button>
-
-                                    <span v-else class="text-xs text-slate-500 font-medium px-2 py-1">
-                                        Ni na voljo
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- COWORKER STANDINGS & ROTATION LIST GRID -->
-                <div v-if="currentUser" class="bg-slate-800/80 rounded-2xl border border-slate-700 p-5 shadow-sm space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">
-                                <i class="fa-solid fa-users text-amber-500"></i>
-                                Ekipa in število počaščenih kav
-                            </h2>
-                            <p class="text-xs text-slate-400 mt-0.5">Pregled vseh sodelavcev, števila danih kav in trenutne prisotnosti.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                        <div v-for="member in rotationTeam" :key="member" 
-                             class="p-3.5 rounded-xl border transition flex flex-col justify-between gap-2"
-                             :class="getMemberCardClass(member)">
-                            
-                            <div class="flex items-center justify-between">
-                                <span class="font-bold text-sm text-white truncate">{{ member }}</span>
-                                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold px-2 py-0.5 rounded-full font-mono flex items-center gap-1">
-                                    <i class="fa-solid fa-mug-hot text-[10px]"></i> {{ getPayerCount(member) }}
-                                </span>
-                            </div>
-
-                            <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-700/60">
-                                <span>{{ getMemberStatusText(member) }}</span>
-                                <button @click="toggleMemberAbsence(member)" class="text-[11px] px-2 py-0.5 rounded bg-slate-900 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
-                                    {{ rotationState.dailyUnavailable[member] ? 'Označi prisoten' : 'Označi odsoten' }}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- TAB 2: WEEKLY OVERVIEW -->
-            <div v-show="activeTab === 'week'" class="space-y-4">
-
-                <!-- Week controls -->
-                <div class="bg-slate-800/80 rounded-2xl p-3 sm:p-4 border border-slate-700 shadow-sm flex items-center justify-between gap-3">
-                    <button @click="changeWeek(-1)" class="p-2.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-200 transition" title="Prejšnji teden">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <div class="text-center">
-                        <div class="font-display font-bold text-base sm:text-lg text-white">{{ weekRangeLabel }}</div>
-                        <div class="text-xs text-slate-400 font-medium">
-                            Tedenski pregled kuhanja kav
-                            <button v-if="!isCurrentWeek" @click="goThisWeek" class="ml-1 text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2">Ta teden</button>
-                        </div>
-                    </div>
-                    <button @click="changeWeek(1)" class="p-2.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-200 transition" title="Naslednji teden">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-
-                <!-- Days -->
-                <template v-if="currentUser">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                        <div v-for="day in weekDays" :key="day.date"
-                             class="bg-slate-800/90 rounded-2xl border shadow-sm p-3 sm:p-4"
-                             :class="day.isToday ? 'border-emerald-500/80 ring-1 ring-emerald-500/40' : 'border-slate-700'">
-
-                            <button @click="openDay(day.date, 'all')" class="w-full flex items-center justify-between mb-2 text-left">
-                                <span class="flex items-center gap-2">
-                                    <span class="font-display font-bold text-white">{{ day.dow }}</span>
-                                    <span class="text-xs text-slate-400 font-medium">{{ day.dayNum }}. {{ day.monthNum }}.</span>
-                                    <span v-if="day.isToday" class="text-[10px] font-bold bg-emerald-600 text-white px-1.5 py-0.5 rounded-full">Danes</span>
-                                </span>
-                                <span class="text-[11px] text-slate-400 font-medium flex items-center gap-1.5">
-                                    Prosto: <strong :class="day.totalFree === 0 ? 'text-slate-500' : 'text-emerald-400'">{{ day.totalFree }}</strong>
-                                    <i class="fa-solid fa-chevron-right text-[9px] text-slate-500"></i>
-                                </span>
-                            </button>
-
-                            <!-- Machine rows -->
-                            <button v-for="c in day.courts" :key="c.id" @click="openDay(day.date, c.id)"
-                                    class="w-full flex items-center gap-2 py-1 rounded-lg hover:bg-slate-700/50 transition" :title="c.name">
-                                <span class="w-5 h-5 rounded-md bg-amber-600/30 text-amber-300 text-[10px] font-bold flex items-center justify-center flex-shrink-0 border border-amber-500/30">
-                                    <i class="fa-solid fa-coffee"></i>
-                                </span>
-                                <span class="flex-1 flex gap-px">
-                                    <span v-for="cell in c.cells" :key="cell.hour" :title="cell.title"
-                                          class="flex-1 h-6 rounded-[3px] border" :class="legendCls[cell.status]"></span>
-                                </span>
-                                <span class="w-6 flex-shrink-0 text-right text-[11px] font-bold" :class="c.free === 0 ? 'text-slate-500' : 'text-emerald-400'">{{ c.free }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </template>
-
-            </div>
-
-            <!-- TAB 3: MY BOOKINGS -->
-            <div v-show="activeTab === 'myBookings'" class="space-y-6">
-                <div class="bg-slate-800/90 rounded-2xl p-5 sm:p-6 border border-slate-700 shadow-sm">
-                    <div class="flex items-center justify-between mb-6">
-                        <div>
-                            <h2 class="font-display font-bold text-xl text-white">Moje kave in rezervacije</h2>
-                            <p class="text-xs text-slate-400 mt-1">Pregled vseh vaših zabeleženih terminov za kavo.</p>
-                        </div>
-                        <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold px-3 py-1 rounded-full">
-                            Aktivno: {{ userFutureBookings.length }}
-                        </span>
-                    </div>
-
-                    <div v-if="userFutureBookings.length === 0" class="text-center py-12 border-2 border-dashed border-slate-700 rounded-2xl bg-slate-900/50">
-                        <div class="w-12 h-12 rounded-full bg-slate-800 text-slate-500 flex items-center justify-center mx-auto mb-3 text-xl">
-                            <i class="fa-solid fa-mug-hot"></i>
-                        </div>
-                        <p class="font-semibold text-slate-300 text-sm">Nimate prihodnjih rezervacij kav</p>
-                        <p class="text-xs text-slate-400 mt-1">Izberite nov termin v urniku in se vpišite za kavo.</p>
-                        <button @click="activeTab = 'schedule'" class="mt-4 px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium text-xs shadow hover:bg-emerald-500 transition">
-                            Pojdi na urnik
-                        </button>
-                    </div>
-
-                    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div v-for="booking in userFutureBookings" :key="booking.id" class="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs font-bold uppercase tracking-wider text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-600/50">
-                                        {{ booking.courtId === 'aparat1' ? 'Aparat 1 (Kuhinja)' : 'Aparat 2 (Pisarna)' }}
-                                    </span>
-                                    <span class="text-xs font-mono font-bold text-slate-400">
-                                        {{ booking.date }}
-                                    </span>
-                                </div>
-                                <div class="font-display font-bold text-lg text-white mt-1 flex items-center gap-2">
-                                    <i class="fa-regular fa-clock text-amber-400"></i>
-                                    {{ booking.timeSlot }}
-                                </div>
-                                <p class="text-xs text-slate-400 mt-1">Opomba / Ime: <span class="font-semibold text-slate-200">{{ booking.userName }}</span></p>
-                            </div>
-
-                            <div class="mt-4 pt-3 border-t border-amber-500/20 flex items-center justify-between">
-                                <span class="text-[11px] text-slate-500">ID: {{ booking.id.substring(0, 10) }}...</span>
-                                <button @click="promptCancelBooking(booking)" class="px-3 py-1.5 rounded-lg bg-red-900/80 hover:bg-red-800 text-white font-semibold text-xs transition flex items-center gap-1">
-                                    <i class="fa-solid fa-trash-can"></i> Prekliči
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 4: RULES & INFO -->
-            <div v-show="activeTab === 'info'" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
-                    <div class="bg-slate-800/90 rounded-2xl p-6 border border-slate-700 shadow-sm space-y-4">
-                        <div class="flex items-center space-x-3 text-amber-400">
-                            <i class="fa-solid fa-clipboard-list text-2xl"></i>
-                            <h2 class="font-display font-bold text-xl text-white">Pravila kuhanja in rotacije</h2>
-                        </div>
-                        <ul class="space-y-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                            <li class="flex items-start gap-2.5">
-                                <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
-                                <span><strong>Pravična rotacija:</strong> Sistem samodejno izračuna, kdo od prisotnih sodelavcev je naslednji na vrsti za kavo na podlagi števila do sedaj plačanih kav.</span>
-                            </li>
-                            <li class="flex items-start gap-2.5">
-                                <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
-                                <span><strong>Prijaznost & častitba:</strong> Vsak sodelavec lahko kadarkoli počasti kavo izven vrstnega reda s klikom na <em>"Jaz častim"</em>.</span>
-                            </li>
-                            <li class="flex items-start gap-2.5">
-                                <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
-                                <span><strong>Dopust in odsotnost:</strong> Odsotni sodelavci se za čas dopusta preskočijo brez penalov.</span>
-                            </li>
-                            <li class="flex items-start gap-2.5">
-                                <i class="fa-solid fa-bell text-amber-400 mt-0.5"></i>
-                                <span><strong>Teams Obvestila:</strong> Z gumbom <em>"Povabi na Teams"</em> pošljete obvestilo celotni ekipi preko Microsoft Teams kanala.</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-slate-800/90 rounded-2xl p-6 border border-slate-700 shadow-sm space-y-4">
-                        <div class="flex items-center space-x-3 text-emerald-400">
-                            <i class="fa-solid fa-screwdriver-wrench text-2xl"></i>
-                            <h2 class="font-display font-bold text-xl text-white">Vzdrževanje in opomba</h2>
-                        </div>
-                        
-                        <div class="space-y-3 text-xs sm:text-sm text-slate-300">
-                            <p>Prosimo, da po vsakem kuhanju kave počistite kavni aparat, izpraznite posodo za goščo in po potrebi dolijete vodo ter dodate sveža kavna zrna.</p>
-                        </div>
-
-                        <div class="pt-4 border-t border-slate-700">
-                            <h3 class="font-bold text-slate-200 text-xs uppercase tracking-wider mb-2">Delovni čas kavnih aparatov</h3>
-                            <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-xs font-medium text-slate-300 flex justify-between">
-                                <span>Ponedeljek - Petek:</span>
-                                <span class="font-bold text-emerald-400">{{ openHoursRange }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- TAB: SKRBNIK (ADMIN) -->
-            <div v-if="isAdmin" v-show="activeTab === 'admin'" class="space-y-6">
-
-                <!-- Teams Webhook & Obvestila -->
-                <div class="bg-slate-800/90 rounded-2xl p-5 sm:p-6 border border-slate-700 shadow-sm space-y-4">
-                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">
-                        <i class="fa-brands fa-microsoft text-indigo-400"></i>
-                        Microsoft Teams Obvestila (Power Automate Webhook)
-                    </h2>
-
-                    <div class="space-y-3 text-xs font-semibold text-slate-300">
-                        <label class="block">
-                            Teams Webhook URL (Power Automate / Incoming Webhook)
-                            <input type="text" v-model="settingsForm.teamsWebhookUrl" placeholder="https://..." class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal text-xs">
-                        </label>
-
-                        <label class="block">
-                            Predloga sporočila za vabilo na kavo ({ime} in {cas} se samodejno zamenjata)
-                            <input type="text" v-model="settingsForm.teamsMsgInvite" placeholder="☕ {ime} vas vabi na kavo ob {cas}!" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal text-xs">
-                        </label>
-                    </div>
-
-                    <div class="flex items-center gap-3 pt-2">
-                        <button @click="saveSettings" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow">
-                            Shrani nastavitve Teams
-                        </button>
-                        <button @click="sendTestTeamsMessage" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow">
-                            <i class="fa-solid fa-paper-plane mr-1"></i> Pošlji testno obvestilo
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Upravljanje sodelavcev / rotacije kav -->
-                <div class="bg-slate-800/90 rounded-2xl p-5 sm:p-6 border border-slate-700 shadow-sm space-y-4">
-                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">
-                        <i class="fa-solid fa-users-gear text-amber-500"></i>
-                        Upravljanje sodelavcev in rotacije kav
-                    </h2>
-
-                    <div class="flex flex-wrap gap-2 text-xs">
-                        <input type="text" v-model="newMemberName" placeholder="Ime novega sodelavca ..." class="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white flex-1 min-w-[12rem]">
-                        <button @click="addNewMember" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold">
-                            <i class="fa-solid fa-plus mr-1"></i> Dodaj sodelavca
-                        </button>
-                    </div>
-
-                    <div class="space-y-2 max-h-96 overflow-y-auto border border-slate-700 rounded-xl p-3 bg-slate-900/50">
-                        <div v-for="(member, idx) in rotationTeam" :key="member" class="p-3 rounded-xl bg-slate-800 border border-slate-700 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div class="flex items-center gap-2 min-w-0">
-                                <span class="font-bold text-white text-sm truncate">{{ member }}</span>
-                                <span v-if="rotationState.todayPayer === member" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/30">Danes časti</span>
-                                <span v-else-if="nextEligiblePerson === member" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">Na vrsti</span>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="text-slate-400 font-medium">Št. kav:</span>
-                                <button @click="adjustMemberCount(member, -1)" class="w-6 h-6 rounded bg-slate-700 hover:bg-slate-600 text-white font-bold flex items-center justify-center">-</button>
-                                <span class="font-mono font-bold text-amber-400 px-1">{{ getPayerCount(member) }}</span>
-                                <button @click="adjustMemberCount(member, 1)" class="w-6 h-6 rounded bg-slate-700 hover:bg-slate-600 text-white font-bold flex items-center justify-center">+</button>
-
-                                <button @click="setAsNextPerson(idx)" class="px-2.5 py-1 rounded bg-indigo-600/80 hover:bg-indigo-500 text-white font-bold text-[11px]" title="Postavi kot naslednjega na vrsti">
-                                    👉 Nastavi naslednjega
-                                </button>
-
-                                <button @click="removeMember(member)" class="px-2.5 py-1 rounded bg-red-900/80 hover:bg-red-800 text-red-200 font-bold text-[11px]">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Stanje kavnih aparatov -->
-                <div class="bg-slate-800/90 rounded-2xl p-5 sm:p-6 border border-slate-700 shadow-sm space-y-4">
-                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-sliders text-emerald-400"></i> Stanje aparatov in obratovanje</h2>
-                    <div class="grid sm:grid-cols-2 gap-3">
-                        <label v-for="c in courts" :key="c.id" class="flex items-center justify-between p-3 rounded-xl border border-slate-700 cursor-pointer bg-slate-900">
-                            <span class="font-semibold text-sm text-slate-200">{{ c.name }}</span>
-                            <span class="flex items-center gap-2 text-xs font-semibold" :class="settingsForm.courts[c.id] ? 'text-emerald-400' : 'text-slate-500'">
-                                {{ settingsForm.courts[c.id] ? 'Aktivno' : 'Neaktivno' }}
-                                <input type="checkbox" v-model="settingsForm.courts[c.id]" class="w-5 h-5 accent-emerald-500">
-                            </span>
-                        </label>
-                    </div>
-                    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-semibold text-slate-300">
-                        <label>Odprtje (ura)<input type="number" min="0" max="23" v-model.number="settingsForm.openHour" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                        <label>Zaprtje (ura)<input type="number" min="1" max="24" v-model.number="settingsForm.closeHour" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                        <label>Dnevna kvota (kav)<input type="number" min="1" max="16" v-model.number="settingsForm.dailyLimit" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                        <label>Tedenska kvota (kav)<input type="number" min="1" max="50" v-model.number="settingsForm.weeklyLimit" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                        <label class="sm:col-span-2">Obvestilo za uporabnike (neobvezno)<input type="text" maxlength="160" v-model="settingsForm.notice" placeholder="npr. Aparat v kuhinji je na servisu" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                    </div>
-                    <button @click="saveSettings" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow">Shrani nastavitve</button>
-                </div>
-
-                <!-- Zaprtja / Vzdrževanje -->
-                <div class="bg-slate-800/90 rounded-2xl p-5 sm:p-6 border border-slate-700 shadow-sm space-y-4">
-                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-ban text-amber-500"></i> Zaprtja / Čiščenje aparatov</h2>
-                    <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs font-semibold text-slate-300">
-                        <label>Aparat<select v-model="closureForm.courtId" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"><option value="all">Vsi aparati</option><option v-for="c in courts" :key="c.id" :value="c.id">{{ c.name }}</option></select></label>
-                        <label>Od datuma<input type="date" v-model="closureForm.date" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                        <label>Do datuma<input type="date" v-model="closureForm.dateTo" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                        <label>Od ure<input type="number" min="0" max="23" v-model.number="closureForm.fromHour" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                        <label>Do ure<input type="number" min="1" max="24" v-model.number="closureForm.toHour" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                        <label>Opomba<input type="text" maxlength="60" v-model="closureForm.note" placeholder="npr. Servis" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white font-normal"></label>
-                    </div>
-                    <button @click="addClosure" class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold">Dodaj zaprtje</button>
-                    <div v-if="closures.length === 0" class="text-xs text-slate-400">Ni zaprtij.</div>
-                    <div v-for="c in sortedClosures" :key="c.id" class="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-900 border border-slate-700 text-xs">
-                        <span><strong>{{ c.courtId === 'all' ? 'Vsi aparati' : courtName(c.courtId) }}</strong> · {{ c.date }}<span v-if="c.dateTo && c.dateTo !== c.date"> → {{ c.dateTo }}</span> · {{ pad(c.fromHour) }}:00–{{ pad(c.toHour) }}:00<span v-if="c.note" class="text-slate-400"> · {{ c.note }}</span></span>
-                        <button @click="removeClosure(c.id)" class="px-2.5 py-1 rounded-lg bg-red-900/80 text-red-200 font-semibold"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>
-                </div>
-
-                <!-- Rezervacije kav -->
-                <div class="bg-slate-800/90 rounded-2xl p-5 sm:p-6 border border-slate-700 shadow-sm space-y-4">
-                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-calendar-check text-emerald-400"></i> Vse kave / rezervacije</h2>
-                    <div class="grid sm:grid-cols-5 gap-3 text-xs font-semibold text-slate-300 items-end p-3 rounded-xl bg-slate-900 border border-slate-700">
-                        <label>Aparat<select v-model="manualForm.courtId" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white font-normal"><option v-for="c in courts" :key="c.id" :value="c.id">{{ c.name }}</option></select></label>
-                        <label>Datum<input type="date" v-model="manualForm.date" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white font-normal"></label>
-                        <label>Ura začetka<input type="number" min="0" max="23" v-model.number="manualForm.hour" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white font-normal"></label>
-                        <label>Opomba / Ime<input type="text" maxlength="40" v-model="manualForm.name" placeholder="npr. Kava z ekipo" class="mt-1 w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-white font-normal"></label>
-                        <button @click="addManualBooking" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold">Dodaj kavo</button>
-                    </div>
-                    <div class="flex flex-wrap gap-3 items-center text-xs">
-                        <input type="date" v-model="adminDate" class="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white">
-                        <input type="text" v-model="adminSearch" placeholder="Išči po opombi ali imenu ..." class="px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white flex-1 min-w-[10rem]">
-                        <button v-if="adminDate" @click="adminDate = ''" class="text-slate-400 underline">Počisti datum</button>
-                    </div>
-                    <div class="text-[11px] text-slate-400">Prikazanih {{ adminBookings.length }} vnosov.</div>
-                    <div class="max-h-96 overflow-y-auto divide-y divide-slate-700/60 border border-slate-700 rounded-xl bg-slate-900">
-                        <div v-for="b in adminBookings" :key="b.id" class="flex items-center justify-between gap-3 px-3 py-2 text-xs">
-                            <span><strong>{{ b.date }}</strong> · {{ b.timeSlot }} · {{ courtName(b.courtId) }} · {{ b.userName }}</span>
-                            <button @click="promptCancelBooking(b)" class="px-2.5 py-1 rounded-lg bg-red-900/80 text-red-200 font-semibold"><i class="fa-solid fa-trash-can"></i> Izbriši</button>
-                        </div>
-                        <div v-if="adminBookings.length === 0" class="p-4 text-slate-500 text-xs">Ni vnosov.</div>
-                    </div>
-                </div>
-
-                <!-- Uporabniki -->
-                <div class="bg-slate-800/90 rounded-2xl p-5 sm:p-6 border border-slate-700 shadow-sm space-y-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div>
-                            <h2 class="font-display font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-users text-emerald-400"></i> Prijavljeni uporabniki <span class="text-xs font-semibold text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-500/30">{{ onlineCount }} trenutno aktivnih</span></h2>
-                        </div>
-                        <div class="flex gap-2 text-[11px]">
-                            <span class="px-2 py-1 rounded-lg bg-slate-900 text-slate-300 border border-slate-700">{{ userDirectory.length }} uporabnikov</span>
-                            <button @click="deleteAllTracking" class="px-2 py-1 rounded-lg bg-red-900/80 text-red-200 font-semibold"><i class="fa-solid fa-trash-can"></i> Izbriši vse</button>
-                        </div>
-                    </div>
-
-                    <div class="max-h-96 overflow-y-auto border border-slate-700 rounded-xl bg-slate-900 divide-y divide-slate-800">
-                        <div v-for="u in userDirectory" :key="u.id" class="p-3 text-xs flex items-center justify-between gap-3">
-                            <div>
-                                <strong class="text-white">{{ u.name || 'Brez imena' }}</strong>
-                                <span class="ml-2 text-[10px] text-slate-400">({{ u.isAnonymous ? 'Gost' : 'Google' }})</span>
-                                <div class="text-[11px] text-slate-400 font-mono">{{ u.email || 'Bez e-pošte' }}</div>
-                            </div>
-                            <button @click="deleteUserTracking(u)" class="px-2 py-1 rounded bg-red-900/80 text-red-200 text-[10px] font-bold">Izbriši</button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-        </main>
-
-        <!-- FOOTER -->
-        <footer class="bg-slate-950 text-slate-400 border-t border-slate-800 py-6 text-center text-xs mt-12">
-            <div class="max-w-7xl mx-auto px-4">
-                <p>© 2026 INEL • Odmor za kavo</p>
-                <p class="mt-1 text-slate-500">Spletna aplikacija za beleženje kav in rotacijo sodelavcev</p>
-            </div>
-        </footer>
-
-        <!-- MODAL: TEAMS INVITE -->
-        <div v-if="showTeamsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-            <div class="bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-800 relative text-white">
-                
-                <button @click="showTeamsModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
-                <div class="text-center mb-5">
-                    <div class="w-12 h-12 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-xl text-white">Povabi na kavo (Teams)</h3>
-                    <p class="text-xs text-slate-400 mt-1">Pošlji obvestilo sodelavcem v Microsoft Teams kanal.</p>
-                </div>
-
-                <div class="space-y-3 mb-5">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Ura kave</label>
-                        <input type="text" v-model="teamsInviteTime" placeholder="npr. 09:30 ali 12:00" class="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button @click="showTeamsModal = false" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs border border-slate-700 transition">
-                        Prekliči
-                    </button>
-                    <button @click="sendTeamsInvite" class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-paper-plane"></i> Pošlji obvestilo
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- MODAL: BOOKING CONFIRMATION -->
-        <div v-if="showBookingModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-            <div class="bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-800 relative text-white">
-                
-                <button @click="showBookingModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
-                <div class="text-center mb-5">
-                    <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-2 text-xl font-bold">
-                        <i class="fa-solid fa-mug-hot"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-xl text-white">Rezervacija odmora za kavo</h3>
-                    <p class="text-xs text-slate-400 mt-1">Preverite podatke in potrdite izbrani termin.</p>
-                </div>
-
-                <div v-if="targetSlot" class="bg-slate-950 rounded-xl p-4 border border-slate-800 space-y-2 mb-5 text-xs">
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">Aparat:</span>
-                        <span class="font-bold text-slate-200">{{ targetCourt === 'aparat1' ? 'Aparat 1 (Kuhinja)' : 'Aparat 2 (Pisarna)' }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">Datum:</span>
-                        <span class="font-bold text-slate-200">{{ formattedSelectedDate }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-400">Ura / Termin:</span>
-                        <span class="font-bold text-amber-400 font-mono">{{ targetSlot.label }}</span>
-                    </div>
-                </div>
-
-                <div class="space-y-3 mb-5">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Ime in priimek / Opomba</label>
-                        <input type="text" v-model="bookingUserName" placeholder="Vnesite vaše ime ali opombo" class="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-                    <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                        <input type="checkbox" v-model="sendTeamsWithBooking" class="w-4 h-4 accent-indigo-500">
-                        Pošlji tudi obvestilo na Microsoft Teams
-                    </label>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button @click="showBookingModal = false" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs border border-slate-700 transition">
-                        Prekliči
-                    </button>
-                    <button @click="confirmBooking" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-check"></i> Potrdi termin
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- MODAL: GUEST NAME -->
-        <div v-if="showGuestModal || needsGuestName" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-            <div class="bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-800 relative text-white">
-
-                <button v-if="!needsGuestName" @click="showGuestModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
-                <div class="text-center mb-5">
-                    <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-2 text-xl">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <h3 class="font-display font-bold text-xl text-white">Prijava kot gost</h3>
-                    <p class="text-xs text-slate-400 mt-1">Za nadaljevanje vpišite vaše ime in priimek.</p>
-                </div>
-
-                <div class="mb-2">
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Ime in priimek</label>
-                    <input id="guestNameInput" type="text" :value="guestName" @input="onGuestNameInput" @keyup.enter="confirmGuest" maxlength="40" autocomplete="name" placeholder="npr. Janez Novak" class="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    <p v-if="guestError" class="text-[11px] text-red-400 mt-1">{{ guestError }}</p>
-                </div>
-
-                <div class="flex items-center gap-3 mt-6">
-                    <button @click="cancelGuest" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs border border-slate-700 transition">
-                        {{ needsGuestName ? 'Odjava' : 'Prekliči' }}
-                    </button>
-                    <button @click="confirmGuest" :disabled="guestBusy" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white font-bold text-xs shadow transition flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Nadaljuj
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- MODAL: CANCEL BOOKING CONFIRMATION -->
-        <div v-if="showCancelModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-            <div class="bg-slate-900 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-800 text-center text-white">
-                
-                <div class="w-12 h-12 bg-red-950 text-red-400 rounded-full flex items-center justify-center mx-auto mb-3 text-xl border border-red-800">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-
-                <h3 class="font-display font-bold text-lg text-white">Preklic kave / termina</h3>
-                <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-                    Ali želite izbrisati kavo za 
-                    <strong class="text-white">{{ targetBookingToCancel?.courtId === 'aparat1' ? 'Aparat 1' : 'Aparat 2' }}</strong>
-                    dne <strong>{{ targetBookingToCancel?.date }}</strong> ob <strong>{{ targetBookingToCancel?.timeSlot }}</strong>?
-                </p>
-
-                <div class="flex items-center gap-3 mt-6">
-                    <button @click="showCancelModal = false" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition border border-slate-700">
-                        Obdrži
-                    </button>
-                    <button @click="confirmCancelBooking" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow transition">
-                        Da, izbriši
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- MODAL: PROFILE SETTINGS -->
-        <div v-if="showProfileModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-            <div class="bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-800 relative text-white">
-                
-                <button @click="showProfileModal = false" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
-                <h3 class="font-display font-bold text-xl text-white mb-4">Moj profil</h3>
-
-                <div class="space-y-4 text-xs">
-                    <div>
-                        <label class="block font-semibold text-slate-300 mb-1">Prikazano ime</label>
-                        <input type="text" :value="profileName" @input="onProfileNameInput" autocapitalize="words" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-
-                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1">
-                        <div class="text-slate-400">Način prijave:</div>
-                        <div class="font-mono text-slate-200 font-semibold break-all">
-                            {{ currentUser?.isAnonymous ? 'Anonimni uporabnik (Gost)' : (currentUser?.email || currentUser?.uid) }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex justify-end">
-                    <button @click="saveProfile" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow transition">
-                        Shrani spremembe
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- MODAL: CONFIRM DIALOG -->
-        <div v-if="confirmDialog.show" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-            <div class="bg-slate-900 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-800 text-center text-white">
-                <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 text-xl" :class="confirmDialog.danger ? 'bg-red-950 text-red-400 border border-red-800' : 'bg-emerald-950 text-emerald-400 border border-emerald-800'">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-                <h3 class="font-display font-bold text-lg text-white">{{ confirmDialog.title }}</h3>
-                <p class="text-xs text-slate-300 mt-2 leading-relaxed">{{ confirmDialog.text }}</p>
-                <div class="flex items-center gap-3 mt-6">
-                    <button @click="answerConfirm(false)" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition border border-slate-700">Prekliči</button>
-                    <button @click="answerConfirm(true)" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow transition">{{ confirmDialog.okLabel }}</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TOAST NOTIFICATIONS -->
-        <div v-if="toast.show" class="fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 z-50 sm:max-w-sm sm:w-full transition-all duration-300 transform">
-            <div :class="{
-                'bg-emerald-900 border-emerald-600 text-white': toast.type === 'success',
-                'bg-red-900 border-red-600 text-white': toast.type === 'error',
-                'bg-slate-800 border-slate-700 text-white': toast.type === 'info'
-            }" class="p-4 rounded-2xl shadow-2xl border flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 text-xs sm:text-sm">
-                    <i :class="{
-                        'fa-circle-check text-emerald-400': toast.type === 'success',
-                        'fa-circle-xmark text-red-400': toast.type === 'error',
-                        'fa-circle-info text-indigo-400': toast.type === 'info'
-                    }" class="fa-solid text-lg flex-shrink-0"></i>
-                    <div>
-                        <strong class="block font-bold">{{ toast.title }}</strong>
-                        <span class="text-slate-300 text-xs">{{ toast.message }}</span>
-                    </div>
-                </div>
-                <button @click="toast.show = false" class="text-slate-400 hover:text-white text-sm">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- APPLICATION SCRIPTS (Vue 3 ESM + Firebase 11.6.1) -->
-    <script type="module">
-        import { createApp, ref, computed, onMounted, watch, nextTick } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.prod.js';
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import {
-            getAuth,
-            GoogleAuthProvider,
-            signInWithPopup,
-            signInWithRedirect,
-            signInAnonymously,
-            getRedirectResult,
-            signOut,
-            onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import {
-            getFirestore,
-            doc,
-            collection,
-            onSnapshot,
-            getDocs,
-            getDoc,
-            query,
-            where,
-            writeBatch,
-            setDoc,
-            deleteDoc,
-            runTransaction,
-            serverTimestamp,
-            increment,
-            arrayUnion
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const ADMIN_EMAIL = 'robi.filipsek@gmail.com';
-
-        // ===== FIREBASE CONFIGURATION (kava-inel) =====
-        const firebaseConfig = {
-            apiKey: "AIzaSyDbRouSg-8ANONlm7bmTh6BSDSx6nf2sxQ",
-            authDomain: "kava-inel.firebaseapp.com",
-            projectId: "kava-inel",
-            storageBucket: "kava-inel.firebasestorage.app",
-            messagingSenderId: "675983563038",
-            appId: "1:675983563038:web:f16fe25249691cfd54110f"
-        };
-        const configMissing = firebaseConfig.apiKey.startsWith('VSTAVI');
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        const DEFAULT_TEAM = ["Filipšek", "Fidler", "Pirnat", "Oprešnik", "Govedić", "Fendre", "Šetina", "Vrtačnik", "Gračner", "Rihter"];
-
-        function getTodayString() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        function getWeekBounds(dateStr) {
-            const d = new Date(dateStr + 'T00:00:00');
-            const day = d.getDay();
-            const diffToMon = (day === 0 ? -6 : 1 - day);
-            const mon = new Date(d);
-            mon.setDate(d.getDate() + diffToMon);
-            const sun = new Date(mon);
-            sun.setDate(mon.getDate() + 6);
-
-            const format = (dateObj) => {
-                const y = dateObj.getFullYear();
-                const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-                const da = String(dateObj.getDate()).padStart(2, '0');
-                return `${y}-${m}-${da}`;
-            };
-
-            return { start: format(mon), end: format(sun) };
-        }
-
-        function formatDate(d) {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const da = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${da}`;
-        }
-
-        function addDaysStr(dateStr, n) {
-            const d = new Date(dateStr + 'T00:00:00');
-            d.setDate(d.getDate() + n);
-            return formatDate(d);
-        }
-
-        const pad2 = (n) => String(n).padStart(2, '0');
-
-        const safeStore = (store) => ({
-            get(key) { try { return window[store].getItem(key); } catch (e) { return null; } },
-            set(key, value) { try { window[store].setItem(key, value); } catch (e) { } },
-            remove(key) { try { window[store].removeItem(key); } catch (e) { } }
-        });
-        const ls = safeStore('localStorage');
-        const ss = safeStore('sessionStorage');
-
-        const NAME_MIN_LETTERS = 3;
-        const capitalizeName = (value) => (value || '').replace(/(^|[\s\-'’])(\p{L})/gu, (m, sep, ch) => sep + ch.toUpperCase());
-
-        const hasValidGuestName = (name) => {
-            const t = (name || '').trim().replace(/\s+/g, ' ');
-            const parts = t.split(' ').filter(Boolean);
-            return parts.length >= 2 && parts.every(p =>
-                /^\p{Lu}[\p{L}'’-]*$/u.test(p) &&
-                p.replace(/[^\p{L}]/gu, '').length >= NAME_MIN_LETTERS
-            );
-        };
-        const GUEST_NAME_HINT = `Vpišite ime in priimek: vsaj ${NAME_MIN_LETTERS} črke za ime in ${NAME_MIN_LETTERS} črke za priimek.`;
-
-        const COURTS = [
-            { id: 'aparat1', n: 1, name: 'Kavni aparat 1 (Kuhinja)' },
-            { id: 'aparat2', n: 2, name: 'Kavni aparat 2 (Pisarna)' }
-        ];
-
-        const legendItems = [
-            { key: 'free', label: 'Prosto', cls: 'bg-emerald-950 border-emerald-600/40 text-emerald-400' },
-            { key: 'mine', label: 'Moja kava', cls: 'bg-amber-950 border-amber-600/60 text-amber-300' },
-            { key: 'busy', label: 'Zasedeno', cls: 'bg-slate-900 border-slate-700 text-slate-300' },
-            { key: 'past', label: 'Potekel / Zaprt', cls: 'bg-slate-950 border-slate-800 text-slate-500' }
-        ];
-        const legendCls = {
-            ...Object.fromEntries(legendItems.map(i => [i.key, i.cls])),
-            closed: 'bg-slate-950 border-slate-800 text-slate-500'
-        };
-
-        const baseTabs = [
-            { id: 'schedule', icon: 'fa-solid fa-calendar-days', short: 'Urnik', label: 'Urnik & Kave' },
-            { id: 'week', icon: 'fa-solid fa-table-cells', short: 'Teden', label: 'Tedenski pregled' },
-            { id: 'myBookings', icon: 'fa-solid fa-mug-hot', short: 'Moje kave', label: 'Moje kave' },
-            { id: 'info', icon: 'fa-solid fa-circle-info', short: 'Info', label: 'Pravila & Info' }
-        ];
-
-        const MONTHS_GEN = ['januar', 'februar', 'marec', 'april', 'maj', 'junij', 'julij', 'avgust', 'september', 'oktober', 'november', 'december'];
-
-        createApp({
-            setup() {
-                const activeTab = ref('schedule');
-                const selectedDate = ref(getTodayString());
-                const courtFilter = ref('all');
-
-                const currentUser = ref(null);
-                const userName = ref(ls.get('kava_user_name') || '');
-
-                const bookings = ref([]);
-
-                const showBookingModal = ref(false);
-                const targetCourt = ref(null);
-                const targetSlot = ref(null);
-                const bookingUserName = ref('');
-                const sendTeamsWithBooking = ref(false);
-
-                const showTeamsModal = ref(false);
-                const teamsInviteTime = ref('12:00');
-
-                const showCancelModal = ref(false);
-                const targetBookingToCancel = ref(null);
-
-                const showProfileModal = ref(false);
-
-                const showGuestModal = ref(false);
-                const needsGuestName = computed(() => !!currentUser.value && !!currentUser.value.isAnonymous && !hasValidGuestName(userName.value));
-                const guestName = ref('');
-                const guestError = ref('');
-                const guestBusy = ref(false);
-
-                const toast = ref({ show: false, title: '', message: '', type: 'success' });
-
-                let toastTimer = null;
-                function triggerToast(title, message, type = 'success') {
-                    clearTimeout(toastTimer);
-                    toast.value = { show: true, title, message, type };
-                    toastTimer = setTimeout(() => { toast.value.show = false; }, 4000);
-                }
-
-                const nowTick = ref(Date.now());
-                setInterval(() => { nowTick.value = Date.now(); }, 60000);
-
-                function getNowInfo() {
-                    const now = new Date(nowTick.value);
-                    return { todayStr: formatDate(now), hour: now.getHours() };
-                }
-
-                const canInstall = ref(false);
-                function checkInstallState() {
-                    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                    canInstall.value = !isStandalone && !window.__pwaInstalled && (!!window.__pwaPrompt || isIOS);
-                }
-
-                async function installApp() {
-                    const promptEvent = window.__pwaPrompt;
-                    if (promptEvent) {
-                        promptEvent.prompt();
-                        await promptEvent.userChoice;
-                        window.__pwaPrompt = null;
-                        checkInstallState();
-                    } else {
-                        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                        if (isIOS) {
-                            triggerToast('Namestitev', "Tapni gumb 'Deli' v Safariju in izberi 'Dodaj na domači zaslon'.", 'info');
-                        } else {
-                            triggerToast('Namestitev', "Aplikacijo dodaš prek menija brskalnika: 'Dodaj na domači zaslon'.", 'info');
-                        }
-                    }
-                }
-
-                window.addEventListener('pwa-state-changed', () => {
-                    checkInstallState();
-                    if (window.__pwaInstalled) triggerToast('Aplikacija nameščena', 'Aplikacija Kava INEL je bila uspešno nameščena!', 'success');
-                });
-                checkInstallState();
-
-                // ===== ROTACIJA KAV & NASTAVITVE =====
-                const DEFAULT_SETTINGS = {
-                    openHour: 7,
-                    closeHour: 17,
-                    dailyLimit: 3,
-                    weeklyLimit: 15,
-                    seasonStart: '',
-                    seasonEnd: '',
-                    notice: '',
-                    courts: { aparat1: { active: true }, aparat2: { active: true } },
-                    teamsWebhookUrl: "https://default3caae3ec12124a678d46afe2847c45.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/806a9b79b01b4219bc66ed4d449ffbfd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTxW5wgDGp3I9TXnX6fSdLQ2r7sBnumVkzROnPYLIig",
-                    teamsMsgInvite: "☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!"
-                };
-
-                const DEFAULT_ROTATION = {
-                    team: [...DEFAULT_TEAM],
-                    counts: {},
-                    absent: {},
-                    currentRoundPaid: {},
-                    dailyUnavailable: {},
-                    todayPayer: null,
-                    currentIndex: 0,
-                    lastRotationDate: getTodayString()
-                };
-
-                const settings = ref(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)));
-                const rotationState = ref(JSON.parse(JSON.stringify(DEFAULT_ROTATION)));
-                const rotationHistory = ref([]);
-
-                const newMemberName = ref('');
-
-                const closures = ref([]);
-                const presence = ref([]);
-                const userStats = ref([]);
-                const guests = ref([]);
-                const userSessions = ref([]);
-                const courts = COURTS;
-                const pad = pad2;
-                const courtName = (id) => (COURTS.find(c => c.id === id) || { name: id }).name;
-
-                const isAdmin = computed(() => !!currentUser.value && !currentUser.value.isAnonymous
-                    && (currentUser.value.email || '').toLowerCase() === ADMIN_EMAIL && currentUser.value.emailVerified !== false);
-
-                const tabs = computed(() => isAdmin.value ? [...baseTabs, { id: 'admin', icon: 'fa-solid fa-user-shield', short: 'Admin', label: 'Skrbnik' }] : baseTabs);
-                const DAILY_LIMIT = computed(() => settings.value.dailyLimit);
-                const WEEKLY_LIMIT = computed(() => settings.value.weeklyLimit);
-                const openHoursRange = computed(() => `${pad2(settings.value.openHour)}:00 - ${pad2(settings.value.closeHour)}:00`);
-
-                function courtIsActive(courtId, date) {
-                    const s = settings.value;
-                    if (s.courts && s.courts[courtId] && s.courts[courtId].active === false) return false;
-                    return true;
-                }
-
-                function closedInfo(courtId, date, hour) {
-                    if (!courtIsActive(courtId, date)) return { note: '' };
-                    const c = closures.value.find(x => (x.courtId === 'all' || x.courtId === courtId)
-                        && date >= x.date && date <= (x.dateTo || x.date) && hour >= x.fromHour && hour < x.toHour);
-                    return c ? { note: c.note || '' } : null;
-                }
-
-                const statusBanner = computed(() => {
-                    const s = settings.value, today = getNowInfo().todayStr;
-                    const inactive = COURTS.filter(c => !courtIsActive(c.id, today));
-                    if (!inactive.length && !s.notice) return null;
-                    let title = '';
-                    if (inactive.length === COURTS.length) title = 'Kavni aparati so trenutno neaktivni.';
-                    else if (inactive.length) title = inactive.map(c => c.name).join(', ') + ' je neaktiven.';
-                    else title = 'Obvestilo';
-                    return { title, text: s.notice };
-                });
-
-                // Rotacija kav izračuni
-                const rotationTeam = computed(() => rotationState.value.team || DEFAULT_TEAM);
-
-                function getPayerCount(memberName) {
-                    if (!memberName) return 0;
-                    return rotationState.value.counts[memberName] || 0;
-                }
-
-                function isPersonValid(name) {
-                    const r = rotationState.value;
-                    return !r.absent[name] && !r.dailyUnavailable[name];
-                }
-
-                const nextEligiblePerson = computed(() => {
-                    const team = rotationTeam.value;
-                    if (team.length === 0) return '-';
-                    const r = rotationState.value;
-                    let curIdx = r.currentIndex || 0;
-
-                    let candidates = [];
-                    for (let i = 0; i < team.length; i++) {
-                        let idx = (curIdx + i) % team.length;
-                        let name = team[idx];
-                        if (!isPersonValid(name)) continue;
-                        if (r.currentRoundPaid[name]) continue;
-                        candidates.push({ idx, order: i, count: r.counts[name] || 0, name });
-                    }
-                    if (candidates.length > 0) {
-                        candidates.sort((a, b) => (a.count !== b.count) ? a.count - b.count : a.order - b.order);
-                        return candidates[0].name;
-                    }
-                    for (let i = 0; i < team.length; i++) {
-                        let idx = (curIdx + i) % team.length;
-                        let name = team[idx];
-                        if (!isPersonValid(name)) continue;
-                        candidates.push({ idx, order: i, count: r.counts[name] || 0, name });
-                    }
-                    if (candidates.length > 0) {
-                        candidates.sort((a, b) => (a.count !== b.count) ? a.count - b.count : a.order - b.order);
-                        return candidates[0].name;
-                    }
-                    return '-';
-                });
-
-                function getMemberStatusText(memberName) {
-                    const r = rotationState.value;
-                    if (r.absent[memberName]) return '🌴 Dopust';
-                    if (r.dailyUnavailable[memberName]) return '❌ Danes ne more';
-                    if (r.todayPayer === memberName) return '⭐ Časti danes';
-                    if (nextEligiblePerson.value === memberName) return '👉 Na vrsti';
-                    if (r.currentRoundPaid[memberName]) return '✅ Že dal';
-                    return '⏳ Čaka na vrsto';
-                }
-
-                function getMemberCardClass(memberName) {
-                    const r = rotationState.value;
-                    if (r.absent[memberName]) return 'bg-slate-900/60 border-slate-800 opacity-50';
-                    if (r.dailyUnavailable[memberName]) return 'bg-red-950/20 border-red-800/40 opacity-70';
-                    if (r.todayPayer === memberName) return 'bg-amber-950/40 border-amber-500/60 ring-1 ring-amber-500/40';
-                    if (nextEligiblePerson.value === memberName) return 'bg-emerald-950/40 border-emerald-500/60 ring-1 ring-emerald-500/40';
-                    if (r.currentRoundPaid[memberName]) return 'bg-indigo-950/20 border-indigo-700/40';
-                    return 'bg-slate-900 border-slate-700';
-                }
-
-                async function saveRotationState() {
-                    try {
-                        await setDoc(doc(db, 'rotation', 'main'), rotationState.value, { merge: true });
-                    } catch (e) {
-                        console.error('Napaka pri shranjevanju rotacije:', e);
-                    }
-                }
-
-                function pushRotationSnapshot() {
-                    rotationHistory.value.push(JSON.parse(JSON.stringify(rotationState.value)));
-                    if (rotationHistory.value.length > 20) rotationHistory.value.shift();
-                }
-
-                async function undoLastAction() {
-                    if (rotationHistory.value.length === 0) {
-                        triggerToast('Razveljavitev', 'Ni prejšnjih dejanj za razveljavitev.', 'info');
-                        return;
-                    }
-                    const prev = rotationHistory.value.pop();
-                    rotationState.value = prev;
-                    await saveRotationState();
-                    triggerToast('Razveljavljeno', 'Prejšnje stanje rotacije je bilo obnovljeno.', 'success');
-                }
-
-                async function checkRoundCompletion() {
-                    const r = rotationState.value;
-                    const available = r.team.filter(m => isPersonValid(m));
-                    if (available.length > 0 && available.every(m => r.currentRoundPaid[m])) {
-                        r.team.forEach(m => { r.currentRoundPaid[m] = false; });
-                        r.team.forEach(m => {
-                            if (r.absent[m]) r.counts[m] = (r.counts[m] || 0) + 1;
-                        });
-                    }
-                }
-
-                async function confirmCoffeeRound() {
-                    const payer = rotationState.value.todayPayer || nextEligiblePerson.value;
-                    if (!payer || payer === '-') {
-                        triggerToast('Opozorilo', 'Trenutno ni dostopnih sodelavcev za kavo.', 'error');
-                        return;
-                    }
-                    pushRotationSnapshot();
-                    const r = rotationState.value;
-                    r.counts[payer] = (r.counts[payer] || 0) + 1;
-                    r.currentRoundPaid[payer] = true;
-                    r.todayPayer = payer;
-                    r.dailyUnavailable[payer] = false;
-
-                    await checkRoundCompletion();
-                    await saveRotationState();
-                    triggerToast('Runda potrjena!', `${payer} je počastil kavo.`, 'success');
-                }
-
-                async function cantGiveCoffeeToday() {
-                    const person = nextEligiblePerson.value;
-                    if (!person || person === '-') return;
-                    pushRotationSnapshot();
-                    rotationState.value.dailyUnavailable[person] = true;
-                    rotationState.value.currentRoundPaid[person] = false;
-                    await checkRoundCompletion();
-                    await saveRotationState();
-                    triggerToast('Zabeleženo', `${person} danes ne more dati za kavo. Na vrsti je naslednji.`, 'info');
-                }
-
-                async function sponsorCoffeeOut() {
-                    const name = userName.value || 'Sodelavec';
-                    pushRotationSnapshot();
-                    const r = rotationState.value;
-                    r.counts[name] = (r.counts[name] || 0) + 1;
-                    r.currentRoundPaid[name] = true;
-                    r.todayPayer = name;
-                    r.dailyUnavailable[name] = false;
-
-                    await checkRoundCompletion();
-                    await saveRotationState();
-                    triggerToast('Hvala za častitko!', `${name} časti kavo izven vrstnega reda.`, 'success');
-                }
-
-                async function toggleMemberAbsence(memberName) {
-                    pushRotationSnapshot();
-                    const r = rotationState.value;
-                    r.dailyUnavailable[memberName] = !r.dailyUnavailable[memberName];
-                    await checkRoundCompletion();
-                    await saveRotationState();
-                }
-
-                // Teams Webhook pošiljanje
-                async function sendTeamsNotification(message) {
-                    const url = settings.value.teamsWebhookUrl;
-                    if (!url || !url.trim()) return false;
-                    const payload = {
-                        "type": "message",
-                        "attachments": [{
-                            "contentType": "application/vnd.microsoft.card.adaptive",
-                            "contentUrl": null,
-                            "content": {
-                                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                                "type": "AdaptiveCard",
-                                "version": "1.2",
-                                "body": [{ "type": "TextBlock", "text": message, "wrap": true }]
-                            }
-                        }]
-                    };
-                    try {
-                        await fetch(url, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        return true;
-                    } catch (e) {
-                        console.error('Teams obvestilo napaka:', e);
-                        return false;
-                    }
-                }
-
-                function openTeamsInviteModal() {
-                    teamsInviteTime.value = '12:00';
-                    showTeamsModal.value = true;
-                }
-
-                async function sendTeamsInvite() {
-                    const timeStr = (teamsInviteTime.value || '12:00').trim();
-                    const inviter = userName.value || 'Sodelavec';
-                    const template = settings.value.teamsMsgInvite || "☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!";
-                    const msg = template.replace(/{ime}/g, inviter).replace(/{cas}/g, timeStr);
-
-                    const sent = await sendTeamsNotification(msg);
-                    showTeamsModal.value = false;
-                    if (sent) triggerToast('Poslano na Teams!', `Obvestilo za ob ${timeStr} je bilo uspešno poslano.`, 'success');
-                    else triggerToast('Napaka', 'Pošiljanje na Teams ni uspelo. Preverite Webhook URL v nastavitvah skrbnika.', 'error');
-                }
-
-                async function sendTestTeamsMessage() {
-                    const sent = await sendTeamsNotification('☕ Testno obvestilo iz aplikacije Odmor za kavo INEL!');
-                    if (sent) triggerToast('Test uspešen!', 'Testno obvestilo je bilo poslano v Teams.', 'success');
-                    else triggerToast('Test ni uspel', 'Preverite Webhook URL.', 'error');
-                }
-
-                let unsubExtra = [];
-                function stopExtraListeners() {
-                    unsubExtra.forEach(u => u());
-                    unsubExtra = [];
-                }
-
-                function startExtraListeners() {
-                    unsubExtra.forEach(u => u());
-                    unsubExtra = [];
-                    unsubExtra.push(onSnapshot(doc(db, 'settings', 'main'), (snap) => {
-                        const d = snap.exists() ? snap.data() : {};
-                        settings.value = {
-                            ...DEFAULT_SETTINGS, ...d,
-                            courts: { ...DEFAULT_SETTINGS.courts, ...(d.courts || {}) }
-                        };
-                        if (activeTab.value !== 'admin') loadSettingsForm();
-                    }));
-
-                    unsubExtra.push(onSnapshot(doc(db, 'rotation', 'main'), (snap) => {
-                        if (snap.exists()) {
-                            const d = snap.data();
-                            rotationState.value = {
-                                ...DEFAULT_ROTATION, ...d,
-                                team: d.team && d.team.length ? d.team : [...DEFAULT_TEAM],
-                                counts: d.counts || {},
-                                absent: d.absent || {},
-                                currentRoundPaid: d.currentRoundPaid || {},
-                                dailyUnavailable: d.dailyUnavailable || {}
-                            };
-                        }
-                    }));
-
-                    unsubExtra.push(onSnapshot(collection(db, 'closures'), (snap) => {
-                        const l = []; snap.forEach(d => l.push({ id: d.id, ...d.data() })); closures.value = l;
-                    }));
-
-                    if (isAdmin.value) {
-                        unsubExtra.push(onSnapshot(collection(db, 'presence'), (snap) => {
-                            const l = []; snap.forEach(d => l.push({ id: d.id, ...d.data() })); presence.value = l;
-                        }));
-                        unsubExtra.push(onSnapshot(collection(db, 'userStats'), (snap) => {
-                            const l = []; snap.forEach(d => l.push({ id: d.id, ...d.data() })); userStats.value = l;
-                        }));
-                        unsubExtra.push(onSnapshot(collection(db, 'guests'), (snap) => {
-                            const l = []; snap.forEach(d => l.push({ id: d.id, ...d.data() })); guests.value = l;
-                        }));
-                        unsubExtra.push(onSnapshot(collection(db, 'userSessions'), (snap) => {
-                            const l = []; snap.forEach(d => l.push({ id: d.id, ...d.data() })); userSessions.value = l;
-                        }));
-                    }
-                }
-
-                async function sendPresence() {
-                    const u = currentUser.value;
-                    if (!u) return;
-                    try {
-                        await setDoc(doc(db, 'presence', u.uid), {
-                            uid: u.uid, name: userName.value || u.displayName || '', email: u.email || '',
-                            isAnonymous: !!u.isAnonymous, online: true, lastSeen: serverTimestamp()
-                        }, { merge: true });
-                        await setDoc(doc(db, 'userStats', u.uid), { lastSeenAt: serverTimestamp(), name: userName.value || u.displayName || '', email: u.email || '', isAnonymous: !!u.isAnonymous }, { merge: true });
-                    } catch (e) { }
-                }
-                setInterval(() => { if (document.visibilityState === 'visible') sendPresence(); }, 60000);
-
-                const presenceList = computed(() => {
-                    const now = nowTick.value;
-                    return presence.value.map(u => {
-                        const ms = u.lastSeen && u.lastSeen.toMillis ? u.lastSeen.toMillis() : 0;
-                        return { ...u, lastSeenMs: ms, online: u.online !== false && now - ms <= 180000 };
-                    }).sort((a, b) => (b.online - a.online) || (b.lastSeenMs - a.lastSeenMs));
-                });
-                const onlineCount = computed(() => presenceList.value.filter(u => u.online).length);
-
-                const userDirectory = computed(() => {
-                    const map = new Map();
-                    const merge = (u) => {
-                        if (!u || !u.id) return;
-                        const old = map.get(u.id) || { id: u.id };
-                        map.set(u.id, { ...old, ...u });
-                    };
-                    userStats.value.forEach(u => merge({ id: u.id, ...u }));
-                    guests.value.forEach(u => merge({ id: u.id, ...u, isAnonymous: true, name: u.name }));
-                    presenceList.value.forEach(u => merge(u));
-                    return Array.from(map.values());
-                });
-
-                // Skrbnik - Formularji & Akcije
-                const settingsForm = ref({ courts: { aparat1: true, aparat2: true }, openHour: 7, closeHour: 17, dailyLimit: 3, weeklyLimit: 15, notice: '', teamsWebhookUrl: '', teamsMsgInvite: '' });
-                function loadSettingsForm() {
-                    const s = settings.value;
-                    settingsForm.value = {
-                        courts: { aparat1: s.courts?.aparat1?.active !== false, aparat2: s.courts?.aparat2?.active !== false },
-                        openHour: s.openHour, closeHour: s.closeHour, dailyLimit: s.dailyLimit, weeklyLimit: s.weeklyLimit,
-                        notice: s.notice || '',
-                        teamsWebhookUrl: s.teamsWebhookUrl || '',
-                        teamsMsgInvite: s.teamsMsgInvite || ''
-                    };
-                }
-                watch(activeTab, (t) => { if (t === 'admin') loadSettingsForm(); });
-
-                async function saveSettings() {
-                    const f = settingsForm.value;
-                    try {
-                        await setDoc(doc(db, 'settings', 'main'), {
-                            openHour: f.openHour, closeHour: f.closeHour, dailyLimit: f.dailyLimit, weeklyLimit: f.weeklyLimit,
-                            notice: (f.notice || '').trim(),
-                            teamsWebhookUrl: (f.teamsWebhookUrl || '').trim(),
-                            teamsMsgInvite: (f.teamsMsgInvite || '').trim(),
-                            courts: { aparat1: { active: !!f.courts.aparat1 }, aparat2: { active: !!f.courts.aparat2 } }
-                        });
-                        triggerToast('Shranjeno', 'Nastavitve so posodobljene.', 'success');
-                    } catch (e) {
-                        triggerToast('Napaka', 'Shranjevanje ni uspelo.', 'error');
-                    }
-                }
-
-                async function addNewMember() {
-                    const name = (newMemberName.value || '').trim();
-                    if (!name) return;
-                    pushRotationSnapshot();
-                    const r = rotationState.value;
-                    if (!r.team.includes(name)) r.team.push(name);
-                    r.counts[name] = 0;
-                    r.absent[name] = false;
-                    r.currentRoundPaid[name] = false;
-                    r.dailyUnavailable[name] = false;
-                    newMemberName.value = '';
-                    await saveRotationState();
-                    triggerToast('Sodelavec dodan', `${name} je dodan v ekipo.`, 'success');
-                }
-
-                async function removeMember(memberName) {
-                    pushRotationSnapshot();
-                    const r = rotationState.value;
-                    r.team = r.team.filter(m => m !== memberName);
-                    delete r.counts[memberName];
-                    delete r.absent[memberName];
-                    delete r.currentRoundPaid[memberName];
-                    delete r.dailyUnavailable[memberName];
-                    if (r.todayPayer === memberName) r.todayPayer = null;
-                    await saveRotationState();
-                    triggerToast('Odstranjeno', `${memberName} je bil odstranjen.`, 'info');
-                }
-
-                async function adjustMemberCount(memberName, amount) {
-                    pushRotationSnapshot();
-                    const r = rotationState.value;
-                    r.counts[memberName] = Math.max(0, (r.counts[memberName] || 0) + amount);
-                    await saveRotationState();
-                }
-
-                async function setAsNextPerson(idx) {
-                    pushRotationSnapshot();
-                    rotationState.value.currentIndex = idx;
-                    await saveRotationState();
-                    triggerToast('Posodobljeno', 'Spremenili ste naslednjega na vrsti.', 'success');
-                }
-
-                const closureForm = ref({ courtId: 'all', date: getTodayString(), dateTo: '', fromHour: 7, toHour: 17, note: '' });
-                const sortedClosures = computed(() => [...closures.value].sort((a, b) => a.date.localeCompare(b.date)));
-                async function addClosure() {
-                    const f = closureForm.value;
-                    try {
-                        await setDoc(doc(collection(db, 'closures')), {
-                            courtId: f.courtId, date: f.date, dateTo: f.dateTo || '', fromHour: f.fromHour, toHour: f.toHour,
-                            note: (f.note || '').trim(), createdAt: new Date().toISOString()
-                        });
-                        triggerToast('Zaprtje dodano', 'Termini aparata so sedaj prikazani kot Zaprt.', 'success');
-                    } catch (e) { triggerToast('Napaka', 'Dodajanje ni uspelo.', 'error'); }
-                }
-                async function removeClosure(id) {
-                    try { await deleteDoc(doc(db, 'closures', id)); triggerToast('Zaprtje odstranjeno', '', 'info'); }
-                    catch (e) { triggerToast('Napaka', 'Brisanje ni uspelo.', 'error'); }
-                }
-
-                const manualForm = ref({ courtId: 'aparat1', date: getTodayString(), hour: 10, name: '' });
-                async function addManualBooking() {
-                    const f = manualForm.value;
-                    const id = `${f.courtId}_${f.date}_${f.hour}`;
-                    try {
-                        await setDoc(doc(db, 'bookings', id), {
-                            courtId: f.courtId, date: f.date, startHour: f.hour, timeSlot: `${pad2(f.hour)}:00 - ${pad2(f.hour + 1)}:00`,
-                            userId: currentUser.value.uid, userName: (f.name || '').trim() || 'Kava z ekipo', createdAt: new Date().toISOString()
-                        });
-                        triggerToast('Kava dodana', id, 'success');
-                    } catch (e) { triggerToast('Napaka', 'Dodajanje ni uspelo.', 'error'); }
-                }
-
-                const adminDate = ref('');
-                const adminSearch = ref('');
-                const adminBookings = computed(() => {
-                    const q = adminSearch.value.trim().toLowerCase();
-                    return bookings.value
-                        .filter(b => (!adminDate.value || b.date === adminDate.value)
-                            && (!q || (b.userName || '').toLowerCase().includes(q)))
-                        .sort((a, b) => (a.date + pad2(a.startHour)).localeCompare(b.date + pad2(b.startHour)));
-                });
-
-                const formattedSelectedDate = computed(() => {
-                    if (!selectedDate.value) return '';
-                    const d = new Date(selectedDate.value + 'T00:00:00');
-                    const days = ['Nedelja', 'Ponedeljek', 'Torek', 'Sreda', 'Četrtek', 'Petek', 'Sobota'];
-                    return `${days[d.getDay()]}, ${d.getDate()}. ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()}`;
-                });
-
-                const userFutureBookings = computed(() => {
-                    if (!currentUser.value) return [];
-                    const { todayStr, hour: nowHour } = getNowInfo();
-                    return bookings.value
-                        .filter(b => b.userId === currentUser.value.uid
-                            && (b.date > todayStr || (b.date === todayStr && Number(b.startHour) > nowHour)))
-                        .sort((a, b) => (a.date + a.timeSlot).localeCompare(b.date + b.timeSlot));
-                });
-
-                const bookingMap = computed(() => {
-                    const m = new Map();
-                    for (const b of bookings.value) m.set(`${b.courtId}_${b.date}_${b.startHour}`, b);
-                    return m;
-                });
-
-                const visibleCourts = computed(() =>
-                    courtFilter.value === 'all' ? COURTS : COURTS.filter(c => c.id === courtFilter.value)
-                );
-
-                function getTimeSlots(courtId) {
-                    const slots = [];
-                    const { todayStr, hour: currentHour } = getNowInfo();
-
-                    for (let hour = settings.value.openHour; hour < settings.value.closeHour; hour++) {
-                        const slotLabel = `${pad2(hour)}:00 - ${pad2(hour + 1)}:00`;
-                        const booking = bookingMap.value.get(`${courtId}_${selectedDate.value}_${hour}`);
-                        const isOccupied = !!booking;
-                        const isUserBooking = isOccupied && !!currentUser.value && booking.userId === currentUser.value.uid;
-
-                        let isPast = false;
-                        if (selectedDate.value < todayStr) isPast = true;
-                        else if (selectedDate.value === todayStr && hour <= currentHour) isPast = true;
-
-                        const ci = closedInfo(courtId, selectedDate.value, hour);
-                        slots.push({
-                            isClosed: !isOccupied && !!ci,
-                            closedNote: ci ? ci.note : '',
-                            startHour: hour,
-                            label: slotLabel,
-                            isOccupied,
-                            isUserBooking,
-                            isPast,
-                            booking
-                        });
-                    }
-                    return slots;
-                }
-
-                const weekAnchor = ref(getTodayString());
-                const weekBounds = computed(() => getWeekBounds(weekAnchor.value));
-                const isCurrentWeek = computed(() => weekBounds.value.start === getWeekBounds(getNowInfo().todayStr).start);
-
-                const weekRangeLabel = computed(() => {
-                    const s = new Date(weekBounds.value.start + 'T00:00:00');
-                    const e = new Date(weekBounds.value.end + 'T00:00:00');
-                    if (s.getMonth() === e.getMonth()) {
-                        return `${s.getDate()}. – ${e.getDate()}. ${MONTHS_GEN[e.getMonth()]} ${e.getFullYear()}`;
-                    }
-                    return `${s.getDate()}. ${MONTHS_GEN[s.getMonth()]} – ${e.getDate()}. ${MONTHS_GEN[e.getMonth()]} ${e.getFullYear()}`;
-                });
-
-                const weekDays = computed(() => {
-                    const { todayStr, hour: curHour } = getNowInfo();
-                    const uid = currentUser.value ? currentUser.value.uid : null;
-                    const dows = ['Pon', 'Tor', 'Sre', 'Čet', 'Pet', 'Sob', 'Ned'];
-                    const days = [];
-
-                    for (let i = 0; i < 7; i++) {
-                        const date = addDaysStr(weekBounds.value.start, i);
-                        const [, monthNum, dayNum] = date.split('-').map(Number);
-
-                        const courts = COURTS.map(c => {
-                            let free = 0;
-                            const cells = [];
-                            for (let hour = settings.value.openHour; hour < settings.value.closeHour; hour++) {
-                                const b = bookingMap.value.get(`${c.id}_${date}_${hour}`);
-                                const isPast = date < todayStr || (date === todayStr && hour <= curHour);
-                                let status;
-                                if (b && uid && b.userId === uid) status = 'mine';
-                                else if (b) status = 'busy';
-                                else if (closedInfo(c.id, date, hour)) status = 'closed';
-                                else if (isPast) status = 'past';
-                                else { status = 'free'; free++; }
-
-                                cells.push({ hour, status, title: `${pad2(hour)}:00 – ${pad2(hour + 1)}:00` });
-                            }
-                            return { id: c.id, n: c.n, name: c.name, cells, free };
-                        });
-
-                        days.push({
-                            date, dow: dows[i], dayNum, monthNum, isToday: date === todayStr,
-                            courts, totalFree: courts.reduce((sum, c) => sum + c.free, 0)
-                        });
-                    }
-                    return days;
-                });
-
-                function changeWeek(n) { weekAnchor.value = addDaysStr(weekAnchor.value, n * 7); }
-                function goThisWeek() { weekAnchor.value = getTodayString(); }
-
-                function openDay(date, courtId) {
-                    selectedDate.value = date;
-                    courtFilter.value = courtId || 'all';
-                    activeTab.value = 'schedule';
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-
-                function getSlotBgClass(slot) {
-                    if (slot.isUserBooking) return 'bg-amber-950/40 border border-amber-600/50 text-white';
-                    if (slot.isOccupied) return 'bg-slate-900 border border-slate-700 text-slate-300';
-                    if (slot.isClosed || slot.isPast) return 'bg-slate-950 border border-slate-800 opacity-50';
-                    return 'bg-emerald-950/20 hover:bg-emerald-900/40 border border-emerald-600/30 text-slate-200 cursor-pointer';
-                }
-
-                function changeDate(days) { selectedDate.value = addDaysStr(selectedDate.value, days); }
-                function setToday() { selectedDate.value = getTodayString(); }
-
-                watch(selectedDate, (v) => { if (!v) selectedDate.value = getTodayString(); });
-
-                const fmtDateText = (iso) => { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
-                const dateText = ref(fmtDateText(selectedDate.value));
-                watch(selectedDate, (v) => { if (v) dateText.value = fmtDateText(v); });
-
-                function parseDateText(t) {
-                    t = (t || '').trim();
-                    let m = t.match(/^(\d{1,2})\D+(\d{1,2})\D+(\d{4})$/) \vert{}\vert{} t.match(/^(\d{2})(\d{2})(\d{4})$/);
-                    if (!m) return null;
-                    const d = +m[1], mo = +m[2], y = +m[3];
-                    const dt = new Date(y, mo - 1, d);
-                    if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
-                    return formatDate(dt);
-                }
-                function onDateTextInput() {
-                    const iso = parseDateText(dateText.value);
-                    if (iso && iso !== selectedDate.value) selectedDate.value = iso;
-                }
-                function commitDateText() {
-                    const iso = parseDateText(dateText.value);
-                    if (iso) selectedDate.value = iso;
-                    dateText.value = fmtDateText(selectedDate.value);
-                }
-                function openDatePicker() {
-                    const el = document.getElementById('nativeDate');
-                    if (!el) return;
-                    try { el.showPicker ? el.showPicker() : el.click(); } catch (e) { el.click(); }
-                }
-
-                const authReady = ref(false);
-                const bookingsLoaded = ref(false);
-                let unsubBookings = null;
-
-                function stopBookingsListener() {
-                    if (unsubBookings) unsubBookings();
-                    unsubBookings = null;
-                    bookings.value = [];
-                    bookingsLoaded.value = false;
-                    stopExtraListeners();
-                }
-
-                function startBookingsListener() {
-                    stopBookingsListener();
-                    unsubBookings = onSnapshot(collection(db, 'bookings'), (snapshot) => {
-                        const loaded = [];
-                        snapshot.forEach((d) => loaded.push({ id: d.id, ...d.data() }));
-                        bookings.value = loaded;
-                        bookingsLoaded.value = true;
-                    }, (err) => {
-                        triggerToast('Napaka', 'Rezervacij ni mogoče naložiti.', 'error');
-                    });
-                    startExtraListeners();
-                }
-
-                onMounted(() => {
-                    getRedirectResult(auth).catch((e) => console.error(e));
-
-                    onAuthStateChanged(auth, async (user) => {
-                        currentUser.value = user;
-                        authReady.value = true;
-                        if (user) {
-                            if (!userName.value && !user.isAnonymous) {
-                                userName.value = user.displayName || (user.email ? user.email.split('@')[0] : 'Uporabnik');
-                            }
-                            if (user.isAnonymous && !hasValidGuestName(userName.value)) {
-                                openGuestModal();
-                            }
-                            startBookingsListener();
-                            sendPresence();
-                        } else {
-                            stopBookingsListener();
-                        }
-                    });
-                });
-
-                function promptBookSlot(courtId, slot) {
-                    if (!currentUser.value) { loginWithGoogle(); return; }
-                    if (needsGuestName.value) { openGuestModal(); return; }
-
-                    targetCourt.value = courtId;
-                    targetSlot.value = slot;
-                    bookingUserName.value = userName.value || 'Gost';
-                    sendTeamsWithBooking.value = false;
-                    showBookingModal.value = true;
-                }
-
-                async function confirmBooking() {
-                    if (!currentUser.value || !targetSlot.value) return;
-
-                    const courtId = targetCourt.value;
-                    const bookingDate = selectedDate.value;
-                    const slot = targetSlot.value;
-                    const hour = slot.startHour;
-                    const docId = `${courtId}_${bookingDate}_${hour}`;
-
-                    try {
-                        const docRef = doc(db, 'bookings', docId);
-                        await setDoc(docRef, {
-                            courtId, date: bookingDate, startHour: hour, timeSlot: slot.label,
-                            userId: currentUser.value.uid, userName: (bookingUserName.value || '').trim().slice(0, 80) || 'Gost',
-                            createdAt: new Date().toISOString()
-                        });
-
-                        if (sendTeamsWithBooking.value) {
-                            const machineName = courtId === 'aparat1' ? 'Aparat 1 (Kuhinja)' : 'Aparat 2 (Pisarna)';
-                            await sendTeamsNotification(`☕ **${bookingUserName.value}** je rezerviral odmora za kavo na **${machineName}** dne **${bookingDate}** ob **${slot.label}**.`);
-                        }
-
-                        triggerToast('Uspešna rezervacija!', `Kava rezervirana ob ${slot.label}`, 'success');
-                        showBookingModal.value = false;
-                    } catch (e) {
-                        triggerToast('Napaka', 'Rezervacija ni uspela.', 'error');
-                        showBookingModal.value = false;
-                    }
-                }
-
-                function promptCancelBooking(booking) {
-                    targetBookingToCancel.value = booking;
-                    showCancelModal.value = true;
-                }
-
-                async function confirmCancelBooking() {
-                    if (!targetBookingToCancel.value) return;
-                    try {
-                        await deleteDoc(doc(db, 'bookings', targetBookingToCancel.value.id));
-                        triggerToast('Preklicano', 'Kava je bila izbrisana.', 'info');
-                        showCancelModal.value = false;
-                        targetBookingToCancel.value = null;
-                    } catch (e) {
-                        triggerToast('Napaka', 'Preklic ni uspel.', 'error');
-                    }
-                }
-
-                async function loginWithGoogle() {
-                    const provider = new GoogleAuthProvider();
-                    provider.setCustomParameters({ prompt: 'select_account' });
-                    try {
-                        await signInWithPopup(auth, provider);
-                        triggerToast('Prijavljeni', 'Uspešna prijava z Google računom.', 'success');
-                    } catch (e) {
-                        if (e.code === 'auth/popup-blocked') {
-                            await signInWithRedirect(auth, provider);
-                            return;
-                        }
-                        triggerToast('Prijava ni uspela', 'Poskusite znova.', 'error');
-                    }
-                }
-
-                function openGuestModal() {
-                    guestName.value = userName.value && userName.value !== 'Gost' ? userName.value : '';
-                    guestError.value = '';
-                    showGuestModal.value = true;
-                    nextTick(() => {
-                        const el = document.getElementById('guestNameInput');
-                        if (el) el.focus();
-                    });
-                }
-
-                async function confirmGuest() {
-                    const name = capitalizeName((guestName.value || '').trim().replace(/\s+/g, ' '));
-                    if (!hasValidGuestName(name)) {
-                        guestError.value = GUEST_NAME_HINT;
-                        return;
-                    }
-                    guestError.value = '';
-                    guestBusy.value = true;
-
-                    try {
-                        userName.value = name;
-                        ls.set('kava_user_name', name);
-
-                        let user = auth.currentUser;
-                        if (!user) {
-                            const cred = await signInAnonymously(auth);
-                            user = cred.user;
-                        }
-
-                        showGuestModal.value = false;
-                        triggerToast('Prijavljeni kot gost', `Pozdravljeni, ${name}!`, 'success');
-                    } catch (e) {
-                        console.error(e);
-                    } finally {
-                        guestBusy.value = false;
-                    }
-                }
-
-                async function cancelGuest() {
-                    if (needsGuestName.value) {
-                        showGuestModal.value = false;
-                        await logout();
-                    } else {
-                        showGuestModal.value = false;
-                    }
-                }
-
-                async function logout() {
-                    await signOut(auth);
-                    triggerToast('Odjavljeni', 'Uspešno ste se odjavili.', 'info');
-                }
-
-                const profileName = ref('');
-                function autoCapitalizeInput(e, target) {
-                    const el = e.target;
-                    const pos = el.selectionStart;
-                    const v = capitalizeName(el.value);
-                    if (v !== el.value) {
-                        el.value = v;
-                        try { el.setSelectionRange(pos, pos); } catch (err) { }
-                    }
-                    target.value = v;
-                }
-                function onGuestNameInput(e) { autoCapitalizeInput(e, guestName); }
-                function onProfileNameInput(e) {
-                    if (currentUser.value && currentUser.value.isAnonymous) autoCapitalizeInput(e, profileName);
-                    else profileName.value = e.target.value;
-                }
-
-                function openProfileModal() {
-                    profileName.value = userName.value || '';
-                    showProfileModal.value = true;
-                }
-
-                async function saveProfile() {
-                    let name = (profileName.value || '').trim();
-                    if (name) {
-                        userName.value = name;
-                        ls.set('kava_user_name', name);
-                        triggerToast('Spremembe shranjene', 'Ime je posodobljeno.', 'success');
-                    }
-                    showProfileModal.value = false;
-                }
-
-                const confirmDialog = ref({ show: false, title: '', text: '', okLabel: 'Potrdi', danger: true });
-                let confirmResolve = null;
-                function askConfirm(opts) {
-                    return new Promise((resolve) => {
-                        confirmResolve = resolve;
-                        confirmDialog.value = { show: true, title: '', text: '', okLabel: 'Potrdi', danger: true, ...opts };
-                    });
-                }
-                function answerConfirm(value) {
-                    confirmDialog.value.show = false;
-                    if (confirmResolve) { confirmResolve(value); confirmResolve = null; }
-                }
-
-                async function deleteUserTracking(user) {
-                    const ok = await askConfirm({ title: 'Izbrišem uporabnika?', text: `Uporabnik ${user.name || user.id} bo odstranjen.` });
-                    if (!ok) return;
-                    try {
-                        await deleteDoc(doc(db, 'userStats', user.id));
-                        triggerToast('Izbrisano', '', 'info');
-                    } catch (e) { }
-                }
-
-                async function deleteAllTracking() {
-                    const ok = await askConfirm({ title: 'Izbrišem vse uporabnike?', text: 'Vsi podatki o uporabnikih bodo izbrisani.' });
-                    if (!ok) return;
-                    try {
-                        const snap = await getDocs(collection(db, 'userStats'));
-                        const batch = writeBatch(db);
-                        snap.docs.forEach(d => batch.delete(d.ref));
-                        await batch.commit();
-                        triggerToast('Vsi uporabniki izbrisani', '', 'success');
-                    } catch (e) { }
-                }
-
-                return {
-                    isAdmin, courts, pad, courtName, settings, closures, statusBanner, courtIsActive,
-                    openHoursRange, settingsForm, saveSettings, closureForm, sortedClosures, addClosure, removeClosure,
-                    manualForm, addManualBooking, adminDate, adminSearch, adminBookings,
-                    presenceList, onlineCount, userDirectory, deleteUserTracking, deleteAllTracking,
-                    confirmDialog, answerConfirm,
-                    dateText, onDateTextInput, commitDateText, openDatePicker,
-                    activeTab, selectedDate, courtFilter, currentUser, userName, canInstall, installApp,
-                    authReady, bookingsLoaded, configMissing, DAILY_LIMIT, WEEKLY_LIMIT,
-                    showBookingModal, targetCourt, targetSlot, bookingUserName, sendTeamsWithBooking,
-                    showTeamsModal, teamsInviteTime, openTeamsInviteModal, sendTeamsInvite, sendTestTeamsMessage,
-                    showCancelModal, targetBookingToCancel, showProfileModal, toast, formattedSelectedDate,
-                    tabs, legendItems, legendCls, visibleCourts, weekDays, weekRangeLabel, isCurrentWeek,
-                    changeWeek, goThisWeek, openDay, userFutureBookings, getTimeSlots, getSlotBgClass,
-                    changeDate, setToday, promptBookSlot, confirmBooking, promptCancelBooking, confirmCancelBooking,
-                    loginWithGoogle, showGuestModal, needsGuestName, cancelGuest, guestName,
-                    onGuestNameInput, onProfileNameInput, guestError, guestBusy, openGuestModal, confirmGuest,
-                    logout, openProfileModal, saveProfile, profileName,
-                    // Rotation
-                    rotationState, rotationTeam, getPayerCount, nextEligiblePerson, getMemberStatusText, getMemberCardClass,
-                    confirmCoffeeRound, cantGiveCoffeeToday, sponsorCoffeeOut, toggleMemberAbsence, undoLastAction,
-                    newMemberName, addNewMember, removeMember, adjustMemberCount, setAsNextPerson, getTodayString
-                };
-            }
-        }).mount('#app');
-    </script>
+<body class="min-h-screen text-slate-800">
+<div id="app"></div>
+<div id="modal"></div>
+<div id="toast" class="fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 sm:max-w-sm z-[60]"></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,signInAnonymously,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import {getFirestore,doc,collection,onSnapshot,setDoc,deleteDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// ===== NASTAVITVE =====
+const ADMIN_EMAIL='robi.filipsek@gmail.com';
+const firebaseConfig={
+  apiKey:"AIzaSyDbRouSg-8ANONlm7bmTh6BSDSx6nf2sxQ",
+  authDomain:"kava-inel.firebaseapp.com",
+  projectId:"kava-inel",
+  storageBucket:"kava-inel.firebasestorage.app",
+  messagingSenderId:"675983563038",
+  appId:"1:675983563038:web:f16fe25249691cfd54110f"
+};
+const DEFAULT_TEAM=["Filipšek","Fidler","Pirnat","Oprešnik","Govedić","Fendre","Šetina","Vrtačnik","Gračner","Rihter"];
+const DEF={active:true,openHour:6,closeHour:18,dailyLimit:3,weeklyLimit:15,workDays:[1,2,3,4,5],notice:'',cols:'auto',inviteTime:'12:00',
+  webhook:"https://default3caae3ec12124a678d46afe2847c45.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/806a9b79b01b4219bc66ed4d449ffbfd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTxW5wgDGp3I9TXnX6fSdLQ2r7sBnumVkzROnPYLIig",
+  msgInvite:"☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!",msgRound:"☕ Danes časti **{ime}**.",notifyRound:false};
+
+const fb=initializeApp(firebaseConfig),auth=getAuth(fb),db=getFirestore(fb);
+const p=n=>String(n).padStart(2,'0');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const iso=d=>`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+const today=()=>iso(new Date());
+function weekB(){const d=new Date(),k=d.getDay(),m=new Date(d);m.setDate(d.getDate()+(k===0?-6:1-k));const s=new Date(m);s.setDate(m.getDate()+6);return[iso(m),iso(s)];}
+const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+
+// ===== IKONA / PWA =====
+const CUP=`<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><rect width='512' height='512' rx='112' fill='#0f291e'/><g transform='translate(256 256) scale(.95) translate(-286 -276)'><g fill='none' stroke-linecap='round'><path d='M214 172c-18-20 18-36 0-58M282 172c-18-20 18-36 0-58' stroke='#fff' stroke-width='20' opacity='.6'/><path d='M348 258h20a44 44 0 0 1 0 88h-28' stroke='#10b981' stroke-width='26'/><path d='M170 438h156' stroke='#fff' stroke-width='20'/></g><path d='M148 218h200v82a100 100 0 0 1-200 0z' fill='#34d399'/></g></svg>`;
+const ICON='data:image/svg+xml,'+encodeURIComponent(CUP);
+(function(){
+  const l=document.createElement('link');l.rel='icon';l.href=ICON;document.head.appendChild(l);
+  const img=new Image();
+  img.onload=()=>{try{
+    const png=s=>{const c=document.createElement('canvas');c.width=c.height=s;c.getContext('2d').drawImage(img,0,0,s,s);return c.toDataURL('image/png')};
+    const a=document.createElement('link');a.rel='apple-touch-icon';a.href=png(180);document.head.appendChild(a);
+    const m={name:'Odmor za kavo',short_name:'Kava',start_url:location.href.split('#')[0],display:'standalone',background_color:'#0f291e',theme_color:'#0f291e',icons:[{src:png(512),sizes:'512x512',type:'image/png',purpose:'any'}]};
+    const mk=document.createElement('link');mk.rel='manifest';mk.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(mk);
+  }catch(e){}};
+  img.src=ICON;
+})();
+let installEv=null;
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEv=e;render()});
+addEventListener('appinstalled',()=>{installEv=null;render()});
+
+// ===== STANJE =====
+let user=null,tab='main',me='',presence=[],unsubs=[],loaded=false,rolling=false,hist=[];
+let CFG={...DEF};
+function norm(s){
+  s.team=s.team?.length?s.team:[...DEFAULT_TEAM];
+  for(const k of['counts','absent','paid','unav'])s[k]=s[k]||{};
+  s.team.forEach(n=>{s.counts[n]=s.counts[n]||0;s.absent[n]=!!s.absent[n];s.paid[n]=!!s.paid[n];s.unav[n]=!!s.unav[n]});
+  s.log=s.log||[];s.todayPayer=s.todayPayer||null;s.day=s.day||'';s.ver=s.ver||0;
+  s.idx=Math.min(Math.max(s.idx||0,0),Math.max(s.team.length-1,0));
+  return s;
+}
+let S=norm({});
+
+// ===== LOGIKA VRSTE (iz stare aplikacije) =====
+const valid=(s,n)=>!s.absent[n]&&!s.unav[n];
+function fair(s,unpaidOnly){
+  const c=[];
+  for(let i=0;i<s.team.length;i++){const ix=(s.idx+i)%s.team.length,n=s.team[ix];
+    if(!valid(s,n)||(unpaidOnly&&s.paid[n]))continue;c.push({ix,o:i,c:s.counts[n]||0});}
+  if(!c.length)return -1;
+  c.sort((a,b)=>a.c-b.c||a.o-b.o);return c[0].ix;
+}
+const nextIx=s=>{const i=fair(s,true);return i<0?fair(s,false):i};
+const nextName=s=>{const i=nextIx(s);return i<0?null:s.team[i]};
+function adv(s){const i=nextIx(s);if(i>=0)s.idx=i}
+function checkRound(s){
+  const av=s.team.filter(n=>valid(s,n));
+  if(av.length&&av.every(n=>s.paid[n])){
+    s.team.forEach(n=>s.paid[n]=false);
+    s.team.forEach(n=>{if(s.absent[n])s.counts[n]++}); // odsotni ne zaostajajo
+  }
+}
+function pay(s,who,type,by,inTurn=true){
+  const d=new Date();
+  s.counts[who]++;s.paid[who]=true;s.todayPayer=who;s.unav[who]=false;
+  s.log.push({d:today(),t:`${p(d.getHours())}:${p(d.getMinutes())}`,who,type,by});
+  if(s.log.length>100)s.log.splice(0,s.log.length-100);
+  checkRound(s);if(inTurn)adv(s);
+}
+
+// ===== FIRESTORE (transakcije, da sočasna dejanja ne povozijo drug drugega) =====
+async function mutate(fn,noHist){
+  const ref=doc(db,'kava','state');let before,after;
+  await runTransaction(db,async tx=>{
+    const sn=await tx.get(ref);const cur=norm(sn.exists()?sn.data():{});
+    before=structuredClone(cur);fn(cur);norm(cur);cur.ver++;tx.set(ref,cur);after=cur;
+  });
+  if(!noHist){hist.push({before,ver:after.ver});if(hist.length>20)hist.shift()}
+  S=after;render();
+}
+async function run(fn,ok,after){
+  try{await mutate(fn);if(ok)toast(ok);after&&after()}
+  catch(e){console.error(e);toast(e.message==='none'?'Ni dostopnih članov za kavo.':'Shranjevanje ni uspelo (preverite Firestore pravila).','err')}
+}
+function rollover(){
+  if(!loaded||rolling||S.day===today())return;
+  rolling=true;
+  mutate(s=>{s.team.forEach(n=>s.unav[n]=false);s.todayPayer=null;s.day=today()},true).catch(e=>console.warn(e)).finally(()=>rolling=false);
+}
+function startListeners(){
+  stop();
+  unsubs.push(onSnapshot(doc(db,'kava','state'),sn=>{S=norm(sn.exists()?sn.data():{});loaded=true;rollover();render()},
+    e=>{console.error(e);toast('Podatkov ni mogoče naložiti. Preverite Firestore pravila.','err')}));
+  unsubs.push(onSnapshot(doc(db,'settings','main'),sn=>{CFG={...DEF,...(sn.exists()?sn.data():{})};render()},e=>console.warn(e)));
+  if(isAdmin())unsubs.push(onSnapshot(collection(db,'presence'),sn=>{presence=sn.docs.map(d=>({id:d.id,...d.data()}));if(tab==='admin')render()},e=>console.warn(e)));
+}
+function stop(){unsubs.forEach(u=>u());unsubs=[];loaded=false;presence=[]}
+async function beat(){
+  if(!user)return;
+  try{await setDoc(doc(db,'presence',user.uid),{uid:user.uid,name:who(),member:me,email:user.email||'',isAnonymous:!!user.isAnonymous,lastSeen:serverTimestamp()},{merge:true})}catch(e){}
+}
+setInterval(()=>{if(document.visibilityState==='visible'){beat();rollover();render()}},60000);
+
+// ===== POMOŽNE =====
+const isAdmin=()=>!!user&&!user.isAnonymous&&(user.email||'').toLowerCase()===ADMIN_EMAIL&&user.emailVerified!==false;
+const who=()=>me&&S.team.includes(me)?me:(user?.displayName||user?.email||'Neznano');
+const dayN=()=>S.log.filter(l=>l.d===today()).length;
+const weekN=()=>{const[a,b]=weekB();return S.log.filter(l=>l.d>=a&&l.d<=b).length};
+function closedReason(){
+  if(!CFG.active)return 'Aplikacija je trenutno izklopljena.';
+  const d=new Date();
+  if(!CFG.workDays.includes(d.getDay()))return 'Danes ni delovni dan.';
+  if(d.getHours()<CFG.openHour||d.getHours()>=CFG.closeHour)return `Kavni odmor je mogoč med ${p(CFG.openHour)}:00 in ${p(CFG.closeHour)}:00.`;
+  return null;
+}
+function gate(quota){
+  if(isAdmin())return null;
+  const c=closedReason();if(c)return c;
+  if(quota){
+    if(dayN()>=CFG.dailyLimit)return 'Dnevna kvota rund je dosežena.';
+    if(weekN()>=CFG.weeklyLimit)return 'Tedenska kvota rund je dosežena.';
+  }
+  return null;
+}
+function toast(msg,type='ok'){
+  const c={ok:'bg-emerald-800',err:'bg-red-800',info:'bg-slate-800'}[type]||'bg-slate-800';
+  document.getElementById('toast').innerHTML=`<div class="${c} text-white text-sm p-4 rounded-2xl shadow-2xl">${esc(msg)}</div>`;
+  clearTimeout(toast.t);toast.t=setTimeout(()=>document.getElementById('toast').innerHTML='',4000);
+}
+let ansRes=null;
+function ask(title,text,ok='Potrdi',inner=''){
+  return new Promise(res=>{
+    ansRes=res;
+    document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60"><div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
+      <h3 class="font-bold text-lg">${esc(title)}</h3><p class="text-sm text-slate-600 mt-2">${esc(text)}</p>${inner}
+      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm font-semibold">Prekliči</button>
+      <button onclick="A.ans(true)" class="flex-1 py-2.5 rounded-xl bg-kg text-white text-sm font-bold">${esc(ok)}</button></div></div></div>`;
+  });
+}
+async function teams(msg){
+  if(!CFG.webhook||!CFG.webhook.trim())return null;
+  try{
+    const r=await fetch(CFG.webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'message',attachments:[{contentType:'application/vnd.microsoft.card.adaptive',contentUrl:null,content:{$schema:'http://adaptivecards.io/schemas/adaptive-card.json',type:'AdaptiveCard',version:'1.2',body:[{type:'TextBlock',text:msg,wrap:true}]}}]})});
+    return r.ok;
+  }catch(e){console.error('Teams:',e);return false}
+}
+const fill=(t,o)=>t.replace(/{ime}/g,o.ime||'').replace(/{cas}/g,o.cas||'').replace(/{datum}/g,o.datum||'');
+
+// ===== DEJANJA =====
+const A=window.A={
+  ans(v){document.getElementById('modal').innerHTML='';ansRes&&ansRes(v);ansRes=null},
+  tab(t){tab=t;render();scrollTo({top:0})},
+  async confirm(){
+    const g=gate(true);if(g)return toast(g,'err');
+    const n=nextName(S);if(!n)return toast('Ni dostopnih članov za kavo.','err');
+    if(!await ask('Potrditev runde',`Ali potrjuješ, da bo ${n} danes dal za kavo?`))return;
+    let w=n;
+    run(s=>{w=nextName(s);if(!w)throw new Error('none');pay(s,w,'turn',who())},'Runda potrjena.',()=>{if(CFG.notifyRound)teams(fill(CFG.msgRound,{ime:w}))});
+  },
+  async cant(){
+    const g=gate();if(g)return toast(g,'err');
+    const n=nextName(S);if(!n)return toast('Ni dostopnih članov za kavo.','err');
+    if(!await ask('Danes ne more',`Označim, da ${n} danes ne more dati za kavo?`))return;
+    run(s=>{const w=nextName(s);if(!w)throw new Error('none');s.unav[w]=true;s.paid[w]=false;checkRound(s);adv(s)},'Zabeleženo, naslednji je na vrsti.');
+  },
+  async sponsor(){
+    if(!me||!S.team.includes(me))return A.pick();
+    const g=gate(true);if(g)return toast(g,'err');
+    if(!await ask('Častim danes',`Potrjuješ, da ${me} danes prostovoljno časti kavo?`))return;
+    run(s=>{const nx=nextName(s);pay(s,me,'sponsor',me,nx===me)},'Hvala za častitko!',()=>{if(CFG.notifyRound)teams(fill(CFG.msgRound,{ime:me}))});
+  },
+  async invite(){
+    const g=gate();if(g)return toast(g,'err');
+    const inner=`<input id="invTime" type="time" value="${esc(CFG.inviteTime)}" class="inp mt-4 text-center">`;
+    if(!await ask('Povabi na kavo (Teams)','Ob kateri uri gremo na kavo?','Pošlji vabilo',inner))return;
+    const time=(document.getElementById('invTime')||{}).value||CFG.inviteTime;
+    // vabilo velja tudi kot potrditev runde, a samo če runda danes še ni potrjena
+    const will=!S.todayPayer&&nextName(S);
+    if(will){const q=gate(true);if(q)return toast(q,'err')}
+    const send=async(note)=>{
+      const r=await teams(fill(CFG.msgInvite,{ime:who(),cas:time,datum:today()}));
+      toast(r===null?'Teams webhook ni nastavljen.':r?`Vabilo za ob ${time} je poslano na Teams.${note}`:'Vabila na Teams ni bilo mogoče poslati.',r?'ok':'err');
+    };
+    if(!will)return send('');
+    let w=null;
+    run(s=>{w=nextName(s);if(!w)throw new Error('none');pay(s,w,'invite',who())},'',()=>send(` Runda (${w}) potrjena.`));
+  },
+  undo(){
+    const h=hist.pop();if(!h)return toast('Ni dejanj za razveljavitev.','info');
+    runTransaction(db,async tx=>{
+      const ref=doc(db,'kava','state'),sn=await tx.get(ref);
+      if((sn.exists()?sn.data().ver:0)!==h.ver)throw new Error('changed');
+      const b=structuredClone(h.before);b.ver=h.ver+1;tx.set(ref,b);S=b;
+    }).then(()=>{render();toast('Stanje je povrnjeno.')})
+      .catch(e=>toast(e.message==='changed'?'Stanje se je medtem spremenilo – razveljavitev ni več mogoča.':'Razveljavitev ni uspela.','err'));
+  },
+  toggleUnav(i){run(s=>{const n=s.team[i];s.unav[n]=!s.unav[n];checkRound(s);adv(s)})},
+  pick(){
+    document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60"><div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
+      <h3 class="font-bold text-lg">Kdo si?</h3><p class="text-sm text-slate-600 mt-1 mb-3">Izberi svoje ime s seznama ekipe.</p>
+      <select id="pickSel" class="inp">${S.team.map(n=>`<option ${n===me?'selected':''}>${esc(n)}</option>`).join('')}</select>
+      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm font-semibold">Pozneje</button>
+      <button onclick="A.setMe()" class="flex-1 py-2.5 rounded-xl bg-kg text-white text-sm font-bold">Shrani</button></div></div></div>`;
+  },
+  setMe(){me=document.getElementById('pickSel').value;ls.set('kava_member_'+user.uid,me);A.ans(true);beat();render()},
+  // --- skrbnik ---
+  async saveCfg(){
+    const g=id=>document.getElementById(id),n=id=>parseInt(g(id).value,10);
+    const c={active:g('s_active').checked,openHour:n('s_open'),closeHour:n('s_close'),dailyLimit:n('s_day'),weeklyLimit:n('s_week'),
+      workDays:[1,2,3,4,5,6,0].filter(d=>g('wd'+d).checked),notice:g('s_notice').value.trim(),cols:g('s_cols').value,inviteTime:g('s_time').value||'12:00',
+      webhook:g('t_url').value.trim(),msgInvite:g('t_inv').value.trim(),msgRound:g('t_rnd').value.trim(),notifyRound:g('t_notify').checked};
+    if(![c.openHour,c.closeHour,c.dailyLimit,c.weeklyLimit].every(Number.isInteger)||c.openHour<0||c.closeHour>24||c.openHour>=c.closeHour||c.dailyLimit<1||c.weeklyLimit<1)
+      return toast('Preverite ure obratovanja in kvote.','err');
+    try{await setDoc(doc(db,'settings','main'),c);toast('Nastavitve shranjene.')}catch(e){console.error(e);toast('Shranjevanje ni uspelo (Firestore pravila).','err')}
+  },
+  async testTeams(){const r=await teams('✅ Testno sporočilo iz aplikacije Odmor za kavo.');toast(r===null?'Webhook ni nastavljen.':r?'Testno sporočilo poslano.':'Pošiljanje ni uspelo.',r?'ok':'err')},
+  count(i,d){run(s=>{const n=s.team[i];s.counts[n]=Math.max(0,s.counts[n]+d)})},
+  setNext(i){run(s=>{s.idx=i},`${S.team[i]} je nastavljen kot naslednji.`)},
+  togglePaid(i){run(s=>{const n=s.team[i];s.paid[n]=!s.paid[n]})},
+  toggleAbs(i){run(s=>{const n=s.team[i];s.absent[n]=!s.absent[n];checkRound(s);adv(s)})},
+  move(i,d){const j=i+d;if(j<0||j>=S.team.length)return;run(s=>{[s.team[i],s.team[j]]=[s.team[j],s.team[i]]})},
+  rename(i){
+    const nn=document.getElementById('rn'+i).value.trim(),old=S.team[i];
+    if(!nn||nn===old||S.team.includes(nn))return;
+    run(s=>{s.team[i]=nn;for(const k of['counts','absent','paid','unav']){s[k][nn]=s[k][old];delete s[k][old]}
+      if(s.todayPayer===old)s.todayPayer=nn;s.log.forEach(l=>{if(l.who===old)l.who=nn})},'Ime spremenjeno.');
+    if(me===old){me=nn;ls.set('kava_member_'+user.uid,me)}
+  },
+  async remove(i){
+    if(S.team.length<2)return toast('V ekipi mora ostati vsaj en član.','err');
+    const n=S.team[i];if(!await ask('Odstrani člana',`Odstranim člana ${n}?`,'Odstrani'))return;
+    run(s=>{s.team=s.team.filter(x=>x!==n);for(const k of['counts','absent','paid','unav'])delete s[k][n];if(s.todayPayer===n)s.todayPayer=null},'Član odstranjen.');
+  },
+  add(){
+    const el=document.getElementById('newName'),n=el.value.trim();
+    if(!n||S.team.includes(n))return toast('Vnesite unikatno ime.','err');
+    run(s=>{s.team.push(n)},'Član dodan.');el.value='';
+  },
+  async delUser(id){try{await deleteDoc(doc(db,'presence',id))}catch(e){toast('Brisanje ni uspelo.','err')}},
+  async google(){
+    const pr=new GoogleAuthProvider();pr.setCustomParameters({prompt:'select_account'});
+    try{await signInWithPopup(auth,pr)}catch(e){
+      if(e.code==='auth/popup-blocked')return signInWithRedirect(auth,pr);
+      if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast('Prijava ni uspela ('+(e.code||'napaka')+')','err');
+    }
+  },
+  async guest(){try{await signInAnonymously(auth)}catch(e){toast('Gostujoča prijava ni uspela. Preverite, ali je v Firebase omogočen "Anonymous".','err')}},
+  async logout(){
+    try{if(user)await setDoc(doc(db,'presence',user.uid),{lastSeen:0},{merge:true})}catch(e){}
+    await signOut(auth);
+  },
+  async install(){
+    if(installEv){installEv.prompt();await installEv.userChoice;installEv=null;render()}
+    else toast(isIOS?"Tapni 'Deli' v Safariju in izberi 'Dodaj na začetni zaslon'.":"V meniju brskalnika izberi 'Namesti aplikacijo'.",'info');
+  },
+  contact(){location.href='mailto:'+['robi.filipsek','gmail.com'].join('@')+'?subject='+encodeURIComponent('Odmor za kavo')}
+};
+
+// ===== PRIKAZ =====
+const card='bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5';
+const lbl='block text-xs font-semibold text-slate-600';
+function loginView(){
+  return `<div class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-kd via-kg to-ka"><div class="${card} max-w-sm w-full text-center">
+    <img src="${ICON}" class="w-16 h-16 rounded-2xl mx-auto mb-3 shadow"><h1 class="font-bold text-xl">Odmor za kavo</h1>
+    <p class="text-sm text-slate-500 mt-1 mb-5">Prijavite se z Google računom ali nadaljujte kot gost.</p>
+    <div class="flex flex-col gap-3"><button onclick="A.google()" class="py-2.5 rounded-xl bg-white border border-slate-300 font-semibold text-sm">Prijava z Google</button>
+    <button onclick="A.guest()" class="py-2.5 rounded-xl bg-kg text-white font-semibold text-sm">Prijava kot gost</button></div></div></div>`;
+}
+function header(){
+  const showInst=!standalone()&&(installEv||isIOS);
+  return `<header class="bg-kd text-white sticky top-0 z-30 shadow-md"><div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="A.tab('main')"><img src="${ICON}" class="w-10 h-10 rounded-xl ring-2 ring-white/20"><span class="font-bold text-lg">Odmor za kavo</span></div>
+    <div class="flex items-center gap-2 text-xs">${showInst?`<button onclick="A.install()" class="px-3 py-2 rounded-lg bg-kg border border-ka/50">📲 <span class="hidden sm:inline">Namesti</span></button>`:''}
+    <span class="hidden md:block text-slate-300">${esc(who())}</span>
+    <button onclick="A.logout()" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700">Odjava</button></div></div></header>`;
+}
+function hero(){
+  const dq=dayN(),wq=weekN();
+  return `<section class="bg-gradient-to-r from-kd via-kg to-ka text-white py-6 px-4"><div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl sm:text-3xl font-extrabold">Kdo časti kavo?</h1>
+    <p class="text-slate-300 text-sm mt-1">Kavni odmor: <strong>${p(CFG.openHour)}:00 do ${p(CFG.closeHour)}:00</strong>, ${new Date().toLocaleDateString('sl-SI',{weekday:'long',day:'numeric',month:'long'})}.</p>
+    <div class="grid grid-cols-2 gap-3 text-xs mt-4">
+      <div class="bg-slate-900/50 border border-white/10 rounded-xl p-3"><span class="text-slate-400">Dnevna kvota</span><div class="text-sm font-bold ${dq>=CFG.dailyLimit?'text-amber-400':'text-emerald-300'}">${dq} / ${CFG.dailyLimit} rund</div></div>
+      <div class="bg-slate-900/50 border border-white/10 rounded-xl p-3"><span class="text-slate-400">Tedenska kvota</span><div class="text-sm font-bold ${wq>=CFG.weeklyLimit?'text-amber-400':'text-emerald-300'}">${wq} / ${CFG.weeklyLimit} rund</div></div>
+    </div></div></section>`;
+}
+function viewMain(){
+  const n=nextName(S),cr=closedReason();
+  const cols=CFG.cols==='auto'?(S.team.length%2?3:2):+CFG.cols;
+  const cards=S.team.map((name,i)=>{
+    const isPayer=S.todayPayer===name,isNext=!S.todayPayer&&name===n;
+    let cls='border-slate-200 bg-white',st='⏳ Čaka na vrsto';
+    if(S.absent[name]){cls='border-slate-200 bg-slate-100 opacity-60';st='🌴 Dopust / odsoten'}
+    else if(S.unav[name]){cls='border-red-200 bg-red-50';st='❌ Danes ne more'}
+    else if(isPayer){cls='border-emerald-400 bg-emerald-50';st='⭐ Časti danes'}
+    else if(isNext){cls='border-amber-400 bg-amber-50 ring-2 ring-amber-300';st='👉 Na vrsti'}
+    else if(S.paid[name]){cls='border-emerald-200 bg-emerald-50/50';st='✅ Že dal'}
+    return `<div class="rounded-xl border p-3 ${cls}"><div class="flex items-center justify-between gap-1"><strong class="text-sm truncate ${name===me?'underline':''}">${esc(name)}</strong>
+      <span class="text-[11px] font-bold text-kg bg-emerald-100 border border-emerald-300 rounded-full px-2 py-0.5 whitespace-nowrap">☕ ${S.counts[name]||0}</span></div>
+      <div class="flex justify-end mt-1"><button onclick="A.toggleUnav(${i})" class="text-[11px] px-2 py-1 rounded-md bg-white border border-slate-300">${S.unav[name]?'❌ Odsoten':'✔️ Prisoten'}</button></div>
+      <div class="text-[11px] text-slate-500 mt-1">${st}</div></div>`;
+  }).join('');
+  return `${cr?`<div class="mb-4 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">⚠️ ${esc(cr)}</div>`:''}
+  <div class="${card} text-center mb-4">
+    <div class="text-xs text-slate-500">${S.todayPayer?'⭐ Danes potrjeno časti:':'Na vrsti da časti:'}</div>
+    <div class="text-3xl font-extrabold my-1 ${S.todayPayer?'text-emerald-600':'text-slate-900'}">${esc(S.todayPayer||n||'-')}</div>
+    <div class="grid sm:grid-cols-2 gap-2 mt-3">
+      <button onclick="A.confirm()" class="b bg-emerald-600">✅ Potrjujem rundo</button>
+      <button onclick="A.cant()" class="b bg-red-600">✕ Danes ne more</button>
+      <button onclick="A.sponsor()" class="b bg-amber-500">⭐ Jaz častim (izven vrstnega reda)</button>
+      <button onclick="A.invite()" class="b bg-indigo-600">⏰ Povabi na kavo (Teams)</button>
+      <button onclick="A.undo()" class="b bg-slate-600 sm:col-span-2">↩️ Razveljavi (Undo)</button></div></div>
+  <div class="mg" style="--c:${cols}">${cards}</div>
+  <div class="text-xs text-slate-500 mt-4 flex items-center justify-between">
+    <span>Prijavljen kot: <strong>${esc(me&&S.team.includes(me)?me:'—')}</strong> <a href="#" class="underline text-kg" onclick="A.pick();return false">(zamenjaj)</a></span>
+    <span>${loaded?'✅ Sinhronizirano':'⏳ Nalagam …'}</span></div>`;
+}
+const TYPE={turn:'po vrsti',sponsor:'prostovoljno',invite:'vabilo',manual:'ročno'};
+function viewLog(){
+  const rows=[...S.log].reverse().slice(0,60).map(l=>`<div class="flex items-center justify-between px-3 py-2 text-sm"><span><strong>${esc(l.who)}</strong> <span class="text-slate-500 text-xs">(${TYPE[l.type]||l.type})</span></span><span class="text-xs font-mono text-slate-500">${esc(l.d)} ${esc(l.t)}</span></div>`).join('');
+  return `<div class="${card}"><h2 class="font-bold text-lg mb-1">Zgodovina rund</h2><p class="text-xs text-slate-500 mb-3">Zadnjih 60 potrjenih rund.</p>
+    <div class="divide-y divide-slate-100 border border-slate-200 rounded-xl">${rows||'<div class="p-4 text-sm text-slate-500">Še ni zabeleženih rund.</div>'}</div></div>`;
+}
+function viewInfo(){
+  const dn=['Ned','Pon','Tor','Sre','Čet','Pet','Sob'];
+  return `<div class="${card} space-y-3 text-sm text-slate-600"><h2 class="font-bold text-lg text-slate-900">Pravila & info</h2>
+    <p>☕ <strong>Vrsta:</strong> na vrsti je tisti, ki je v tekočem krogu plačal najmanj rund; pri izenačenju velja vrstni red ekipe.</p>
+    <p>⭐ <strong>Prostovoljna častitka:</strong> kdor časti izven vrste, ne preskoči nikogar – pravi na vrsti ostane naslednji.</p>
+    <p>❌ <strong>Danes ne more:</strong> oseba je tisti dan preskočena; naslednji dan je spet na voljo.</p>
+    <p>🌴 <strong>Dopust:</strong> skrbnik označi dolgotrajno odsotnost; za zamujene kroge se odsotnim samodejno prišteje runda.</p>
+    <p>📊 <strong>Kvote:</strong> največ ${CFG.dailyLimit} rund na dan in ${CFG.weeklyLimit} na teden.</p>
+    <p>🕒 <strong>Delovni čas:</strong> ${CFG.workDays.map(d=>dn[d]).join(', ')} (${p(CFG.openHour)}:00 – ${p(CFG.closeHour)}:00)</p>
+    <p><a href="#" class="underline text-kg font-semibold" onclick="A.contact();return false">Pošlji sporočilo skrbniku</a></p></div>`;
+}
+function viewAdmin(){
+  const ck=(id,v,t)=>`<label class="flex items-center gap-2 text-sm"><input type="checkbox" id="${id}" ${v?'checked':''} class="w-4 h-4 accent-emerald-600">${t}</label>`;
+  const days=[[1,'Pon'],[2,'Tor'],[3,'Sre'],[4,'Čet'],[5,'Pet'],[6,'Sob'],[0,'Ned']].map(([d,t])=>ck('wd'+d,CFG.workDays.includes(d),t)).join('');
+  const team=S.team.map((n,i)=>`<div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2 text-xs">
+    <div class="flex gap-1"><input id="rn${i}" value="${esc(n)}" class="inp"><button onclick="A.rename(${i})" class="px-2 rounded-lg bg-blue-500 text-white">✏️</button><button onclick="A.remove(${i})" class="px-2 rounded-lg bg-red-600 text-white">🗑️</button></div>
+    <div class="flex items-center justify-between"><span class="font-semibold">Skupaj rund:</span><span class="flex items-center gap-1"><button onclick="A.count(${i},-1)" class="px-2 py-1 rounded bg-slate-300">➖</button><strong class="w-6 text-center">${S.counts[n]}</strong><button onclick="A.count(${i},1)" class="px-2 py-1 rounded bg-slate-300">➕</button></span></div>
+    <div class="flex flex-wrap gap-1"><button onclick="A.setNext(${i})" class="px-2 py-1 rounded bg-blue-500 text-white">👉 Naslednji</button>
+    <button onclick="A.togglePaid(${i})" class="px-2 py-1 rounded text-white ${S.paid[n]?'bg-emerald-600':'bg-slate-500'}">${S.paid[n]?'✅':'⭕'} Že dal</button>
+    <button onclick="A.toggleAbs(${i})" class="px-2 py-1 rounded text-white ${S.absent[n]?'bg-red-600':'bg-slate-500'}">${S.absent[n]?'🌴':'⭕'} Dopust</button>
+    <button onclick="A.move(${i},-1)" class="px-2 py-1 rounded bg-slate-300">⬆️</button><button onclick="A.move(${i},1)" class="px-2 py-1 rounded bg-slate-300">⬇️</button></div></div>`).join('');
+  const now=Date.now();
+  const users=[...presence].sort((a,b)=>(b.lastSeen?.toMillis?.()||0)-(a.lastSeen?.toMillis?.()||0)).map(u=>{
+    const ms=u.lastSeen?.toMillis?.()||0,on=now-ms<=180000;
+    return `<div class="flex items-center justify-between gap-2 px-3 py-2 text-xs"><span class="min-w-0"><span class="inline-block w-2 h-2 rounded-full mr-1 ${on?'bg-emerald-500':'bg-slate-300'}"></span><strong>${esc(u.member||u.name||'Brez imena')}</strong> <span class="text-slate-500">${u.isAnonymous?'Gost':esc(u.email)}</span><div class="text-slate-400">Zadnjič: ${ms?new Date(ms).toLocaleString('sl-SI'):'-'}</div></span>
+    <button onclick="A.delUser('${esc(u.id)}')" class="px-2 py-1 rounded bg-red-100 text-red-700 border border-red-300">Izbriši</button></div>`;
+  }).join('');
+  const online=presence.filter(u=>now-(u.lastSeen?.toMillis?.()||0)<=180000).length;
+  return `<div class="space-y-4">
+  <div class="${card} space-y-3"><h2 class="font-bold text-lg">⚙️ Obratovanje in kvote</h2>
+    ${ck('s_active',CFG.active,'Aplikacija je aktivna')}
+    <div class="grid sm:grid-cols-4 gap-3"><label class="${lbl}">Začetek (ura)<input id="s_open" type="number" min="0" max="23" value="${CFG.openHour}" class="inp"></label>
+      <label class="${lbl}">Konec (ura)<input id="s_close" type="number" min="1" max="24" value="${CFG.closeHour}" class="inp"></label>
+      <label class="${lbl}">Dnevna kvota (rund)<input id="s_day" type="number" min="1" value="${CFG.dailyLimit}" class="inp"></label>
+      <label class="${lbl}">Tedenska kvota (rund)<input id="s_week" type="number" min="1" value="${CFG.weeklyLimit}" class="inp"></label></div>
+    <div class="flex flex-wrap gap-x-4 gap-y-1">${days}</div>
+    <div class="grid sm:grid-cols-3 gap-3"><label class="${lbl} sm:col-span-2">Obvestilo za uporabnike<input id="s_notice" maxlength="160" value="${esc(CFG.notice)}" class="inp"></label>
+      <label class="${lbl}">Privzeta ura vabila<input id="s_time" type="time" value="${esc(CFG.inviteTime)}" class="inp"></label></div>
+    <label class="${lbl}">Število stolpcev ekipe<select id="s_cols" class="inp">${['auto','2','3'].map(v=>`<option value="${v}" ${CFG.cols===v?'selected':''}>${v==='auto'?'Samodejno':v}</option>`).join('')}</select></label>
+    <h3 class="font-bold pt-2">🔔 Teams</h3>
+    <label class="${lbl}">Power Automate Webhook URL<input id="t_url" value="${esc(CFG.webhook)}" class="inp"></label>
+    <label class="${lbl}">Sporočilo vabila ({ime}, {cas}, {datum})<input id="t_inv" value="${esc(CFG.msgInvite)}" class="inp"></label>
+    <label class="${lbl}">Sporočilo ob potrjeni rundi ({ime})<input id="t_rnd" value="${esc(CFG.msgRound)}" class="inp"></label>
+    ${ck('t_notify',CFG.notifyRound,'Ob potrditvi runde pošlji obvestilo na Teams')}
+    <div class="flex gap-2"><button onclick="A.saveCfg()" class="b bg-kg">💾 Shrani nastavitve</button><button onclick="A.testTeams()" class="b bg-indigo-600">Pošlji test na Teams</button></div></div>
+  <div class="${card} space-y-3"><h2 class="font-bold text-lg">👥 Ekipa</h2><div class="grid sm:grid-cols-2 gap-2">${team}</div>
+    <div class="flex gap-2"><input id="newName" placeholder="Ime novega sodelavca" class="inp"><button onclick="A.add()" class="b bg-emerald-600 whitespace-nowrap">➕ Dodaj</button></div></div>
+  <div class="${card} space-y-3"><h2 class="font-bold text-lg">🟢 Uporabniki <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">${online} aktivnih</span></h2>
+    <div class="max-h-80 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl">${users||'<div class="p-4 text-xs text-slate-500">Ni zapisov.</div>'}</div></div></div>`;
+}
+function render(){
+  const app=document.getElementById('app');
+  if(!user){app.innerHTML=loginView();return}
+  if(tab==='admin'&&document.activeElement&&/INPUT|SELECT/.test(document.activeElement.tagName)&&app.contains(document.activeElement))return; // ne motimo vnosa
+  const tabs=[['main','☕ Kava'],['log','🕘 Zgodovina'],['info','ℹ️ Info'],...(isAdmin()?[['admin','🛡️ Skrbnik']]:[])];
+  const body={main:viewMain,log:viewLog,info:viewInfo,admin:isAdmin()?viewAdmin:viewMain}[tab]();
+  app.innerHTML=`${header()}${hero()}<main class="max-w-4xl mx-auto px-4 py-5">
+    ${CFG.notice?`<div class="mb-4 p-3 rounded-xl bg-slate-100 border border-slate-300 text-sm">ℹ️ ${esc(CFG.notice)}</div>`:''}
+    <nav class="flex gap-2 mb-5">${tabs.map(([id,t])=>`<button onclick="A.tab('${id}')" class="flex-1 px-2 py-2.5 rounded-xl text-xs sm:text-sm font-medium border border-slate-200 ${tab===id?'bg-kg text-white':'bg-white text-slate-600'}">${t}</button>`).join('')}</nav>
+    ${body}</main>`;
+}
+
+// ===== PRIJAVA =====
+onAuthStateChanged(auth,u=>{
+  user=u;
+  if(u){
+    me=ls.get('kava_member_'+u.uid)||'';
+    startListeners();beat();
+    setTimeout(()=>{if(user&&(!me||!S.team.includes(me)))A.pick()},1500);
+  }else{stop();me='';tab='main'}
+  render();
+});
+render();
+</script>
 </body>
 </html>
