@@ -32,6 +32,10 @@ body.dark .shadow-sm{box-shadow:0 8px 24px rgba(0,0,0,.18)}
 .b:hover{filter:brightness(.96);transform:translateY(-1px);box-shadow:0 6px 16px rgba(15,23,42,.16)}
 .b:active{transform:translateY(0)}
 .b:disabled{transform:none;box-shadow:none}
+@keyframes payerPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(16,185,129,.28)}50%{transform:scale(1.018);box-shadow:0 0 0 8px rgba(16,185,129,0)}}
+.payer-card{animation:payerPulse 1.8s ease-in-out 2}
+.icon{width:18px;height:18px;display:inline-block;vertical-align:-4px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon-sm{width:16px;height:16px;vertical-align:-3px}
 </style>
 </head>
 <body class="min-h-screen text-slate-800">
@@ -253,6 +257,7 @@ const A=window.A={
           ${S.team.map(n=>`<option value="${esc(n)}" ${n===me?'selected':''}>${esc(n)}</option>`).join('')}
         </select>
         <button id="pickSave" onclick="A.setMe()" ${hasMe?'':'disabled'} class="w-full mt-5 py-2.5 rounded-xl bg-kg text-white text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed">Vstopi v aplikacijo</button>
+         <button onclick="A.backToLogin()" class="w-full mt-2 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-slate-700 text-sm font-semibold">Nazaj na prijavo</button>
         <div class="mt-3 pt-3 border-t border-slate-200">
           <p class="text-xs text-slate-500 mb-2">Google prijava in izbira osebe sta ločeni. Če si prijavljen z napačnim računom, se lahko prijaviš znova.</p>
           <button onclick="A.switchGoogle()" class="w-full py-2.5 rounded-xl bg-white border border-slate-300 text-slate-800 text-sm font-semibold">Prijava z drugim Google računom</button>
@@ -267,7 +272,7 @@ const A=window.A={
   setMe(){
     const selected=document.getElementById('pickSel')?.value||'';
     if(!selected||!S.team.includes(selected)){toast('Najprej izberi svoje ime s seznama ekipe.','err');return}
-    me=selected;ls.set('kava_member_'+user.uid,me);A.ans(true);beat();render()
+    me=selected;ls.set('kava_member_'+user.uid,me);document.getElementById('modal').innerHTML='';beat();render()
   },
   // --- skrbnik ---
   async saveCfg(){
@@ -330,6 +335,10 @@ const A=window.A={
       if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast('Prijava ni uspela ('+(e.code||'napaka')+')','err');
     }
   },
+  async backToLogin(){
+    try{if(user)await signOut(auth)}catch(e){}
+    me='';document.getElementById('modal').innerHTML='';render();
+  },
   async switchGoogle(){
     try{await signOut(auth)}catch(e){}
     me='';
@@ -365,8 +374,8 @@ function header(){
     <div class="flex items-center gap-3 cursor-pointer" onclick="A.tab('main')"><img src="${ICON}" class="w-10 h-10 rounded-xl ring-2 ring-white/20"><span class="font-bold text-lg">Odmor za kavo</span></div>
     <div class="flex items-center gap-2 text-xs">${showInst?`<button onclick="A.install()" class="px-3 py-2 rounded-lg bg-kg border border-ka/50">📲 <span class="hidden sm:inline">Namesti</span></button>`:''}
     <span class="hidden md:block text-slate-300">${esc(who())}</span>
-    <button onclick="A.toggleTheme()" title="Preklopi temo" aria-label="Preklopi temo" class="px-3 py-2 rounded-xl bg-white/10 border border-white/15 hover:bg-white/20 transition">${darkMode?'☀️':'🌙'}</button>
-    <button onclick="A.logout()" class="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 transition">Odjava</button></div></div></header>`;
+    <button onclick="A.toggleTheme()" title="Preklopi temo" aria-label="Preklopi temo" class="px-3 py-2 rounded-xl bg-white/10 border border-white/15 hover:bg-white/20 transition"><span class="icon-sm">${darkMode?'☀️':'🌙'}</span></button>
+    <button onclick="A.logout()" class="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 transition">↪ Odjava</button></div></div></header>`;
 }
 function hero(){
   return `<section class="bg-gradient-to-r from-kd via-kg to-ka text-white py-6 px-4"><div class="max-w-4xl mx-auto">
@@ -392,7 +401,7 @@ function viewMain(){
   }).join('');
   return `<div class="${card} text-center mb-4">
     <div class="text-xs text-slate-500">${S.todayPayer?'⭐ Danes potrjeno časti:':'Na vrsti da časti:'}</div>
-    <div class="text-3xl font-extrabold my-1 ${S.todayPayer?'text-emerald-600':'text-slate-900'}">${esc(S.todayPayer||n||'-')}</div>
+    <div class="text-3xl font-extrabold my-1 text-slate-900">${esc(S.todayPayer||n||'-')}</div>
     <div class="grid sm:grid-cols-2 gap-2 mt-3">
       <button onclick="A.confirm()" class="b bg-blue-700" ${S.todayPayer?'disabled style="opacity:.45"':''}>✅ ${esc(buttonText('confirm','Potrjujem rundo'))}</button>
       <button onclick="A.cant()" class="b bg-red-600" ${S.todayPayer?'disabled style="opacity:.45"':''}>✕ ${esc(buttonText('cant','Danes ne more'))}</button>
