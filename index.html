@@ -1,1087 +1,1182 @@
 <!DOCTYPE html>
 <html lang="sl">
 <head>
+<meta name="theme-color" content="#0f172a">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odmor za kavo</title>
-
-    <!-- Ikona za zavihek / zaznamke -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2334d399'/%3E%3Cstop offset='1' stop-color='%2310b981'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='%230f172a'/%3E%3Cg fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M214 172c-18-20 18-36 0-58M282 172c-18-20 18-36 0-58' stroke='%2394a3b8' stroke-width='20'/%3E%3Cpath d='M348 258h20a44 44 0 0 1 0 88h-28' stroke='%2310b981' stroke-width='26'/%3E%3Cpath d='M170 438h156' stroke='%23f1f5f9' stroke-width='20'/%3E%3C/g%3E%3Cpath d='M148 218h200v82a100 100 0 0 1-200 0z' fill='url(%23g)'/%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Odmor%20za%20kavo%22,%22short_name%22:%22Kava%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f172a%22,%22theme_color%22:%22%230f172a%22}">
     <meta name="theme-color" content="#0f172a">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%2334d399%22/%3E%3Cstop offset=%221%22 stop-color=%22%2310b981%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22%230f172a%22/%3E%3Cg fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M214 172c-18-20 18-36 0-58M282 172c-18-20 18-36 0-58%22 stroke=%22%2394a3b8%22 stroke-width=%2220%22/%3E%3Cpath d=%22M348 258h20a44 44 0 0 1 0 88h-28%22 stroke=%22%2310b981%22 stroke-width=%2226%22/%3E%3Cpath d=%22M170 438h156%22 stroke=%22%23f1f5f9%22 stroke-width=%2220%22/%3E%3C/g%3E%3Cpath d=%22M148 218h200v82a100 100 0 0 1-200 0z%22 fill=%22url(%23g)%22/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAADsOAAA7DgHMtqGDAAAFKklEQVR42u1bW1AbVRhO353s5rLZJIUELEJ2NwhNoehEy9CRAkPpmFILCKGhigMdWykUbIUGC4VKoC29WOv0Jnaq1pmOtY60XmidtrbedXxo1RdffFDHB6t1xvrye86mEDJZAil7krBLZr5JZs7J+ff79vz/nj1zPo1m+s8CyuJYQrFcj9bEXaJM/A/o+zbF8pBMEK/JxN0Ur5HldqBrdmlm+VmgZbm1aPAfk43sjIFuFmXm12AuMTHXMsIipObnc5Z4JK5TbGb6jMjrGP4RRP43BZEfnw1/oO/lUclTrFCE8uc/xZGfEIG7Q5sdhVOQz0xHKv2uWPKTZoKW4TMiK72ycn46XAsrjKjaV6mIfBCMUBm6+3P5UXfv9eBm8O6bnXmqIz8OI7cYFT++V7UCsNyLmuDSUZ0CIO5jeAb8pNoZgJbK+AnwN+lAQn4pDBw+A8+09U/Zp3Fzv9jHubQsfjMAcdfEI1CJpxEOnrwgIr9wtWQfTB63P9/3alxnQVwEMNkWw+4jZ0WCNU9vk+zj8bZMiIT7K0oAQ0oO7D12TiT3ZGN0AQ68fh7MaUuUJcCKSSlQULQmol1vzYb+g6fF9m27jigvBfxDr4nkeoZPgc7ijGh3F9dMCFS00qcsASzp+RPkKqqflexT29QltuM6gWeDogTA+T8uQF3zdsk+VU91iO3Dx98DW5ZbeSnQ3B4QCe45+q5ku8NVDPtHRsU+5VUblCdAaubD0NQ+IBbDaIUS98F9FSdAMmNegHkB5gWQZ6AUbyXwI51EgWMkrQBpWxrA9f1hosAxklYAe1sD5H73ClHgGEksgA9yvj1EFPZ9LUBVVwRRXgzUUrRqNAvJIYCt1QfZ37xMFPYrg0B/sCMcb20FunYVUBIvWXEVILV1HTi/PkAUtiuBSAHGMdgMlP3BBD4FNtcD/9V+okgd7QX6ZEcQZ16IFGFnY2IF4L7cRxQ4Rljch9xAH9oUJgJV+lhiBFjY4oWsL4aJAseIiG1D0/5EW3gqJEIA63NeeOCzvUSBY0jFpj1lIQFGu2MqiPIJsLEWMq7vIQocQ1KA3ILwWpDpir8ArNcD91/bTRSmOo+0AO5l4XUghqeBbAIYy0sg/dMhomDKSqTjt9eFBDjVkZgaQHN5aKESAPvVQTK4HACdIy8ydkUp0Oe7QwJsqk7c67D1RAekIhFIwPp2V2gZjFH/OFCBpvDcf6cTqAxX4gRgfJWQcnmACJiPd069CsR4H1X/4uWJ3RChFzrBfLoTrJ+8JCssl3aBLhr5N1DeLytMjh0hfUUJWC72ixctC9BYev96oEe2hJbBGMdage5DS98nVgKVkp1cW2KGllpg0YXLAcPGmjm4J4je0Q3bG8A01jcrGLoaZv2+n9BNUZ3PA8YLPWBEBSwmoP/o6z0K2RUW8oHuXg/6DxGpj3qnhS7QDHROgQK3xZEQ1DoP0EMbUEFrB905vwj8W3yDw3cc94n3triW5f9S7TE5lr+lUeUx2cnHZdFhwYsqPyiJDEYyDlq4Yi1s9QdkBR6TjAC8X4PdVXIO+vMvv8Ktf+7ICjwmCQFoRsi5a5ZA7iqZBh158yz8eftf2cjjsfCYBPL/Rsgug6xl6iuADk+4ZUa0lqnmmPzVCC8hxWalqcc0JSySdI5hSxm2linaNmfkHo3qHbyPEdzKNU4KRTNyj4oeQmQtU1LO4xSP2TyNrWV4uTiHp/wNxGH1bF3kGuyuwgYjvHQULepxcJnci/vjrn1+DK3wuimGz50Juf8BZ1d/HXR9gJAAAAAASUVORK5CYII=">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAACXBIWXMAADsOAAA7DgHMtqGDAAAJFklEQVR42u3d6VNV5x3A8fwH59wLeAHZA7iwyqoossQQRA0qalQiWJEUXJBAEBXREmURMWjABJuIpjqZmKlN1CQmNdW06Zru7Uxf5E37Jp1pZ9ppZ9qZ9tWvz7kZkth7WM4Fr/ec+33xeeM4z4zP+XrmLM957iOaZ7EATvEIkwCCBggaIGiAoEHQAEEDBA0QNEDQIGiAoAGCBggaIGgQNEDQAEEDBA0QNAgaIGiAoAGCBggaBA0QNEDQAEEDBA2CBggaIGiAoAGCBkEDBA0QNEDQIGgmAgQdyqKT8iWzsEoiE/NmPVZyRqmk5VeKKyqduSXowCtdUy/Dl27J6JX35ez4LVlZWevXOK7odGnuGPSOYzh25jWJX7icOSbowIlKzP8i5glG1MZZ1upYq6ob7hvH0NHzkuiRacw1QQdGRkGVT4SG1u5zlsd6urnbdKyytTuZa4IOjMiEXBkev+UT4ci3bktKRpmlsYxwzYI+MvAqc03QgbN6c7NpiJWbmqxdQ6ubwIMnL5iOFZ1UwFwTdGC4ozPk9Dff8omwbs9xy2MVlm82DTpr2TrmmqADp3/0mk+E9XutB51dtM40aOPPmWeCDgjjiYZZhE9u2295rI072kzH4vEdQQdM7TNHTCM0Xo5YvXTpHXnDZ5ye4avMM0EH7inHC6/e8InQuKa2+qbPeEFj9h+jbs8x5pqgA6O69oBphE81dFoax3h5cvTUuOlYC3MeZ64J+sEzIuw7/6ZPgOcuvytxC4osjZWzoto05rbjo8w1QQfG4twnTCNsaD1peaxtjYdNx8ov2chcE3RgGE8x5uoSoXvwks84xuIk1nEQdMDsbu31ibBPPY/2ZyzjVflsr8NB0LPS+GyfadBWz6rG3zcLeitBE3QgrZ/kCUf19hbLYxmXF/8/zvDFm5YXOIGg/ZaWZ35TePbyO5a/XNk+yU3h3s4h5pqgA6e95/yc3BgmLCr2Pu7zuTEceo15JujASUovkTOvvH1fhKfGvi1hMVmWx6oyWYbqz4o9EPSs5BZv+GK1nbEWw9+lnsbNofFkY+JM3dI1LB71ap05JuiAMz5wjUkunJMvtcNjs73fKjKvBA0QNAgaIGiAoAGCBggaBA0QNEDQD1Lq6RbJ+/0FR4osf4ygQ+0fnDLYIrm/G3Mkgg7RoHPUwXciD0GHXtDJg/tlyW9fdiRPeTlBEzRBE7Sdgz61T7J/85IjecoIOuSCflQFnaUOvhMRdCgGPaCC/vV5R/IM7RX9UJ0Pbc8W0WurRVutvn1MWULQjvouUAWdqQ6+E8272yf6Bz1Te/8boo2ovay/prYdS8wmaPsHvVcyfjXqSDMK+quuHxGtfr1o8zMI2q4SVdDp6uA7keWgJ1xsEy0jn6BtGXS/CvqXI440726vf0FPnK1LSwnabhJU0Gm/GHGked+bRdCK9s4x0ZcXE7Tdgl6sDr4TzTZob9RvHhZtUR5B2ybovj2y+OcvOtK8E8+I3rLNV1e96MPqkd57x2cWtfEUxKZ7VYdc0PEq6EXq4DtRROk0u5caj+l21Yj+Vtf0Ua+tIGhbBN3bLAs/OedI0wY9YWGu6BcOTB315edEi04j6GAXp4JeoA6+E804aEN8lvdx3ZRRP15O0LYI+mdnHclS0IaspaK/O/l1tda5g6CDXawKOlUdfCeyHLTh4I7Jz9BvHLLdzWHoBX2ySVJ+OuxI4SXWgzaeO095c5icQ9DBLEYFnawOvhP5E7RxBtZvHJ086Pwigg7qoE98XZJ/8oIjha/089W1eqIx6Vm64jGCDmbRXQ3yqDr4TuTOX+HfvFxqJ2i7imqrk6Qfn3EkV1qBf5ccb09xyVG4nKCDmadxszOD/tGQ6PHWf7xIW7qcm0I7i6h6QhLVwXeahJs9fs2H3lY7edDGQiUe2wU3d/ZSSTACcJiYsXbr85FeoF6sHJs86MN1vFgJelFpEnf7hMT/8LSjRD5nMb6YDNHHplnPUbGKoG3xpOPMPscFHV5p4dds1XWx/uK+qWO+2qEWJ6UTtC2uo+s2StzHg44Re7dftLjMGZ2VtW3rvIv4p10XvX41y0ftwpWaIzH3BiTWiMEBIq90qnXOGyelt24XvU8t/r/RPbMvV9SlCAv8bSby7H6J/cEpRwj/8MSsP72672NZG38BHrJBh1VVSIyKwe7mfzQgrrmK+T21CU1ZKR/J2vat4eUOmf/9AVsL//Dk3MSsFihpq1cJ2xjY+Zl0daVEqyjsKkqdneck5isHRctdxkYzjngVPnpAoj/qt6WwO7O8dlY3iVrTFvU5VqawFZhTnnhkL5PIOycl6l6/rXiuHfE/5PE2746kWmqOsFmjE28Q6zdI5L0+2/DcUK+rjc1g1Ees3i1zT+yektbxtOiNm0SrqRIts0DYTjcUXrb0N0mk2uww6KndkdwV/DgQQU8nNkMixtrEo6IJZu6dNRwrgp7hUsrkJRJxtdO7R1wwCmvZznEiaItRqxul8IvtEqECCibu1lqOD0H7KSFLwtTmhhHqpcVD98Hz4tq6jmNC0LOkFue4dm+S8O8+730b91BcU6viVpRwLAh6Di9BildK2Hi79yVGwKj/RK5D9aIlZXEMCPoBULtw6js3iPs7XeJWwT1Qoy2iFxUz5wQdAGoRva5ewrhf7xS3OovOGfX2zjW0R7SSUuaYoB/O9bURn36kXlzqOtdlXCJYdVu9gn5ZfdPXUOPdr5l5JejgkVUo2qY1n//8Q2/j5198GLsRqTO5sZJNf+VZ78886Ed3egP2fnyawPUxQQMEDYIGCBogaICgAYIGQYeKssqt0nTgqDS3dtvCruZOSUnn9ThBmxgevST//Pd/beezv/xNVq1hwT9Bf0Ve0Rpbxjzh7sefEDFBf2n9lkZbB/3pHz8jYoL+UsKCIvnzX/9u26DHr14nYoK+39qaXfKHT/9kq5D/8a//yPWbdyQ+dRkRE7S5mORCiUtZagueuCUcM4IGQQMEDRA0QNAAQYOgAYIGCBogaICgQdAAQQMEDRA0QNAgaICgAYIGCBoEDRA0QNAAQQMEDYIGCBogaICgAYIGQQMEDRA0QNAAQYOgAYIGCBogaICgQdAAQQMEDcze/wAK1Q/vFaUTGgAAAABJRU5ErkJggg==">
     <meta name="apple-mobile-web-app-title" content="Kava">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- PWA Manifest in Ikona Generator -->
-    <script>
-        (function () {
-            function drawCoffeePng(size) {
-                var canvas = document.createElement('canvas');
-                canvas.width = size; canvas.height = size;
-                var ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#0f172a';
-                ctx.fillRect(0, 0, size, size);
-                ctx.fillStyle = '#10b981';
-                ctx.beginPath();
-                ctx.arc(size/2, size/2, size/3, 0, Math.PI * 2);
-                ctx.fill();
-                return canvas.toDataURL('image/png');
-            }
-
-            function setupPwa() {
-                try {
-                    var iconAny = drawCoffeePng(512);
-                    var manifest = {
-                        name: 'Odmor za kavo',
-                        short_name: 'Kava',
-                        description: 'Rotacija plačevanja kave med sodelavci',
-                        start_url: location.href.split('#')[0],
-                        display: 'standalone',
-                        background_color: '#0f172a',
-                        theme_color: '#0f172a',
-                        icons: [
-                            { src: iconAny, sizes: '512x512', type: 'image/png', purpose: 'any' }
-                        ]
-                    };
-                    var url = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/json' }));
-                    var link = document.querySelector('link[rel="manifest"]');
-                    if (!link) {
-                        link = document.createElement('link');
-                        link.rel = 'manifest';
-                        document.head.appendChild(link);
-                    }
-                    link.href = url;
-                } catch (e) {
-                    console.warn('PWA manifest napaka:', e);
-                }
-            }
-            setupPwa();
-
-            window.__pwaPrompt = null;
-            window.addEventListener('beforeinstallprompt', function (e) {
-                e.preventDefault();
-                window.__pwaPrompt = e;
-                window.dispatchEvent(new Event('pwa-state-changed'));
-            });
-            window.addEventListener('appinstalled', function () {
-                window.__pwaPrompt = null;
-                window.__pwaInstalled = true;
-                window.dispatchEvent(new Event('pwa-state-changed'));
-            });
-        })();
-    </script>
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        coffee: {
-                            dark: '#0f172a',
-                            card: '#1e293b',
-                            border: '#334155',
-                            accent: '#10b981',
-                            accentHover: '#059669',
-                            gold: '#f59e0b',
-                            info: '#3b82f6'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Outfit', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
 
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --primary: #f8fafc;
+            --text: #94a3b8;
+            --text-bright: #f1f5f9;
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #94a3b8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text);
+            margin: 0;
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
-        .font-display {
-            font-family: 'Outfit', sans-serif;
+
+        .container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 580px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            position: relative;
         }
-        [v-cloak] { display: none !important; }
+
+
+        .cup-icon { width: 1em; height: 1em; display: inline-block; flex-shrink: 0; vertical-align: -0.16em; color: var(--text); }
+        .cup-icon.lg { width: 26px; height: 26px; vertical-align: middle; }
+        .cup-icon.sm { width: 17px; height: 14px; color: var(--accent); vertical-align: middle; overflow: visible; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--text-bright);
+            font-size: 20px;
+            margin: 0;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            color: var(--text-bright);
+            font-weight: 600;
+        }
+
+        .status-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 18px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .status-box span {
+            font-size: 11px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            display: block;
+        }
+
+        .status-box strong {
+            font-size: 26px;
+            color: var(--text-bright);
+            display: block;
+            margin: 8px 0 10px 0;
+            font-weight: 900;
+        }
+
+        .next-person-info {
+            font-size: 12px;
+            color: var(--text);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 12px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-confirm { background: var(--accent); color: #0f172a; }
+        .btn-confirm:hover { background: #34d399; }
+
+        .btn-cant { background: #dc2626; color: white; }
+        .btn-cant:hover { background: #ef4444; }
+        .btn-cant svg { flex-shrink: 0; }
+
+        .btn-sponsor { background: var(--info); color: white; grid-column: span 2; }
+        .btn-sponsor:hover { background: #60a5fa; }
+
+        .btn-invite { background: #8b5cf6; color: white; grid-column: span 2; }
+        .btn-invite:hover { background: #a78bfa; }
+
+        .btn-undo { background: #334155; color: var(--text-bright); grid-column: span 2; }
+        .btn-undo:hover { background: #475569; }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--member-cols, 2), 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .member-card {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 60px;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .member-card.is-next { background: rgba(16, 185, 129, 0.05); border-color: var(--accent); }
+        .member-card.is-paid { background: rgba(59, 130, 246, 0.05); border-color: var(--info); }
+        .member-card.is-unavailable { background: rgba(239, 68, 68, 0.05); border-color: var(--danger); opacity: 0.7; }
+        .member-card.is-absent { background: rgba(15, 23, 42, 0.6); border-style: dashed; opacity: 0.4; filter: grayscale(80%); }
+
+        .member-name {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-bright);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-meta {
+            font-size: 11px;
+            color: var(--text);
+            margin-top: 4px;
+        }
+
+        .absent-toggle-btn {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text);
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .absent-toggle-btn:hover {
+            background: var(--card-border);
+            color: var(--text-bright);
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--card-border);
+            padding-top: 15px;
+            font-size: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .user-info span { font-weight: 700; color: var(--text-bright); }
+        .link-btn { color: var(--info); cursor: pointer; text-decoration: underline; margin-left: 5px; }
+
+        .icon-btn {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--text-bright);
+            transition: background 0.2s;
+        }
+        .icon-btn:hover { background: var(--card-border); }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 24px;
+            border-radius: 20px;
+            max-width: 820px;
+            width: 95%;
+            box-shadow: var(--shadow);
+            max-height: 90vh;
+            overflow-y: auto;
+            color: var(--text-bright);
+            box-sizing: border-box;
+        }
+
+        .modal h2 { margin-top: 0; color: var(--text-bright); font-size: 18px; }
         
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: #0f172a;
+            color: var(--text-bright);
+            font-size: 13px;
+            margin: 6px 0 12px 0;
+            box-sizing: border-box;
+            font-weight: 600;
+        }
+
+        label { font-size: 12px; font-weight: 700; color: var(--text); }
+
+        .admin-members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .admin-member-row {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .admin-member-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .admin-member-name-input { 
+            flex: 1; 
+            margin: 0 !important; 
+            padding: 4px 8px; 
+            font-size: 12px; 
+            height: 30px;
+        }
+
+        .admin-controls-inline { 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            flex-wrap: wrap; 
+        }
+
+        .mini-btn {
+            padding: 4px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .admin-section {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .round-badge {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--accent);
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            padding: 3px 10px;
+            min-width: 38px;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .install-btn {
+            display: none;
+        }
+        .install-btn.visible {
+            display: flex;
+        }
+
+        /* Ozek zaslon (telefon): manj robov, mreža vedno 2 stolpca za simetrijo */
+        @media (max-width: 480px) {
+            body { padding: 12px 6px; }
+            .container { padding: 16px; border-radius: 18px; }
+            h1 { font-size: 17px; }
+            .action-buttons { gap: 8px; }
+            .btn { padding: 11px; font-size: 12px; }
+            .members-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px;
+            }
+            .member-card { padding: 10px 12px; min-height: 54px; }
+            .member-name { font-size: 12.5px; }
+            .footer { font-size: 11px; }
+        }
+
+        @media (max-width: 360px) {
+            .members-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-300 min-h-screen flex flex-col antialiased">
+<body>
 
-    <div id="app" v-cloak class="flex-grow flex flex-col items-center justify-center p-3 sm:p-6">
-        
-        <div class="max-w-2xl w-full bg-slate-800/90 border border-slate-700/80 rounded-3xl p-4 sm:p-6 shadow-2xl relative backdrop-blur-md">
-            
-            <!-- GLAVA APLIKACIJE -->
-            <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-700/80">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl shadow-inner">
-                        <i class="fa-solid fa-mug-hot"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-display font-extrabold text-lg sm:text-xl text-white tracking-tight leading-none">
-                            Odmor za kavo
-                        </h1>
-                        <span class="text-xs text-slate-400 font-medium">Rotacija pogoščanja sodelavcev</span>
-                    </div>
-                </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="cupGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+    <symbol id="icon-cup" viewBox="120 100 325 360">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M214 172c-18-20 18-36 0-58M282 172c-18-20 18-36 0-58" stroke="currentColor" stroke-width="20" opacity=".55"/>
+        <path d="M348 258h20a44 44 0 0 1 0 88h-28" stroke="#10b981" stroke-width="26"/>
+        <path d="M170 438h156" stroke="currentColor" stroke-width="20"/>
+      </g>
+      <path d="M148 218h200v82a100 100 0 0 1-200 0z" fill="url(#cupGrad)"/>
+    </symbol>
+    <symbol id="icon-cup-sm" viewBox="138 206 298 252">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M348 258h20a44 44 0 0 1 0 88h-28" stroke="currentColor" stroke-width="30"/>
+        <path d="M170 438h156" stroke="currentColor" stroke-width="26"/>
+      </g>
+      <path d="M148 218h200v82a100 100 0 0 1-200 0z" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
 
-                <div class="flex items-center space-x-2">
-                    <span class="text-xs font-semibold px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-200">
-                        {{ currentDateFormatted }}
-                    </span>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full border" :class="syncStatus.class">
-                        {{ syncStatus.text }}
-                    </span>
-                </div>
-            </div>
+<div class="overlay" id="loginOverlay" style="display: flex;">
+    <div class="modal" style="text-align: center; max-width: 400px;">
+        <h2><svg class="cup-icon lg"><use href="#icon-cup"/></svg> Kdo se prijavlja?</h2>
+        <p style="font-size: 13px; color: var(--text);">Izberi svoje ime za sodelovanje v aplikaciji:</p>
+        <div id="firebaseSetupNotice" class="admin-section" style="display:none">Firebase CONFIG še ni nastavljen; glejte navodila.</div><div id="authActions"><button class="btn btn-confirm" style="width:100%;margin:8px 0" onclick="signInGoogle()">🔵 Nadaljuj z Google</button><button class="btn btn-sponsor" style="width:100%" onclick="signInAnonymous()">👤 Nadaljuj anonimno</button></div><div id="memberChooser" style="display:none"><p>Izberite profil ekipe:</p><select id="loginSelect"></select><button class="btn btn-confirm" style="width:100%;margin-top:10px" onclick="handleLogin()">Shrani profil</button></div>
+    </div>
+</div>
 
-            <!-- NEPRIJAVLJEN UPORABNIK -->
-            <div v-if="authReady && !currentUser" class="bg-slate-900/80 rounded-2xl border border-slate-700 p-6 sm:p-8 text-center my-4">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-4 text-2xl">
-                    <i class="fa-solid fa-user-lock"></i>
-                </div>
-                <h2 class="font-display font-bold text-xl text-white">Prijava v aplikacijo</h2>
-                <p class="text-xs sm:text-sm text-slate-400 mt-2 mb-6">Za sodelovanje pri kavi se prijavite z Google računom ali nadaljujte kot gost.</p>
-                
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <button @click="loginWithGoogle" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow">
-                        <i class="fa-brands fa-google text-red-500"></i> Prijava z Google
-                    </button>
-                    <button @click="openGuestModal" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow">
-                        <i class="fa-solid fa-user"></i> Prijava kot gost
-                    </button>
-                </div>
-            </div>
-
-            <!-- GLAVNI PREDEL KO JE UPORABNIK PRIJAVLJEN -->
-            <template v-else-if="authReady && currentUser">
-                
-                <!-- STATUS BOKS (KDO ČASTI) -->
-                <div class="bg-gradient-to-br from-emerald-500/10 via-slate-900/60 to-blue-500/5 border border-emerald-500/30 rounded-2xl p-5 text-center mb-6 shadow-inner">
-                    <span class="text-[11px] font-extrabold uppercase tracking-widest text-emerald-400 block">
-                        {{ todayPayer ? '⭐ Danes potrjeno časti:' : 'Na vrsti da časti:' }}
-                    </span>
-                    <strong class="font-display text-2xl sm:text-3xl font-black text-white block my-2 tracking-tight">
-                        {{ todayPayer || nextPerson }}
-                    </strong>
-
-                    <!-- GUMBI ZA AKCIJE -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-4">
-                        <button @click="confirmMyCoffee" class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow">
-                            <i class="fa-solid fa-circle-check"></i> Potrdujem rundo
-                        </button>
-                        <button @click="cantGiveCoffee" class="px-4 py-2.5 rounded-xl bg-red-600/90 hover:bg-red-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow">
-                            <i class="fa-solid fa-circle-xmark"></i> Danes ne morem
-                        </button>
-                        <button @click="sponsorCoffee" class="sm:col-span-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow">
-                            <i class="fa-solid fa-star"></i> Jaz častim danes (izven vrstnega reda)
-                        </button>
-                        <button @click="inviteToCoffee" class="sm:col-span-2 px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow">
-                            <i class="fa-solid fa-clock"></i> Povabi na kavo (Teams)
-                        </button>
-                        <button @click="undoLastAction" class="sm:col-span-2 px-4 py-2 rounded-xl bg-slate-700/80 hover:bg-slate-600 text-slate-200 font-semibold text-xs transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-rotate-left"></i> Razveljavi (Undo)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- MREŽA EKIPE -->
-                <div class="grid gap-3 mb-6" :style="{ gridTemplateColumns: `repeat(${gridColumnsCount}, minmax(0, 1fr))` }">
-                    <div v-for="member in teamMemberList" :key="member.name" 
-                         class="bg-slate-900/90 border rounded-2xl p-3.5 flex flex-col justify-between transition-all duration-200"
-                         :class="member.cardClass">
-                        
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-sm text-white truncate mr-1">{{ member.name }}</span>
-                            <span class="text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full whitespace-nowrap flex items-center gap-1">
-                                <i class="fa-solid fa-mug-hot text-[9px]"></i> {{ member.count }}
-                            </span>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-800">
-                            <span class="text-[11px] font-medium text-slate-400">{{ member.statusText }}</span>
-                            <button @click="toggleAbsence(member.name)" class="text-[10px] font-bold px-2 py-1 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition">
-                                {{ member.isUnavailable ? '❌ Odsoten' : '✔️ Prisoten' }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- NOGA / PROFIL IN SKRBNIŠTVO -->
-                <div class="flex flex-wrap items-center justify-between pt-4 border-t border-slate-700/80 gap-3 text-xs">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-slate-400">Prijavljen:</span>
-                        <strong class="text-white font-bold">{{ userName || currentUser.displayName || currentUser.email }}</strong>
-                        <span v-if="currentUser.isAnonymous" class="text-[10px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded">(Gost)</span>
-                        <button @click="openProfileModal" class="text-blue-400 hover:underline ml-1">(Profil)</button>
-                        <button @click="logout" class="text-red-400 hover:underline ml-1">(Odjava)</button>
-                    </div>
-
-                    <div class="flex items-center space-x-2">
-                        <button v-if="canInstall" @click="installApp" class="px-2.5 py-1.5 rounded-xl bg-slate-700 text-white font-semibold hover:bg-slate-600 transition flex items-center gap-1">
-                            <i class="fa-solid fa-download"></i> Namesti
-                        </button>
-                        <button v-if="isAdmin" @click="openAdminModal" class="p-2 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/30 transition" title="Skrbniške nastavitve">
-                            <i class="fa-solid fa-gear text-sm"></i>
-                        </button>
-                    </div>
-                </div>
-
-            </template>
+<div class="container">
+    <div class="header">
+        <h1><svg class="cup-icon lg"><use href="#icon-cup"/></svg> Odmor za kavo</h1>
+        <div class="header-info">
+            <span id="dateBadge" class="badge">-</span>
+            <span id="syncStatus" class="badge">Nalagam...</span>
         </div>
-
-        <!-- MODAL: SKRBNIŠKE NASTAVITVE (Samo za robi.filipsek@gmail.com) -->
-        <div v-if="showAdminModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl max-w-3xl w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto text-slate-200">
-                
-                <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-700">
-                    <h2 class="font-display font-bold text-lg text-white flex items-center gap-2">
-                        <i class="fa-solid fa-user-shield text-emerald-400"></i> Skrbniške nastavitve
-                    </h2>
-                    <button @click="showAdminModal = false" class="text-slate-400 hover:text-white text-lg">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-
-                <!-- TABI V ADMIN MODALU -->
-                <div class="flex space-x-2 border-b border-slate-700 pb-3 mb-5">
-                    <button @click="adminTab = 'team'" :class="adminTab === 'team' ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition">
-                        <i class="fa-solid fa-users mr-1"></i> Urejanje ekipe
-                    </button>
-                    <button @click="adminTab = 'settings'" :class="adminTab === 'settings' ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition">
-                        <i class="fa-solid fa-sliders mr-1"></i> Prikaz & Teams
-                    </button>
-                    <button @click="adminTab = 'users'" :class="adminTab === 'users' ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-slate-400 hover:text-white'" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition">
-                        <i class="fa-solid fa-chart-line mr-1"></i> Aktivnost uporabnikov ({{ onlineCount }})
-                    </button>
-                </div>
-
-                <!-- TAB 1: UREJANJE EKIPE -->
-                <div v-show="adminTab === 'team'" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto p-1">
-                        <div v-for="(member, idx) in team" :key="idx" class="bg-slate-900 border border-slate-700 rounded-xl p-3 space-y-2">
-                            <div class="flex items-center justify-between gap-2">
-                                <input type="text" v-model="team[idx]" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white font-bold w-full focus:outline-none focus:border-emerald-500">
-                                <button @click="removeTeamMember(idx)" class="p-1.5 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 text-xs" title="Odstrani">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-
-                            <div class="flex items-center justify-between text-xs pt-1">
-                                <span class="text-slate-400">Runde: <strong>{{ counts[member] || 0 }}</strong></span>
-                                <div class="flex items-center gap-1">
-                                    <button @click="changeCount(member, -1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs">-</button>
-                                    <button @click="changeCount(member, 1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs">+</button>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-wrap gap-1 pt-1 border-t border-slate-800 text-[10px]">
-                                <button @click="setAsNext(idx)" class="px-2 py-1 rounded bg-blue-600/30 text-blue-300 border border-blue-500/30 font-semibold">👉 Naslednji</button>
-                                <button @click="togglePaidStatus(member)" :class="currentRoundPaid[member] ? 'bg-emerald-600/30 text-emerald-300' : 'bg-slate-800 text-slate-400'" class="px-2 py-1 rounded font-semibold">Že dal</button>
-                                <button @click="toggleAbsentStatus(member)" :class="absent[member] ? 'bg-red-600/30 text-red-300' : 'bg-slate-800 text-slate-400'" class="px-2 py-1 rounded font-semibold">Dopust</button>
-                                <button @click="moveMember(idx, -1)" class="px-1.5 py-1 rounded bg-slate-800 text-slate-300">⬆️</button>
-                                <button @click="moveMember(idx, 1)" class="px-1.5 py-1 rounded bg-slate-800 text-slate-300">⬇️</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-2 pt-2">
-                        <input type="text" v-model="newMemberName" placeholder="Ime novega sodelavca" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white flex-grow focus:outline-none focus:border-emerald-500">
-                        <button @click="addTeamMember" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">➕ Dodaj</button>
-                    </div>
-                </div>
-
-                <!-- TAB 2: NASTAVITVE PRIKAZA IN TEAMS -->
-                <div v-show="adminTab === 'settings'" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Število stolpcev prikaza sodelavcev:</label>
-                        <select v-model="gridColumnsSetting" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
-                            <option value="auto">Samodejno (sodo/liho število oseb)</option>
-                            <option value="2">Vedno 2 stolpca</option>
-                            <option value="3">Vedno 3 stolpci</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Power Automate Webhook URL za Teams:</label>
-                        <input type="text" v-model="teamsWebhookUrl" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Sporočilo ob vabilu na kavo (⏰):</label>
-                        <input type="text" v-model="teamsMsgInvite" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
-                        <span class="text-[10px] text-slate-400">Uporabi {ime} za ime vabitelja in {cas} za čas kave.</span>
-                    </div>
-                </div>
-
-                <!-- TAB 3: AKTIVNOST UPORABNIKOV -->
-                <div v-show="adminTab === 'users'" class="space-y-4">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                        <div class="p-3 rounded-xl bg-slate-900 border border-slate-700">
-                            <span class="text-slate-400 block">Trenutno aktivni</span>
-                            <strong class="text-emerald-400 text-lg font-bold">{{ onlineCount }}</strong>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-900 border border-slate-700">
-                            <span class="text-slate-400 block">Vsi uporabniki</span>
-                            <strong class="text-white text-lg font-bold">{{ userDirectory.length }}</strong>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-900 border border-slate-700">
-                            <span class="text-slate-400 block">Danes</span>
-                            <strong class="text-blue-400 text-lg font-bold">{{ usersToday }}</strong>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-900 border border-slate-700">
-                            <span class="text-slate-400 block">Skupaj obiskov</span>
-                            <strong class="text-amber-400 text-lg font-bold">{{ totalVisits }}</strong>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" v-model="userSearch" placeholder="Išči uporabnika..." class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white flex-grow focus:outline-none">
-                        <select v-model="userTypeFilter" class="bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
-                            <option value="all">Vsi</option>
-                            <option value="google">Google</option>
-                            <option value="guest">Gostje</option>
-                            <option value="online">Aktivni zdaj</option>
-                        </select>
-                    </div>
-
-                    <!-- SEZNAM UPORABNIKOV -->
-                    <div class="max-h-64 overflow-y-auto space-y-2 border border-slate-700 rounded-xl p-2 bg-slate-900/60">
-                        <div v-for="u in filteredUsers" :key="u.id" class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full" :class="u.online ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'"></span>
-                                    <strong class="text-white font-bold">{{ u.name || 'Neznano ime' }}</strong>
-                                    <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">{{ u.isAnonymous ? 'Gost' : 'Google' }}</span>
-                                </div>
-                                <div class="text-[11px] text-slate-400 mt-0.5">{{ u.email || 'Brez e-pošte' }}</div>
-                                <div class="text-[10px] text-slate-500 mt-1">
-                                    Zadnji obisk: {{ fmtTs(u.lastSeenMs) }} | Obiskov: {{ u.visitCount || 0 }}
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <button @click="showUserHistory(u)" class="px-2.5 py-1 rounded-lg bg-blue-600/30 text-blue-300 font-semibold hover:bg-blue-600/40">Zgodovina</button>
-                                <button @click="resetUserTracking(u)" class="px-2.5 py-1 rounded-lg bg-amber-600/30 text-amber-300 font-semibold hover:bg-amber-600/40">Ponastavi</button>
-                                <button @click="deleteUserTracking(u)" class="px-2.5 py-1 rounded-lg bg-red-600/30 text-red-300 font-semibold hover:bg-red-600/40">Izbriši</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SEJA IN ZGODOVINA AKTIVNOSTI -->
-                    <div v-if="selectedUserHistory" class="p-3 bg-slate-900 rounded-xl border border-slate-700 space-y-2 text-xs">
-                        <div class="flex justify-between items-center">
-                            <strong class="text-white">Aktivnosti za: {{ selectedUserHistory.name }}</strong>
-                            <button @click="selectedUserHistory = null" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                        <div class="max-h-40 overflow-y-auto space-y-1.5">
-                            <div v-for="(s, idx) in selectedUserSessions" :key="idx" class="p-2 rounded bg-slate-800/80 border border-slate-700">
-                                <div class="text-[10px] text-slate-400 font-semibold mb-1">Seja: {{ fmtTs(s.startedAtMs) }}</div>
-                                <div v-for="(act, ai) in s.activities" :key="ai" class="text-[11px] text-emerald-300 flex items-start gap-1">
-                                    <i class="fa-solid fa-bolt text-[9px] mt-1 text-emerald-400"></i>
-                                    <span>{{ act.text }} <span class="text-slate-500 text-[9px]">({{ fmtTs(act.atMs) }})</span></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pt-4 border-t border-slate-700 flex justify-end">
-                    <button @click="saveAdminSettings" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow">
-                        💾 Shrani vse spremembe
-                    </button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- MODAL: GOST PRED PRIJAVO -->
-        <div v-if="showGuestModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-3 text-xl">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <h3 class="font-display font-bold text-lg text-white">Prijava kot gost</h3>
-                <p class="text-xs text-slate-400 my-2">Vnesite vaše ime in priimek (vsaj 3 črke za ime in 3 za priimek).</p>
-                
-                <input type="text" v-model="guestName" @keyup.enter="confirmGuest" placeholder="npr. Janez Novak" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white my-3 focus:outline-none focus:border-emerald-500">
-                <p v-if="guestError" class="text-[11px] text-red-400 mb-3">{{ guestError }}</p>
-
-                <div class="flex gap-2">
-                    <button @click="showGuestModal = false" class="flex-1 py-2 rounded-xl bg-slate-700 text-slate-300 text-xs font-semibold">Prekliči</button>
-                    <button @click="confirmGuest" class="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">Nadaljuj</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODAL: UREJANJE PROFILA -->
-        <div v-if="showProfileModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-            <div class="bg-slate-800 border border-slate-700 rounded-3xl max-w-sm w-full p-6 shadow-2xl">
-                <h3 class="font-display font-bold text-lg text-white mb-3">Moj profil</h3>
-                
-                <label class="block text-xs font-bold text-slate-300 mb-1">Prikazano ime:</label>
-                <input type="text" v-model="profileName" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white mb-4 focus:outline-none focus:border-emerald-500">
-
-                <div class="flex gap-2 justify-end">
-                    <button @click="showProfileModal = false" class="px-4 py-2 rounded-xl bg-slate-700 text-slate-300 text-xs font-semibold">Prekliči</button>
-                    <button @click="saveProfile" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">Shrani</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TOAST OBVESTILA -->
-        <div v-if="toast.show" class="fixed bottom-5 right-5 z-50 max-w-sm w-full transition-all duration-300">
-            <div :class="toast.type === 'error' ? 'bg-red-900 border-red-700' : 'bg-slate-800 border-emerald-500'" class="p-4 rounded-2xl shadow-2xl border text-white flex items-center justify-between gap-3 text-xs">
-                <div class="flex items-center gap-2">
-                    <i :class="toast.type === 'error' ? 'fa-circle-xmark text-red-400' : 'fa-circle-check text-emerald-400'" class="fa-solid text-base"></i>
-                    <div>
-                        <strong class="block font-bold">{{ toast.title }}</strong>
-                        <span class="text-slate-300">{{ toast.message }}</span>
-                    </div>
-                </div>
-                <button @click="toast.show = false" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-        </div>
-
     </div>
 
-    <!-- VUE 3 + FIREBASE MODULES -->
-    <script type="module">
-        import { createApp, ref, computed, onMounted, watch } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.prod.js';
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import {
-            getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect,
-            signInAnonymously, signOut, onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import {
-            getFirestore, doc, collection, onSnapshot, setDoc, deleteDoc,
-            getDoc, getDocs, query, where, serverTimestamp, increment, arrayUnion
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <div class="status-box">
+        <span id="statusSubtitle">Na vrsti da časti:</span>
+        <strong id="currentPersonName">-</strong>
+        <div class="action-buttons">
+            <button class="btn btn-confirm" onclick="confirmMyCoffee()">✅ Potrjujem rundo</button>
+            <button class="btn btn-cant" onclick="cantGiveCoffee()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg> Danes ne morem</button>
+            <button class="btn btn-sponsor" onclick="sponsorCoffee()">⭐ Jaz častim danes (izven vrstnega reda)</button>
+            <button class="btn btn-invite" onclick="inviteToCoffee()">⏰ Povabi na kavo (Teams)</button>
+            <button class="btn btn-undo" onclick="undoLastAction()">↩️ Razveljavi (Undo)</button>
+        </div>
+    </div>
 
-        // FIREBASE PODATKI ZA kava-inel
-        const firebaseConfig = {
-            apiKey: "AIzaSyDbRouSg-8ANONlm7bmTh6BSDSx6nf2sxQ",
-            authDomain: "kava-inel.firebaseapp.com",
-            projectId: "kava-inel",
-            storageBucket: "kava-inel.firebasestorage.app",
-            messagingSenderId: "675983563038",
-            appId: "1:675983563038:web:f16fe25249691cfd54110f"
+    <div class="members-grid" id="membersGrid"></div>
+
+    <div class="footer">
+        <div class="user-info">
+            Prijavljen: <span id="loggedInUserDisplay">-</span>
+            <button class="link-btn" onclick="showUserChooser()">(Profil)</button><button class="link-btn" onclick="signOutCoffee()">(Odjava)</button>
+        </div>
+        <div style="display: flex; gap: 6px;">
+            <button class="icon-btn install-btn" id="installBtn" onclick="handleInstallClick()" title="Namesti aplikacijo na telefon">📲</button>
+            <button class="icon-btn" onclick="syncWithCloud(null, true)" title="Osveži podatke s strežnika">🔄</button>
+            <button class="icon-btn" id="settingsBtn" onclick="openAdminModal()" title="Nastavitve" style="display: none;">⚙️</button>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="adminModal">
+    <div class="modal">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 10px; margin-bottom: 15px;">
+            <h2 style="margin:0;">⚙️ Skrbniške nastavitve</h2>
+            <span style="cursor: pointer; font-size: 18px; font-weight: bold; color:var(--text);" onclick="closeAdminModal()">✕</span>
+        </div>
+
+        <div id="settingsContent">
+            <h3 style="font-size: 13px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 1px;">Urejanje ekipe</h3>
+            <div id="adminMembersList" class="admin-members-grid"></div>
+
+            <div style="display: flex; gap: 6px; margin-bottom: 20px;" id="addMemberBox">
+                <input type="text" id="newMemberNameInput" placeholder="Ime novega sodelavca" style="margin:0; flex:1;">
+                <button class="btn btn-confirm" style="padding: 10px 15px;" onclick="addMember()">➕ Dodaj</button>
+            </div>
+
+            <h3 style="font-size: 13px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 1px;">🔲 Postavitev mreže</h3>
+            <div class="admin-section">
+                <label for="gridColumnsSelect">Število stolpcev prikaza sodelavcev:</label>
+                <select id="gridColumnsSelect">
+                    <option value="auto">Samodejno (glede na sodo/liho število oseb)</option>
+                    <option value="2">Vedno 2 stolpca</option>
+                    <option value="3">Vedno 3 stolpci</option>
+                </select>
+            </div>
+
+            <h3 style="font-size: 13px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 1px;">🔔 Teams Webhook in sporočilo</h3>
+            <div class="admin-section">
+                <label for="teamsWebhookInput">Cloud Function URL za Teams obvestila:</label>
+                <input type="url" id="teamsWebhookInput" placeholder="https://REGION-PROJECT.cloudfunctions.net/sendCoffeeNotification">
+
+
+
+                <label for="teamsMsgInviteInput">Sporočilo ob vabilu na kavo (⏰):</label>
+                <input type="text" id="teamsMsgInviteInput">
+            </div>
+            <h3 style="font-size:13px;color:var(--text-bright)">🔐 Zadnje prijave in aktivnosti</h3><div id="adminActivity" class="admin-section" style="max-height:260px;overflow:auto"></div>
+            <button class="btn btn-confirm" style="width: 100%; margin-top: 5px; padding: 14px; font-size: 14px;" onclick="saveAllAdminChanges()">💾 Shrani vse spremembe</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+    const DEFAULT_TEAM = ["Filipšek", "Fidler", "Pirnat", "Oprešnik", "Govedić", "Fendre", "Šetina", "Vrtačnik", "Gračner", "Rihter"];
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDbRouSg-8ANONlm7bmTh6BSDSx6nf2sxQ",
+        authDomain: "kava-inel.firebaseapp.com",
+        projectId: "kava-inel",
+        storageBucket: "kava-inel.firebasestorage.app",
+        messagingSenderId: "675983563038",
+        appId: "1:675983563038:web:f16fe25249691cfd54110f"
+    };
+    const ADMIN_EMAIL='robi.filipsek@gmail.com';
+    const configMissing=firebaseConfig.apiKey.startsWith('VSTAVI_'); let auth=null,db=null,stateRef=null,activityRef=null,currentUser=null;
+    if(!configMissing){firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();stateRef=db.collection('appState').doc('coffee');activityRef=db.collection('activities');}
+    let teamsWebhookUrl='';
+    let teamsMsgInvite = "☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!";
+
+    let team = [...DEFAULT_TEAM];
+    let counts = {};
+    let absent = {};
+    let currentRoundPaid = {};
+    let dailyUnavailable = {}; 
+    let todayPayer = null;
+    let currentIndex = 0;
+    let lastRotationDate = "";
+    
+    let loggedInUser = "";
+    let appTimestamp = Date.now();
+    let syncTimer = null;
+    let historyStack = [];
+    let gridColumnsSetting = "auto"; // "auto" | "2" | "3"
+
+    async function sendTeamsNotification(message) { if(!teamsWebhookUrl){console.info('Teams Function URL še ni nastavljen.');return;} try { const token=await auth.currentUser.getIdToken(); await fetch(teamsWebhookUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({message})}); } catch(e){ console.error('Napaka Teams obvestila',e); } }
+    function saveStateSnapshot() {
+        historyStack.push({
+            team: [...team],
+            counts: { ...counts },
+            absent: { ...absent },
+            currentRoundPaid: { ...currentRoundPaid },
+            dailyUnavailable: { ...dailyUnavailable },
+            todayPayer: todayPayer,
+            currentIndex: currentIndex,
+            lastRotationDate: lastRotationDate
+        });
+        if (historyStack.length > 20) historyStack.shift();
+    }
+
+    function undoLastAction() {
+        if (historyStack.length === 0) {
+            alert("Ni prejšnjih dejanj za povrnitev.");
+            return;
+        }
+        const previousState = historyStack.pop();
+        team = previousState.team;
+        counts = previousState.counts;
+        absent = previousState.absent;
+        currentRoundPaid = previousState.currentRoundPaid;
+        dailyUnavailable = previousState.dailyUnavailable;
+        todayPayer = previousState.todayPayer || null;
+        currentIndex = previousState.currentIndex;
+        lastRotationDate = previousState.lastRotationDate;
+
+        clampIndex();
+        renderUI();
+        pushToCloud();
+        alert("Stanje je bilo uspešno povrnjeno!");
+    }
+
+    function init(){loadLocalStorage();setupLoginDropdown();if(configMissing)document.getElementById('firebaseSetupNotice').style.display='block';if(!auth){renderUI();return;}auth.onAuthStateChanged(user=>{currentUser=user;if(user){loggedInUser=localStorage.getItem('coffee_profile_name')||user.displayName||'';document.getElementById('authActions').style.display=loggedInUser?'none':'block';document.getElementById('memberChooser').style.display=loggedInUser?'none':'block';document.getElementById('loggedInUserDisplay').innerText=loggedInUser||user.email||'Gost';document.getElementById('loginOverlay').style.display=loggedInUser?'none':'flex';document.getElementById('settingsBtn').style.display=adminUser()?'flex':'none';syncWithCloud(()=>{logActivity('sign_in');},true);}else{loggedInUser='';document.getElementById('loginOverlay').style.display='flex';document.getElementById('authActions').style.display='block';document.getElementById('memberChooser').style.display='none';renderUI();}});setInterval(()=>{if(auth.currentUser)syncWithCloud(null,false);},60000);}
+
+    function clampIndex() {
+        if (team.length === 0) {
+            currentIndex = 0;
+            return;
+        }
+        if (currentIndex < 0 || currentIndex >= team.length) {
+            currentIndex = Math.max(0, Math.min(currentIndex, team.length - 1));
+        }
+    }
+
+    function loadLocalStorage() {
+        try {
+            const saved = localStorage.getItem('COFFEE_APP_STATE_NO_TEAMS');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.team?.length > 0) team = data.team;
+                if (data.counts) counts = data.counts;
+                if (data.absent) absent = data.absent;
+                if (data.currentRoundPaid) currentRoundPaid = data.currentRoundPaid;
+                if (data.dailyUnavailable) dailyUnavailable = data.dailyUnavailable;
+                if (data.todayPayer !== undefined) todayPayer = data.todayPayer;
+                if (typeof data.currentIndex === 'number') currentIndex = data.currentIndex;
+                if (data.lastRotationDate) lastRotationDate = data.lastRotationDate;
+                if (data.timestamp) appTimestamp = data.timestamp;
+                
+                if (data.teamsMsgInvite !== undefined) teamsMsgInvite = data.teamsMsgInvite; if(data.teamsWebhookUrl!==undefined)teamsWebhookUrl=data.teamsWebhookUrl; if(data.teamsWebhookUrl!==undefined)teamsWebhookUrl=data.teamsWebhookUrl;
+                loggedInUser = localStorage.getItem('coffee_profile_name') || ''; 
+                if (data.gridColumnsSetting !== undefined) gridColumnsSetting = data.gridColumnsSetting;
+            }
+        } catch(e) {}
+
+        clampIndex();
+        team.forEach(name => {
+            if (!(name in counts)) counts[name] = 0;
+            if (!(name in absent)) absent[name] = false;
+            if (!(name in currentRoundPaid)) currentRoundPaid[name] = false;
+            if (!(name in dailyUnavailable)) dailyUnavailable[name] = false;
+        });
+    }
+
+    function saveLocalStorage() {
+        clampIndex();
+        const state = { team, counts, absent, currentRoundPaid, dailyUnavailable, todayPayer, currentIndex, lastRotationDate, timestamp: appTimestamp, teamsWebhookUrl, teamsMsgInvite, loggedInUser, gridColumnsSetting };
+        localStorage.setItem('COFFEE_APP_STATE_NO_TEAMS', JSON.stringify(state));
+    }
+
+    function setupLoginDropdown() {
+        const select = document.getElementById('loginSelect');
+        if (!select) return;
+        select.innerHTML = '';
+        (team.length > 0 ? team : DEFAULT_TEAM).forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.innerText = name;
+            select.appendChild(opt);
+        });
+        if (loggedInUser && team.includes(loggedInUser)) {
+            select.value = loggedInUser;
+        }
+    }
+
+    function handleLogin(){if(!auth?.currentUser)return alert('Najprej se prijavite.');loggedInUser=document.getElementById('loginSelect').value;localStorage.setItem('coffee_profile_name',loggedInUser);document.getElementById('loggedInUserDisplay').innerText=loggedInUser;document.getElementById('loginOverlay').style.display='none';renderUI();pushToCloud();logActivity('profile_selected',{name:loggedInUser});}
+
+    function openLoginModal(){showUserChooser();}
+
+    function checkDateRollover() {
+        const now = new Date();
+        const todayStr = now.toDateString();
+        let needsCloudPush = false;
+
+        const dateBadge = document.getElementById('dateBadge');
+        if (dateBadge) {
+            dateBadge.innerText = now.toLocaleDateString('sl-SI', { weekday: 'short', day: 'numeric', month: 'numeric' });
+        }
+
+        if (lastRotationDate && lastRotationDate !== todayStr) {
+            team.forEach(name => { dailyUnavailable[name] = false; });
+            todayPayer = null;
+            needsCloudPush = true;
+        }
+        
+        lastRotationDate = todayStr;
+        saveLocalStorage();
+        if (needsCloudPush) pushToCloud();
+    }
+
+    function isPersonValid(name) {
+        return !absent[name] && !dailyUnavailable[name];
+    }
+
+    // Poišče indeks "najbolj pravičnega" upravičenega člana za naslednjo rundo:
+    // prednost ima tisti z manj rundami (counts), pri izenačenju pa vrstni red rotacije
+    // (najbližji naprej od currentIndex). Če requireUnpaid=true, upošteva samo tiste,
+    // ki v tem krogu (currentRoundPaid) še niso plačali.
+    function findFairestEligibleIndex(requireUnpaid) {
+        if (team.length === 0) return -1;
+        let candidates = [];
+        for (let i = 0; i < team.length; i++) {
+            let idx = (currentIndex + i) % team.length;
+            let name = team[idx];
+            if (!isPersonValid(name)) continue;
+            if (requireUnpaid && currentRoundPaid[name]) continue;
+            candidates.push({ idx, order: i, count: counts[name] || 0 });
+        }
+        if (candidates.length === 0) return -1;
+        candidates.sort((a, b) => (a.count !== b.count) ? a.count - b.count : a.order - b.order);
+        return candidates[0].idx;
+    }
+
+    function getNextEligiblePerson() {
+        if (team.length === 0) return "-";
+        clampIndex();
+
+        let idx = findFairestEligibleIndex(true);
+        if (idx !== -1) return team[idx];
+
+        idx = findFairestEligibleIndex(false);
+        if (idx !== -1) return team[idx];
+
+        return "-";
+    }
+
+    function advanceToNextEligiblePerson() {
+        if (team.length === 0) return;
+        clampIndex();
+
+        let idx = findFairestEligibleIndex(true);
+        if (idx !== -1) { currentIndex = idx; return; }
+
+        idx = findFairestEligibleIndex(false);
+        if (idx !== -1) { currentIndex = idx; return; }
+    }
+
+    function checkRoundCompletion() {
+        // Krog velja za zaključen, ko so vsi trenutno RAZPOLOŽLJIVI člani (torej
+        // niso ne dolgotrajno odsotni ne danes nedostopni) plačali svojo rundo.
+        // Če ravno zadnji "dolžnik" postane nedostopen/odsoten, se krog kljub temu
+        // pravilno zaključi in začne nov krog - namesto da bi vrsta pomotoma skočila
+        // na nekoga, ki je to rundo že plačal.
+        const availableMembers = team.filter(isPersonValid);
+        if (availableMembers.length > 0 && availableMembers.every(m => currentRoundPaid[m])) {
+            team.forEach(m => { currentRoundPaid[m] = false; });
+
+            // Kdor je trenutno na daljšem dopustu/bolniški (absent), je ravnokar "zamudil"
+            // cel krog rund ostalih. Da po vrnitvi ne bo v zaostanku (in posledično
+            // nesorazmerno pogosto na vrsti zaradi manjšega št. rund), se mu za vsak
+            // tak zamujen krog samodejno prišteje ena runda.
+            team.forEach(m => {
+                if (absent[m]) {
+                    counts[m] = (counts[m] || 0) + 1;
+                }
+            });
+
+            return true;
+        }
+        return false;
+    }
+
+    function fetchCloudRecord(){if(!stateRef||!auth?.currentUser)return Promise.reject(Error('Prijava/Firebase manjka'));return stateRef.get().then(s=>s.exists?s.data():null);}
+    function syncWithCloud(done,force=false){const el=document.getElementById('syncStatus');if(!auth?.currentUser){if(el)el.innerText=configMissing?'⚙️ Nastavite Firebase':'🔐 Prijava';return;}if(el&&force)el.innerText='⏳ Nalagam...';fetchCloudRecord().then(d=>{if(d){if(force||!d.timestamp||d.timestamp>appTimestamp){if(d.team?.length)team=d.team;if(d.counts)counts=d.counts;if(d.absent)absent=d.absent;if(d.currentRoundPaid)currentRoundPaid=d.currentRoundPaid;if(d.dailyUnavailable)dailyUnavailable=d.dailyUnavailable;if(d.todayPayer!==undefined)todayPayer=d.todayPayer;if(typeof d.currentIndex==='number')currentIndex=d.currentIndex;if(d.lastRotationDate)lastRotationDate=d.lastRotationDate;if(d.teamsMsgInvite!==undefined)teamsMsgInvite=d.teamsMsgInvite;if(d.gridColumnsSetting!==undefined)gridColumnsSetting=d.gridColumnsSetting;appTimestamp=d.timestamp||Date.now();clampIndex();saveLocalStorage();}}else pushToCloud();if(el)el.innerText='✅ Sinhronizirano';setupLoginDropdown();checkDateRollover();renderUI();if(done)done(true);}).catch(err=>{console.error(err);if(el)el.innerText='⚠️ Brez povezave';renderUI();if(done)done(false);});}
+    function performCloudAction(fn,done,mergeCounts=true){if(!auth?.currentUser){alert('Za uporabo se prijavite.');return;}fetchCloudRecord().then(d=>{if(mergeCounts&&d?.counts)for(const k in d.counts)counts[k]=Math.max(counts[k]||0,d.counts[k]||0);fn();pushToCloud(done);}).catch(()=>{fn();pushToCloud(done);});logActivity('coffee_action');}
+    function pushToCloud(done){if(syncTimer)clearTimeout(syncTimer);syncTimer=setTimeout(()=>{appTimestamp=Date.now();clampIndex();saveLocalStorage();if(!stateRef||!auth?.currentUser){if(done)done(false);return;}stateRef.set({team,counts,absent,currentRoundPaid,dailyUnavailable,todayPayer,currentIndex,lastRotationDate,timestamp:appTimestamp,teamsMsgInvite,gridColumnsSetting,teamsWebhookUrl,updatedBy:auth.currentUser.uid}).then(()=>{let s=document.getElementById('syncStatus');if(s)s.innerText='✅ Sinhronizirano';if(done)done(true);}).catch(err=>{console.error(err);if(done)done(false);});},200);}
+    function adminUser(){return !!currentUser&&currentUser.emailVerified&&(currentUser.email||'').toLowerCase()===ADMIN_EMAIL;}
+    function logActivity(type,details={}){let u=auth?.currentUser;if(!u||!activityRef)return;activityRef.add({uid:u.uid,email:u.email||null,displayName:u.displayName||loggedInUser||null,mode:u.isAnonymous?'anonymous':'google',type,details,createdAt:firebase.firestore.FieldValue.serverTimestamp(),clientTime:new Date().toISOString()}).catch(console.warn);}
+    function signInGoogle(){if(!auth)return alert('Vstavite Firebase CONFIG.');auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert(e.message));}
+    function signInAnonymous(){if(!auth)return alert('Vstavite Firebase CONFIG.');auth.signInAnonymously().catch(e=>alert(e.message));}
+    function signOutCoffee(){auth?.signOut();loggedInUser='';}
+    function showUserChooser(){document.getElementById('loginOverlay').style.display='flex';document.getElementById('authActions').style.display='none';document.getElementById('memberChooser').style.display='block';}
+    function loadAdminActivity(){let box=document.getElementById('adminActivity');if(!box||!adminUser())return;activityRef.orderBy('createdAt','desc').limit(100).get().then(s=>{box.innerHTML='';s.forEach(d=>{let x=d.data(),r=document.createElement('div');r.className='admin-section';r.textContent=(x.createdAt?.toDate?.().toLocaleString('sl-SI')||x.clientTime)+' · '+(x.email||x.displayName||x.uid)+' · '+x.type+' · '+x.mode;box.appendChild(r);});}).catch(e=>box.textContent=e.message);}
+
+    function confirmMyCoffee() {
+        const active = todayPayer || getNextEligiblePerson();
+        if (active === "-") {
+            alert("Trenutno ni dostopnih članov za kavo.");
+            return;
+        }
+
+        if (confirm(`Ali potrjuješ, da bo ${active} danes ob 12:00 dal za kavo?`)) {
+            performCloudAction(() => {
+                saveStateSnapshot();
+                counts[active] = (counts[active] || 0) + 1;
+                currentRoundPaid[active] = true;
+                todayPayer = active;
+                dailyUnavailable[active] = false; 
+
+                checkRoundCompletion();
+                advanceToNextEligiblePerson();
+
+                renderUI();
+            }, (success) => {
+                if (success) {
+                    alert("Runda uspešno potrjena in sinhronizirana!");
+                }
+            });
+        }
+    }
+
+    function cantGiveCoffee() {
+        const active = getNextEligiblePerson();
+        if (active === "-") {
+            alert("Trenutno ni dostopnih članov za kavo.");
+            return;
+        }
+
+        if (confirm(`Označi, da ${active} danes ne more dati za kavo?`)) {
+            performCloudAction(() => {
+                saveStateSnapshot();
+                dailyUnavailable[active] = true; 
+                currentRoundPaid[active] = false;
+                
+                checkRoundCompletion();
+                advanceToNextEligiblePerson(); 
+                renderUI();
+            }, (success) => {
+                const newActive = getNextEligiblePerson();
+                if (success) {
+                    alert("Zabeleženo, naslednji je na vrsti.");
+                }
+            });
+        }
+    }
+
+    function sponsorCoffee() {
+        if (!loggedInUser) {
+            alert("Najprej se prijavi!");
+            return;
+        }
+        if (confirm(`Ali potrjuješ, da ${loggedInUser} danes prostovoljno časti kavo?`)) {
+            performCloudAction(() => {
+                saveStateSnapshot();
+                // Kdo bi moral biti danes na vrsti PRED to častitko
+                const rightfulNext = getNextEligiblePerson();
+                const isInTurn = (loggedInUser === rightfulNext);
+
+                counts[loggedInUser] = (counts[loggedInUser] || 0) + 1;
+                currentRoundPaid[loggedInUser] = true;
+                todayPayer = loggedInUser;
+                dailyUnavailable[loggedInUser] = false;
+                
+                checkRoundCompletion();
+
+                // Vrsto pomaknemo naprej samo, če je častil tisti, ki je bil dejansko na vrsti.
+                // Če je nekdo počastil izven vrstnega reda, ostane oseba, ki bi morala
+                // danes dati za kavo, še vedno naslednja na vrsti.
+                if (isInTurn) {
+                    advanceToNextEligiblePerson();
+                }
+
+                renderUI();
+            }, (success) => {
+                if (success) {
+                    alert("Hvala za častitko in sinhronizacijo!");
+                }
+            });
+        }
+    }
+
+    function inviteToCoffee() {
+        const time = prompt("Ob kateri uri gremo danes na kavo?", "12:00");
+        if (!time || !time.trim()) return;
+        const timeStr = time.trim();
+        const inviter = loggedInUser || "Neznano";
+
+        // Vabilo na kavo velja tudi kot potrditev runde - a samo, če runda danes še ni bila potrjena.
+        const roundAlreadyConfirmed = !!todayPayer;
+        const active = roundAlreadyConfirmed ? null : getNextEligiblePerson();
+        const shouldConfirm = !roundAlreadyConfirmed && active && active !== "-";
+
+        const sendInvite = () => {
+            sendTeamsNotification(teamsMsgInvite.replace(/{ime}/g, inviter).replace(/{cas}/g, timeStr));
         };
 
-        const ADMIN_EMAIL = 'robi.filipsek@gmail.com';
-        const DEFAULT_TEAM = ["Filipšek", "Fidler", "Pirnat", "Oprešnik", "Govedić", "Fendre", "Šetina", "Vrtačnik", "Gračner", "Rihter"];
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        createApp({
-            setup() {
-                const currentUser = ref(null);
-                const userName = ref(localStorage.getItem('coffee_user_name') || '');
-                const authReady = ref(false);
-
-                const team = ref([...DEFAULT_TEAM]);
-                const counts = ref({});
-                const absent = ref({});
-                const currentRoundPaid = ref({});
-                const dailyUnavailable = ref({});
-                const todayPayer = ref(null);
-                const currentIndex = ref(0);
-                const lastRotationDate = ref('');
-                const historyStack = ref([]);
-
-                const teamsWebhookUrl = ref('');
-                const teamsMsgInvite = ref('☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!');
-                const gridColumnsSetting = ref('auto');
-
-                const showAdminModal = ref(false);
-                const adminTab = ref('team');
-                const newMemberName = ref('');
-
-                const showGuestModal = ref(false);
-                const guestName = ref('');
-                const guestError = ref('');
-
-                const showProfileModal = ref(false);
-                const profileName = ref('');
-
-                const toast = ref({ show: false, title: '', message: '', type: 'success' });
-                const syncStatus = ref({ text: '⏳ Nalagam...', class: 'bg-amber-500/10 border-amber-500/30 text-amber-400' });
-
-                const presence = ref([]);
-                const userStats = ref([]);
-                const userSessions = ref([]);
-                const userSearch = ref('');
-                const userTypeFilter = ref('all');
-                const selectedUserHistory = ref(null);
-
-                const canInstall = ref(false);
-
-                const isAdmin = computed(() => !!currentUser.value && !currentUser.value.isAnonymous && (currentUser.value.email || '').toLowerCase() === ADMIN_EMAIL);
-
-                const currentDateFormatted = computed(() => {
-                    const now = new Date();
-                    return now.toLocaleDateString('sl-SI', { weekday: 'short', day: 'numeric', month: 'numeric' });
-                });
-
-                function triggerToast(title, message, type = 'success') {
-                    toast.value = { show: true, title, message, type };
-                    setTimeout(() => { toast.value.show = false; }, 4000);
-                }
-
-                // Posodobitev sinhronizacije s Firestore
-                function startFirestoreListener() {
-                    onSnapshot(doc(db, 'coffee', 'state'), (snap) => {
-                        if (snap.exists()) {
-                            const data = snap.data();
-                            if (data.team?.length > 0) team.value = data.team;
-                            if (data.counts) counts.value = data.counts;
-                            if (data.absent) absent.value = data.absent;
-                            if (data.currentRoundPaid) currentRoundPaid.value = data.currentRoundPaid;
-                            if (data.dailyUnavailable) dailyUnavailable.value = data.dailyUnavailable;
-                            if (data.todayPayer !== undefined) todayPayer.value = data.todayPayer;
-                            if (typeof data.currentIndex === 'number') currentIndex.value = data.currentIndex;
-                            if (data.lastRotationDate) lastRotationDate.value = data.lastRotationDate;
-                            if (data.teamsWebhookUrl !== undefined) teamsWebhookUrl.value = data.teamsWebhookUrl;
-                            if (data.teamsMsgInvite !== undefined) teamsMsgInvite.value = data.teamsMsgInvite;
-                            if (data.gridColumnsSetting !== undefined) gridColumnsSetting.value = data.gridColumnsSetting;
-                            checkDateRollover();
-                        }
-                        syncStatus.value = { text: '✅ Sinhronizirano', class: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' };
-                    }, (err) => {
-                        console.error(err);
-                        syncStatus.value = { text: '⚠️ Brez povezave', class: 'bg-red-500/10 border-red-500/30 text-red-400' };
-                    });
-                }
-
-                watch(isAdmin, (adminVal) => {
-                    if (adminVal) {
-                        onSnapshot(collection(db, 'presence'), (snap) => {
-                            const list = []; snap.forEach(d => list.push({ id: d.id, ...d.data() })); presence.value = list;
-                        });
-                        onSnapshot(collection(db, 'userStats'), (snap) => {
-                            const list = []; snap.forEach(d => list.push({ id: d.id, ...d.data() })); userStats.value = list;
-                        });
-                        onSnapshot(collection(db, 'userSessions'), (snap) => {
-                            const list = []; snap.forEach(d => list.push({ id: d.id, ...d.data() })); userSessions.value = list;
-                        });
-                    }
-                }, { immediate: true });
-
-                async function pushStateToCloud() {
-                    try {
-                        const payload = {
-                            team: team.value,
-                            counts: counts.value,
-                            absent: absent.value,
-                            currentRoundPaid: currentRoundPaid.value,
-                            dailyUnavailable: dailyUnavailable.value,
-                            todayPayer: todayPayer.value,
-                            currentIndex: currentIndex.value,
-                            lastRotationDate: lastRotationDate.value,
-                            teamsWebhookUrl: teamsWebhookUrl.value,
-                            teamsMsgInvite: teamsMsgInvite.value,
-                            gridColumnsSetting: gridColumnsSetting.value,
-                            timestamp: Date.now()
-                        };
-                        await setDoc(doc(db, 'coffee', 'state'), payload, { merge: true });
-                    } catch (e) {
-                        console.error('Napaka pri shranjevanju na Firestore:', e);
-                    }
-                }
-
-                function saveSnapshot() {
-                    historyStack.value.push({
-                        team: [...team.value], counts: { ...counts.value }, absent: { ...absent.value },
-                        currentRoundPaid: { ...currentRoundPaid.value }, dailyUnavailable: { ...dailyUnavailable.value },
-                        todayPayer: todayPayer.value, currentIndex: currentIndex.value, lastRotationDate: lastRotationDate.value
-                    });
-                    if (historyStack.value.length > 20) historyStack.value.shift();
-                }
-
-                function undoLastAction() {
-                    if (historyStack.value.length === 0) {
-                        triggerToast('Undo', 'Ni prejšnjih dejanj za razveljavitev.', 'error');
-                        return;
-                    }
-                    const prev = historyStack.value.pop();
-                    team.value = prev.team; counts.value = prev.counts; absent.value = prev.absent;
-                    currentRoundPaid.value = prev.currentRoundPaid; dailyUnavailable.value = prev.dailyUnavailable;
-                    todayPayer.value = prev.todayPayer; currentIndex.value = prev.currentIndex;
-                    lastRotationDate.value = prev.lastRotationDate;
-                    pushStateToCloud();
-                    logSessionActivity('Razveljavil zadnje dejanje.');
-                    triggerToast('Razveljavljeno', 'Stanje je bilo uspešno povrnjeno.', 'success');
-                }
-
-                function checkDateRollover() {
-                    const todayStr = new Date().toDateString();
-                    if (lastRotationDate.value && lastRotationDate.value !== todayStr) {
-                        team.value.forEach(m => { dailyUnavailable.value[m] = false; });
-                        todayPayer.value = null;
-                        lastRotationDate.value = todayStr;
-                        pushStateToCloud();
-                    } else if (!lastRotationDate.value) {
-                        lastRotationDate.value = todayStr;
-                    }
-                }
-
-                function isPersonValid(name) {
-                    return !absent.value[name] && !dailyUnavailable.value[name];
-                }
-
-                function findFairestEligibleIndex(requireUnpaid) {
-                    if (team.value.length === 0) return -1;
-                    let candidates = [];
-                    for (let i = 0; i < team.value.length; i++) {
-                        let idx = (currentIndex.value + i) % team.value.length;
-                        let name = team.value[idx];
-                        if (!isPersonValid(name)) continue;
-                        if (requireUnpaid && currentRoundPaid.value[name]) continue;
-                        candidates.push({ idx, order: i, count: counts.value[name] || 0 });
-                    }
-                    if (candidates.length === 0) return -1;
-                    candidates.sort((a, b) => (a.count !== b.count) ? a.count - b.count : a.order - b.order);
-                    return candidates[0].idx;
-                }
-
-                const nextPerson = computed(() => {
-                    if (team.value.length === 0) return "-";
-                    let idx = findFairestEligibleIndex(true);
-                    if (idx !== -1) return team.value[idx];
-                    idx = findFairestEligibleIndex(false);
-                    if (idx !== -1) return team.value[idx];
-                    return "-";
-                });
-
-                function advanceToNext() {
-                    let idx = findFairestEligibleIndex(true);
-                    if (idx !== -1) { currentIndex.value = idx; return; }
-                    idx = findFairestEligibleIndex(false);
-                    if (idx !== -1) { currentIndex.value = idx; return; }
-                }
-
-                function checkRoundCompletion() {
-                    const available = team.value.filter(isPersonValid);
-                    if (available.length > 0 && available.every(m => currentRoundPaid.value[m])) {
-                        team.value.forEach(m => { currentRoundPaid.value[m] = false; });
-                        team.value.forEach(m => {
-                            if (absent.value[m]) {
-                                counts.value[m] = (counts.value[m] || 0) + 1;
-                            }
-                        });
-                    }
-                }
-
-                function confirmMyCoffee() {
-                    const active = todayPayer.value || nextPerson.value;
-                    if (active === "-") return;
-                    saveSnapshot();
-                    counts.value[active] = (counts.value[active] || 0) + 1;
-                    currentRoundPaid.value[active] = true;
-                    todayPayer.value = active;
-                    if (!dailyUnavailable.value) dailyUnavailable.value = {};
-                    dailyUnavailable.value[active] = false;
-                    checkRoundCompletion();
-                    advanceToNext();
-                    pushStateToCloud();
-                    logSessionActivity(`Potrdil rundo za ${active}`);
-                    triggerToast('Potrjeno!', `Kavo časti ${active}.`, 'success');
-                }
-
-                function cantGiveCoffee() {
-                    const active = nextPerson.value;
-                    if (active === "-") return;
-                    saveSnapshot();
-                    if (!dailyUnavailable.value) dailyUnavailable.value = {};
-                    dailyUnavailable.value[active] = true;
-                    currentRoundPaid.value[active] = false;
-                    checkRoundCompletion();
-                    advanceToNext();
-                    pushStateToCloud();
-                    logSessionActivity(`Označil da ne more dati za kavo (${active})`);
-                    triggerToast('Zabeleženo', `${active} danes ne more.`, 'info');
-                }
-
-                function sponsorCoffee() {
-                    const user = userName.value || "Neznan";
-                    saveSnapshot();
-                    counts.value[user] = (counts.value[user] || 0) + 1;
-                    currentRoundPaid.value[user] = true;
-                    todayPayer.value = user;
-                    if (!dailyUnavailable.value) dailyUnavailable.value = {};
-                    dailyUnavailable.value[user] = false;
-                    checkRoundCompletion();
-                    pushStateToCloud();
-                    logSessionActivity(`Prostovoljno častil kavo (${user})`);
-                    triggerToast('Častitka!', `${user} časti kavo!`, 'success');
-                }
-
-                function inviteToCoffee() {
-                    const time = prompt("Ob kateri uri gremo na kavo?", "12:00");
-                    if (!time) return;
-                    const inviter = userName.value || "Neznano";
-
-                    if (teamsWebhookUrl.value) {
-                        fetch(teamsWebhookUrl.value, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                type: "message",
-                                attachments: [{
-                                    contentType: "application/vnd.microsoft.card.adaptive",
-                                    content: {
-                                        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                                        type: "AdaptiveCard", version: "1.2",
-                                        body: [{ type: "TextBlock", text: teamsMsgInvite.value.replace('{ime}', inviter).replace('{cas}', time), wrap: true }]
-                                    }
-                                }]
-                            })
-                        }).catch(e => console.error(e));
-                    }
-
-                    logSessionActivity(`Poslal vabilo na kavo ob ${time}`);
-                    triggerToast('Vabilo poslano!', `Vabilo za ob ${time} je bilo poslano.`, 'success');
-                }
-
-                function toggleAbsence(memberName) {
-                    saveSnapshot();
-                    if (!dailyUnavailable.value) dailyUnavailable.value = {};
-                    dailyUnavailable.value[memberName] = !dailyUnavailable.value[memberName];
-                    checkRoundCompletion();
-                    advanceToNext();
-                    pushStateToCloud();
-                    logSessionActivity(`Spremenil prisotnost za ${memberName}`);
-                }
-
-                const gridColumnsCount = computed(() => {
-                    if (gridColumnsSetting.value === "2") return 2;
-                    if (gridColumnsSetting.value === "3") return 3;
-                    return (team.value.length % 2 === 0) ? 2 : 3;
-                });
-
-                const teamMemberList = computed(() => {
-                    return team.value.map(name => {
-                        const isPayer = (todayPayer.value && name === todayPayer.value);
-                        const isNext = (!todayPayer.value && name === nextPerson.value);
-                        const isPaid = currentRoundPaid.value[name];
-                        const isAbs = absent.value[name];
-                        const isUnav = dailyUnavailable.value ? dailyUnavailable.value[name] : false;
-
-                        let cardClass = "border-slate-800 bg-slate-900";
-                        let statusText = "⏳ Čaka na vrsto";
-
-                        if (isAbs) {
-                            cardClass = "border-red-500/30 bg-red-950/10 opacity-60 border-dashed";
-                            statusText = "🌴 Dopust / Odsoten";
-                        } else if (isUnav) {
-                            cardClass = "border-red-500/40 bg-red-950/20";
-                            statusText = "❌ Danes ne more";
-                        } else if (isPayer) {
-                            cardClass = "border-emerald-500 bg-emerald-500/10 shadow-lg shadow-emerald-500/10";
-                            statusText = "⭐ Časti danes";
-                        } else if (isNext) {
-                            cardClass = "border-emerald-400/80 bg-emerald-500/5";
-                            statusText = "👉 Na vrsti";
-                        } else if (isPaid) {
-                            cardClass = "border-blue-500/40 bg-blue-500/5";
-                            statusText = "✅ Že dal";
-                        }
-
-                        return {
-                            name,
-                            count: counts.value[name] || 0,
-                            isUnavailable: isUnav,
-                            cardClass,
-                            statusText
-                        };
-                    });
-                });
-
-                // SLEDENJE AKTIVNOSTI IN SEJE
-                async function logSessionActivity(text) {
-                    if (!currentUser.value) return;
-                    const sessionId = sessionStorage.getItem('coffee_session_id');
-                    if (!sessionId) return;
-                    try {
-                        await setDoc(doc(db, 'userSessions', sessionId), {
-                            activities: arrayUnion({ text, atMs: Date.now() })
-                        }, { merge: true });
-                    } catch (e) {}
-                }
-
-                async function registerSession(user) {
-                    let sessionId = sessionStorage.getItem('coffee_session_id');
-                    if (!sessionId) {
-                        sessionId = String(Date.now()) + Math.random().toString(36).substring(2);
-                        sessionStorage.setItem('coffee_session_id', sessionId);
-                    }
-
-                    const nowMs = Date.now();
-                    try {
-                        await setDoc(doc(db, 'userStats', user.uid), {
-                            uid: user.uid,
-                            name: userName.value || user.displayName || '',
-                            email: user.email || '',
-                            isAnonymous: !!user.isAnonymous,
-                            lastSeenAt: serverTimestamp(),
-                            visitCount: increment(1)
-                        }, { merge: true });
-
-                        await setDoc(doc(db, 'userSessions', sessionId), {
-                            uid: user.uid,
-                            name: userName.value || user.displayName || '',
-                            email: user.email || '',
-                            isAnonymous: !!user.isAnonymous,
-                            startedAtMs: nowMs,
-                            lastSeenMs: nowMs
-                        }, { merge: true });
-                    } catch (e) {}
-                }
-
-                function sendPresence() {
-                    if (!currentUser.value) return;
-                    setDoc(doc(db, 'presence', currentUser.value.uid), {
-                        uid: currentUser.value.uid,
-                        name: userName.value || currentUser.value.displayName || '',
-                        email: currentUser.value.email || '',
-                        isAnonymous: !!currentUser.value.isAnonymous,
-                        online: true,
-                        lastSeen: serverTimestamp()
-                    }, { merge: true }).catch(e => {});
-                }
-
-                setInterval(() => { if (document.visibilityState === 'visible') sendPresence(); }, 60000);
-
-                // AVTENTIKACIJA
-                async function loginWithGoogle() {
-                    const provider = new GoogleAuthProvider();
-                    try {
-                        await signInWithPopup(auth, provider);
-                        triggerToast('Prijavljeni', 'Uspešna prijava z Google računom.', 'success');
-                    } catch (e) {
-                        if (e.code === 'auth/popup-blocked') {
-                            await signInWithRedirect(auth, provider);
-                        } else {
-                            triggerToast('Napaka', 'Prijava ni uspela.', 'error');
-                        }
-                    }
-                }
-
-                function openGuestModal() {
-                    guestName.value = userName.value;
-                    guestError.value = '';
-                    showGuestModal.value = true;
-                }
-
-                async function confirmGuest() {
-                    const name = guestName.value.trim();
-                    const parts = name.split(' ').filter(Boolean);
-                    if (parts.length < 2 || parts[0].length < 3 || parts[1].length < 3) {
-                        guestError.value = "Vnesite ime in priimek (vsaj 3 črke vsak).";
-                        return;
-                    }
-                    userName.value = name;
-                    localStorage.setItem('coffee_user_name', name);
-
-                    if (!auth.currentUser) {
-                        await signInAnonymously(auth);
-                    }
-                    showGuestModal.value = false;
-                    triggerToast('Dobrodošli', `Prijavljeni kot ${name}`, 'success');
-                }
-
-                async function logout() {
-                    await signOut(auth);
-                    triggerToast('Odjavljeni', 'Uspešno ste se odjavili.', 'info');
-                }
-
-                function openProfileModal() {
-                    profileName.value = userName.value;
-                    showProfileModal.value = true;
-                }
-
-                function saveProfile() {
-                    if (profileName.value.trim()) {
-                        userName.value = profileName.value.trim();
-                        localStorage.setItem('coffee_user_name', userName.value);
-                        triggerToast('Shranjeno', 'Ime profila je posodobljeno.', 'success');
-                    }
-                    showProfileModal.value = false;
-                }
-
-                // SKRBNIŠTVO
-                function openAdminModal() {
-                    if (!isAdmin.value) return;
-                    showAdminModal.value = true;
-                }
-
-                function addTeamMember() {
-                    if (!newMemberName.value.trim()) return;
-                    const name = newMemberName.value.trim();
-                    if (!team.value.includes(name)) {
-                        team.value.push(name);
-                        counts.value[name] = 0;
-                        absent.value[name] = false;
-                        currentRoundPaid.value[name] = false;
-                        if (!dailyUnavailable.value) dailyUnavailable.value = {};
-                        dailyUnavailable.value[name] = false;
-                        newMemberName.value = '';
-                    }
-                }
-
-                function removeTeamMember(idx) {
-                    const name = team.value[idx];
-                    team.value.splice(idx, 1);
-                    delete counts.value[name];
-                    delete absent.value[name];
-                    delete currentRoundPaid.value[name];
-                    if (dailyUnavailable.value) delete dailyUnavailable.value[name];
-                }
-
-                function changeCount(member, amount) {
-                    counts.value[member] = Math.max(0, (counts.value[member] || 0) + amount);
-                }
-
-                function setAsNext(idx) {
-                    currentIndex.value = idx;
-                    triggerToast('Spremenjeno', `${team.value[idx]} je nastavljen kot naslednji.`, 'info');
-                }
-
-                function togglePaidStatus(member) {
-                    currentRoundPaid.value[member] = !currentRoundPaid.value[member];
-                }
-
-                function toggleAbsentStatus(member) {
-                    absent.value[member] = !absent.value[member];
-                }
-
-                function moveMember(idx, dir) {
-                    const newIdx = idx + dir;
-                    if (newIdx < 0 || newIdx >= team.value.length) return;
-                    const temp = team.value[idx];
-                    team.value[idx] = team.value[newIdx];
-                    team.value[newIdx] = temp;
-                }
-
-                function saveAdminSettings() {
-                    pushStateToCloud();
-                    logSessionActivity('Spremenil skrbniške nastavitve ekipe/prikaza.');
-                    triggerToast('Shranjeno', 'Spremembe so bile shranjene.', 'success');
-                    showAdminModal.value = false;
-                }
-
-                const onlineCount = computed(() => presence.value.filter(p => p.online).length);
-                const userDirectory = computed(() => {
-                    return userStats.value.map(u => {
-                        const p = presence.value.find(x => x.uid === u.uid);
-                        return { ...u, online: !!p?.online };
-                    });
-                });
-
-                const filteredUsers = computed(() => {
-                    const q = userSearch.value.toLowerCase();
-                    return userDirectory.value.filter(u => {
-                        const matchesQ = !q || (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q);
-                        const matchesType = userTypeFilter.value === 'all' || 
-                            (userTypeFilter.value === 'online' ? u.online : userTypeFilter.value === 'guest' ? u.isAnonymous : !u.isAnonymous);
-                        return matchesQ && matchesType;
-                    });
-                });
-
-                const totalVisits = computed(() => userStats.value.reduce((acc, u) => acc + (u.visitCount || 0), 0));
-                const usersToday = computed(() => userStats.value.length);
-
-                const selectedUserSessions = computed(() => {
-                    if (!selectedUserHistory.value) return [];
-                    return userSessions.value.filter(s => s.uid === selectedUserHistory.value.uid);
-                });
-
-                function showUserHistory(u) {
-                    selectedUserHistory.value = u;
-                }
-
-                async function resetUserTracking(u) {
-                    await deleteDoc(doc(db, 'userStats', u.uid));
-                    triggerToast('Ponastavljeno', 'Statistika uporabnika ponastavljena.', 'info');
-                }
-
-                async function deleteUserTracking(u) {
-                    await deleteDoc(doc(db, 'userStats', u.uid));
-                    await deleteDoc(doc(db, 'presence', u.uid));
-                    triggerToast('Izbrisano', 'Uporabnik izbrisan.', 'info');
-                }
-
-                function fmtTs(ms) {
-                    if (!ms) return '-';
-                    const d = new Date(ms);
-                    return `${d.getDate()}.${d.getMonth()+1}.${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-                }
-
-                function installApp() {
-                    if (window.__pwaPrompt) {
-                        window.__pwaPrompt.prompt();
-                    } else {
-                        alert("Za namestitev odprite meni brskalnika (⋮ ali Deli) ter izberite 'Dodaj na začetni zaslon'.");
-                    }
-                }
-
-                onMounted(() => {
-                    onAuthStateChanged(auth, (user) => {
-                        currentUser.value = user;
-                        authReady.value = true;
-                        if (user) {
-                            if (!userName.value) {
-                                userName.value = user.displayName || (user.email ? user.email.split('@')[0] : '');
-                            }
-                            sendPresence();
-                            registerSession(user);
-                            logSessionActivity('Prijava v aplikacijo.');
-                        }
-                    });
-
-                    startFirestoreListener();
-
-                    window.addEventListener('pwa-state-changed', () => {
-                        canInstall.value = !!window.__pwaPrompt && !window.__pwaInstalled;
-                    });
-                });
-
-                return {
-                    currentUser, userName, authReady, isAdmin, currentDateFormatted, syncStatus,
-                    team, counts, absent, currentRoundPaid, dailyUnavailable, todayPayer, nextPerson,
-                    gridColumnsCount, teamMemberList, confirmMyCoffee, cantGiveCoffee, sponsorCoffee,
-                    inviteToCoffee, undoLastAction, toggleAbsence, loginWithGoogle, openGuestModal,
-                    confirmGuest, guestName, guestError, showGuestModal, logout, openProfileModal,
-                    saveProfile, profileName, showProfileModal, showAdminModal, openAdminModal,
-                    adminTab, newMemberName, addTeamMember, removeTeamMember, changeCount, setAsNext,
-                    togglePaidStatus, toggleAbsentStatus, moveMember, saveAdminSettings, teamsWebhookUrl,
-                    teamsMsgInvite, gridColumnsSetting, onlineCount, userDirectory, filteredUsers,
-                    userSearch, userTypeFilter, totalVisits, usersToday, selectedUserHistory,
-                    selectedUserSessions, showUserHistory, resetUserTracking, deleteUserTracking,
-                    fmtTs, canInstall, installApp
-                };
+        if (!shouldConfirm) {
+            sendInvite();
+            alert(`Vabilo za ob ${timeStr} je bilo poslano na Teams!`);
+            return;
+        }
+
+        performCloudAction(() => {
+            saveStateSnapshot();
+            counts[active] = (counts[active] || 0) + 1;
+            currentRoundPaid[active] = true;
+            todayPayer = active;
+            dailyUnavailable[active] = false;
+
+            checkRoundCompletion();
+            advanceToNextEligiblePerson();
+
+            renderUI();
+        }, (success) => {
+            sendInvite();
+            alert(success
+                ? `Vabilo za ob ${timeStr} je poslano na Teams, runda (${active}) pa potrjena!`
+                : `Vabilo za ob ${timeStr} je poslano na Teams. Rundo (${active}) sem zabeležil lokalno - sinhronizacija ni uspela.`);
+        });
+    }
+
+    function toggleAbsence(name) {
+        performCloudAction(() => {
+            saveStateSnapshot();
+            dailyUnavailable[name] = !dailyUnavailable[name];
+
+            checkRoundCompletion();
+            advanceToNextEligiblePerson();
+            renderUI();
+        });
+    }
+
+    function getEffectiveColumnCount() {
+        if (gridColumnsSetting === "2" || gridColumnsSetting === "3") {
+            return parseInt(gridColumnsSetting, 10);
+        }
+        // "auto": sodo število oseb -> 2 stolpca, liho -> 3 stolpci (praviloma se lepše izide)
+        return (team.length % 2 === 0) ? 2 : 3;
+    }
+
+    function renderUI() {
+        clampIndex();
+        const nextPerson = getNextEligiblePerson();
+        
+        const subtitleEl = document.getElementById('statusSubtitle');
+        const nameEl = document.getElementById('currentPersonName');
+
+        if (todayPayer) {
+            subtitleEl.innerText = "⭐ Danes potrjeno časti:";
+            nameEl.innerText = todayPayer;
+            nameEl.style.color = "var(--accent)";
+        } else {
+            subtitleEl.innerText = "Na vrsti da časti:";
+            nameEl.innerText = nextPerson;
+            nameEl.style.color = "var(--text-bright)";
+        }
+
+        document.getElementById('settingsBtn').style.display = (loggedInUser === "Filipšek") ? 'flex' : 'none';
+
+        const grid = document.getElementById('membersGrid');
+        grid.innerHTML = '';
+        grid.style.setProperty('--member-cols', getEffectiveColumnCount());
+
+        team.forEach(name => {
+            const isTodayPayer = (todayPayer && name === todayPayer);
+            const isNext = (!todayPayer && name === nextPerson);
+            const isTodayPaid = currentRoundPaid[name];
+            const isAbs = absent[name];
+            const isUnav = dailyUnavailable[name];
+
+            let cardClass = "member-card";
+            let statusText = "⏳ Čaka na vrsto";
+            
+            if (isAbs) {
+                cardClass += " is-absent";
+                statusText = "🌴 Dopust / Odsoten";
+            } else if (isUnav) {
+                cardClass += " is-unavailable";
+                statusText = "❌ Danes ne more";
+            } else if (isTodayPayer) {
+                cardClass += " is-paid";
+                statusText = "⭐ Časti danes";
+            } else if (isNext) {
+                cardClass += " is-next";
+                statusText = "👉 Na vrsti";
+            } else if (isTodayPaid) {
+                cardClass += " is-paid";
+                statusText = "✅ Že dal";
             }
-        }).mount('#app');
-    </script>
+
+            const roundCount = counts[name] || 0;
+
+            const card = document.createElement('div');
+            card.className = cardClass;
+            card.innerHTML = `
+                <div class="member-name">
+                    <span>${name}</span>
+                    <span class="round-badge" title="Skupaj plačanih/pogoščenih rund"><svg class="cup-icon sm"><use href="#icon-cup-sm"/></svg> ${roundCount}</span>
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+                    <button class="absent-toggle-btn" onclick="toggleAbsence('${name}')" title="Preklopi odsotnost">
+                        ${dailyUnavailable[name] ? '❌ Odsoten' : '✔️ Prisoten'}
+                    </button>
+                </div>
+                <div class="member-meta">${statusText}</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function openAdminModal() {
+        if (!adminUser()) { alert("Skrbniški dostop zahteva preverjen račun robi.filipsek@gmail.com."); return; }
+        document.getElementById('adminModal').style.display = 'flex';
+        document.getElementById('teamsWebhookInput').value = teamsWebhookUrl || ''; loadAdminActivity();
+        document.getElementById('teamsMsgInviteInput').value = teamsMsgInvite || '';
+        document.getElementById('gridColumnsSelect').value = gridColumnsSetting || 'auto';
+        renderAdminMembers();
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModal').style.display = 'none';
+        renderUI();
+    }
+
+    function renderAdminMembers() {
+        const list = document.getElementById('adminMembersList');
+        if (!list) return;
+        list.innerHTML = '';
+
+        team.forEach((name, index) => {
+            const isAbs = absent[name];
+            const isPaid = currentRoundPaid[name];
+            const userCount = counts[name] || 0;
+
+            const row = document.createElement('div');
+            row.className = 'admin-member-row';
+            row.innerHTML = `
+                <div class="admin-member-top">
+                    <input type="text" class="admin-member-name-input" id="nameInput_${index}" value="${name}">
+                    <button class="mini-btn" style="background:#3b82f6; color:white;" onclick="renameMember(${index})">✏️</button>
+                    <button class="mini-btn" style="background:var(--danger); color:white;" onclick="removeMember('${name}')">🗑️</button>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                    <span style="font-size: 11px; font-weight: bold; color: var(--text);">Skupaj rund:</span>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <button class="mini-btn" style="background:#334155; color:white;" onclick="changeCount('${name}', -1)">➖</button>
+                        <span style="font-size: 12px; font-weight: bold; min-width: 20px; text-align: center; color: var(--text-bright);">${userCount}</span>
+                        <button class="mini-btn" style="background:#334155; color:white;" onclick="changeCount('${name}', 1)">➕</button>
+                    </div>
+                </div>
+                <div class="admin-controls-inline" style="justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 4px;">
+                    <button class="mini-btn" style="background:#3b82f6; color:white;" onclick="setAsNext(${index})" title="Nastavi kot naslednjega">👉 Naslednji</button>
+                    <button class="mini-btn" style="background: ${isPaid ? '#10b981' : '#334155'}; color:white;" onclick="togglePaid('${name}')">${isPaid ? '✅ Že dal' : '⭕ Že dal'}</button>
+                    <button class="mini-btn" style="background: ${isAbs ? '#ef4444' : '#334155'}; color:white;" onclick="toggleAbsent('${name}')">${isAbs ? '🌴 Dopust' : '⭕ Dopust'}</button>
+                    <button class="mini-btn" style="background:#334155; color:white;" onclick="moveMember(${index}, -1)">⬆️</button>
+                    <button class="mini-btn" style="background:#334155; color:white;" onclick="moveMember(${index}, 1)">⬇️</button>
+                </div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function changeCount(name, amount) {
+        saveStateSnapshot();
+        counts[name] = Math.max(0, (counts[name] || 0) + amount);
+        renderAdminMembers();
+    }
+
+    function setAsNext(index) {
+        saveStateSnapshot();
+        currentIndex = index;
+        clampIndex();
+        renderAdminMembers();
+        alert(`Član ${team[index]} je nastavljen kot naslednji!`);
+    }
+
+    function renameMember(index) {
+        const input = document.getElementById(`nameInput_${index}`);
+        if (!input) return;
+        const newName = input.value.trim();
+        const oldName = team[index];
+        if (!newName || newName === oldName || team.includes(newName)) return;
+
+        saveStateSnapshot();
+        team[index] = newName;
+        counts[newName] = counts[oldName] || 0; delete counts[oldName];
+        absent[newName] = absent[oldName] || false; delete absent[oldName];
+        currentRoundPaid[newName] = currentRoundPaid[oldName] || false; delete currentRoundPaid[oldName];
+        dailyUnavailable[newName] = dailyUnavailable[oldName] || false; delete dailyUnavailable[oldName];
+        if (todayPayer === oldName) todayPayer = newName;
+
+        setupLoginDropdown();
+        renderAdminMembers();
+    }
+
+    function toggleAbsent(name) {
+        saveStateSnapshot();
+        absent[name] = !absent[name];
+        renderAdminMembers();
+    }
+
+    function togglePaid(name) {
+        saveStateSnapshot();
+        currentRoundPaid[name] = !currentRoundPaid[name];
+        renderAdminMembers();
+    }
+
+    function moveMember(index, direction) {
+        const newIdx = index + direction;
+        if (newIdx < 0 || newIdx >= team.length) return;
+        saveStateSnapshot();
+        const temp = team[index];
+        team[index] = team[newIdx];
+        team[newIdx] = temp;
+        clampIndex();
+        renderAdminMembers();
+    }
+
+    function addMember() {
+        const input = document.getElementById('newMemberNameInput');
+        const name = input.value.trim();
+        if (!name || team.includes(name)) return;
+        saveStateSnapshot();
+        team.push(name);
+        counts[name] = 0; absent[name] = false; currentRoundPaid[name] = false; dailyUnavailable[name] = false;
+        input.value = '';
+        clampIndex();
+        setupLoginDropdown();
+        renderAdminMembers();
+    }
+
+    function removeMember(name) {
+        if (confirm(`Odstrani člana ${name}?`)) {
+            saveStateSnapshot();
+            team = team.filter(m => m !== name);
+            delete counts[name]; delete absent[name]; delete currentRoundPaid[name]; delete dailyUnavailable[name];
+            if (todayPayer === name) todayPayer = null;
+            clampIndex();
+            setupLoginDropdown();
+            renderAdminMembers();
+        }
+    }
+
+    function saveAllAdminChanges() {
+        performCloudAction(() => {
+            saveStateSnapshot();
+            teamsWebhookUrl = document.getElementById('teamsWebhookInput').value.trim();
+            teamsMsgInvite = document.getElementById('teamsMsgInviteInput').value.trim();
+            gridColumnsSetting = document.getElementById('gridColumnsSelect').value;
+
+            checkRoundCompletion();
+            advanceToNextEligiblePerson();
+
+            saveLocalStorage();
+        }, (success) => {
+            alert(success ? "Spremembe uspešno shranjene in sinhronizirane!" : "Spremembe shranjene lokalno.");
+            closeAdminModal();
+            renderUI();
+        }, false); // mergeCounts=false: ročno spremenjeno št. rund (tudi navzdol) se ne sme prepisati nazaj navzgor
+    }
+
+    // --- NAMESTITEV NA ZAČETNI ZASLON (PWA) ---
+    let deferredInstallPrompt = null;
+
+    function isRunningStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const btn = document.getElementById('installBtn');
+        if (btn && !isRunningStandalone()) btn.classList.add('visible');
+    });
+
+    window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        const btn = document.getElementById('installBtn');
+        if (btn) btn.classList.remove('visible');
+    });
+
+    function isIOS() {
+        return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+    }
+
+    async function handleInstallClick() {
+        if (deferredInstallPrompt) {
+            deferredInstallPrompt.prompt();
+            const { outcome } = await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            const btn = document.getElementById('installBtn');
+            if (btn) btn.classList.remove('visible');
+            return;
+        }
+        if (isIOS()) {
+            alert("📲 Namestitev na iPhone/iPad:\n\n1. Tapni na ikono 'Deli' (kvadrat s puščico) v Safariju\n2. Izberi 'Dodaj na začetni zaslon'\n3. Potrdi z 'Dodaj'");
+        } else {
+            alert("📲 Za namestitev odpri meni brskalnika (⋮) in izberi 'Namesti aplikacijo' oz. 'Dodaj na začetni zaslon'.");
+        }
+    }
+
+    function setupInstallButton() {
+        const btn = document.getElementById('installBtn');
+        if (!btn) return;
+        if (isRunningStandalone()) {
+            btn.classList.remove('visible');
+        } else if (isIOS()) {
+            // iOS ne podpira beforeinstallprompt, gumb prikažemo takoj z navodili
+            btn.classList.add('visible');
+        }
+    }
+
+    window.onload = function() {
+        init();
+        setupInstallButton();
+    };
+</script>
 </body>
 </html>
