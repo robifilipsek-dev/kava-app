@@ -9,17 +9,33 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Kava">
 <script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{kd:'#0b132b',kg:'#1c2541',ka:'#2563eb',bean:'#8a5a34'}}}}</script>
+<script>
+tailwind.config={
+  darkMode:'class',
+  theme:{
+    extend:{
+      colors:{
+        kd:'#0b132b',
+        kg:'#1c2541',
+        ka:'#2563eb',
+        bean:'#8a5a34'
+      }
+    }
+  }
+}
+</script>
 <style>
-body{font-family:Inter,system-ui,sans-serif;background:#f1f5f9}
-.mg{display:grid;gap:8px;grid-template-columns:repeat(var(--c),1fr)}
-@media(max-width:480px){.mg{grid-template-columns:repeat(2,1fr)!important}}
-.inp{width:100%;padding:.5rem .75rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.875rem;background:#fff}
-.b{padding:.6rem 1rem;border-radius:.75rem;font-weight:600;font-size:.8rem;color:#fff;transition:.15s}
-.b:hover{filter:brightness(.92)}
+body { font-family: Inter, system-ui, sans-serif; transition: background-color 0.2s ease, color 0.2s ease; }
+.mg { display: grid; gap: 10px; grid-template-columns: repeat(var(--c), 1fr); }
+@media(max-width:480px){ .mg { grid-template-columns: repeat(2, 1fr) !important; } }
+.inp { width: 100%; padding: .55rem .75rem; border: 1px solid #cbd5e1; border-radius: .6rem; font-size: .875rem; background: #fff; transition: all 0.2s; }
+.dark .inp { background: #0f172a; border-color: #334155; color: #f8fafc; }
+.b { padding: .65rem 1.1rem; border-radius: .75rem; font-weight: 600; font-size: .825rem; color: #fff; transition: all 0.18s ease-in-out; box-shadow: 0 2px 4px rgba(0,0,0,0.08); display: inline-flex; items-center; justify-content: center; gap: .4rem; }
+.b:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); filter: brightness(1.06); }
+.b:active { transform: translateY(0); filter: brightness(0.95); }
 </style>
 </head>
-<body class="min-h-screen text-slate-800">
+<body class="min-h-screen text-slate-800 bg-slate-100 dark:bg-slate-950 dark:text-slate-100">
 <div id="app"></div>
 <div id="modal"></div>
 <div id="toast" class="fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 sm:max-w-sm z-[60]"></div>
@@ -56,6 +72,14 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const iso=d=>`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
 const today=()=>iso(new Date());
 const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+
+// ===== TEMNA / SVETLA TEMA =====
+let isDark = ls.get('kava_theme') ? ls.get('kava_theme') === 'dark' : true;
+function applyTheme() {
+  if (isDark) document.documentElement.classList.add('dark');
+  else document.documentElement.classList.remove('dark');
+}
+applyTheme();
 
 // ===== IKONA / PWA =====
 const CUP=`<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><rect width='512' height='512' rx='112' fill='#0b132b'/><g transform='translate(256 256) scale(.95) translate(-286 -276)'><g fill='none' stroke-linecap='round'><path d='M214 172c-18-20 18-36 0-58M282 172c-18-20 18-36 0-58' stroke='#fff' stroke-width='20' opacity='.6'/><path d='M348 258h20a44 44 0 0 1 0 88h-28' stroke='#3b82f6' stroke-width='26'/><path d='M170 438h156' stroke='#fff' stroke-width='20'/></g><path d='M148 218h200v82a100 100 0 0 1-200 0z' fill='#60a5fa'/></g></svg>`;
@@ -164,18 +188,18 @@ function gate(){
   return null;
 }
 function toast(msg,type='ok'){
-  const c={ok:'bg-blue-800',err:'bg-red-800',info:'bg-slate-800'}[type]||'bg-slate-800';
-  document.getElementById('toast').innerHTML=`<div class="${c} text-white text-sm p-4 rounded-2xl shadow-2xl">${esc(msg)}</div>`;
+  const c={ok:'bg-emerald-600 dark:bg-emerald-700',err:'bg-red-600 dark:bg-red-700',info:'bg-slate-800'}[type]||'bg-slate-800';
+  document.getElementById('toast').innerHTML=`<div class="${c} text-white text-sm p-4 rounded-2xl shadow-2xl font-medium">${esc(msg)}</div>`;
   clearTimeout(toast.t);toast.t=setTimeout(()=>document.getElementById('toast').innerHTML='',4000);
 }
 let ansRes=null;
 function ask(title,text,ok='Potrdi',inner=''){
   return new Promise(res=>{
     ansRes=res;
-    document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60"><div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
-      <h3 class="font-bold text-lg">${esc(title)}</h3><p class="text-sm text-slate-600 mt-2">${esc(text)}</p>${inner}
-      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm font-semibold">Prekliči</button>
-      <button onclick="A.ans(true)" class="flex-1 py-2.5 rounded-xl bg-kg text-white text-sm font-bold">${esc(ok)}</button></div></div></div>`;
+    document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"><div class="bg-white dark:bg-slate-900 dark:text-slate-100 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center border border-slate-200 dark:border-slate-800">
+      <h3 class="font-bold text-lg">${esc(title)}</h3><p class="text-sm text-slate-600 dark:text-slate-400 mt-2">${esc(text)}</p>${inner}
+      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm font-semibold">Prekliči</button>
+      <button onclick="A.ans(true)" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-bold shadow hover:bg-blue-500">${esc(ok)}</button></div></div></div>`;
   });
 }
 async function teams(msg){
@@ -200,6 +224,12 @@ async function triggerTeams(actionType,extraData={}){
 const A=window.A={
   ans(v){document.getElementById('modal').innerHTML='';ansRes&&ansRes(v);ansRes=null},
   tab(t){tab=t;render();scrollTo({top:0})},
+  toggleTheme(){
+    isDark = !isDark;
+    ls.set('kava_theme', isDark ? 'dark' : 'light');
+    applyTheme();
+    render();
+  },
   async confirm(){
     if(!me||!S.team.includes(me))return A.pick();
     const g=gate();if(g)return toast(g,'err');
@@ -250,11 +280,11 @@ const A=window.A={
   },
   toggleUnav(i){run(s=>{const n=s.team[i];s.unav[n]=!s.unav[n];checkRound(s);adv(s)})},
   pick(){
-    document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60"><div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
-      <h3 class="font-bold text-lg">Kdo si na seznamu?</h3><p class="text-sm text-slate-600 mt-1 mb-3">Izberi svoje ime s seznama ekipe, da vemo za katero osebo gre.</p>
+    document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"><div class="bg-white dark:bg-slate-900 dark:text-slate-100 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center border border-slate-200 dark:border-slate-800">
+      <h3 class="font-bold text-lg">Kdo si na seznamu?</h3><p class="text-sm text-slate-600 dark:text-slate-400 mt-1 mb-3">Izberi svoje ime s seznama ekipe, da vemo za katero osebo gre.</p>
       <select id="pickSel" class="inp">${S.team.map(n=>`<option ${n===me?'selected':''}>${esc(n)}</option>`).join('')}</select>
-      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm font-semibold">Prekliči</button>
-      <button onclick="A.setMe()" class="flex-1 py-2.5 rounded-xl bg-kg text-white text-sm font-bold">Potrdi ime</button></div></div></div>`;
+      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm font-semibold">Prekliči</button>
+      <button onclick="A.setMe()" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-bold shadow hover:bg-blue-500">Potrdi ime</button></div></div></div>`;
   },
   setMe(){
     const sel=document.getElementById('pickSel');
@@ -311,7 +341,8 @@ const A=window.A={
     try{await setDoc(doc(db,'settings','main'),c);toast('Nastavitve shranjene.')}catch(e){console.error(e);toast('Shranjevanje ni uspelo (Firestore pravila).','err')}
   },
   async testTeams(){
-    if(!g('t_enabled').checked){
+    const el = document.getElementById('t_enabled');
+    if(el && !el.checked){
       return toast('Teams obvestila so izklopljena v nastavitvah!','err');
     }
     const r=await teams('✅ Testno sporočilo iz aplikacije Odmor za kavo.');
@@ -362,79 +393,102 @@ const A=window.A={
 };
 
 // ===== PRIKAZ =====
-const card='bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5';
-const lbl='block text-xs font-semibold text-slate-600';
+const card='bg-white dark:bg-slate-900 dark:border-slate-800 rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5';
+const lbl='block text-xs font-semibold text-slate-600 dark:text-slate-400';
+
 function loginView(){
   return `<div class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-kd via-kg to-ka"><div class="${card} max-w-sm w-full text-center">
-    <img src="${ICON}" class="w-16 h-16 rounded-2xl mx-auto mb-3 shadow"><h1 class="font-bold text-xl">Odmor za kavo</h1>
-    <p class="text-sm text-slate-500 mt-1 mb-5">Prijavite se z Google računom ali nadaljujte kot gost.</p>
-    <div class="flex flex-col gap-3"><button onclick="A.google()" class="py-2.5 rounded-xl bg-white border border-slate-300 font-semibold text-sm">Prijava z Google</button>
-    <button onclick="A.guest()" class="py-2.5 rounded-xl bg-kg text-white font-semibold text-sm">Prijava kot gost</button></div></div></div>`;
+    <img src="${ICON}" class="w-16 h-16 rounded-2xl mx-auto mb-3 shadow"><h1 class="font-bold text-xl text-slate-900 dark:text-white">Odmor za kavo</h1>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-5">Prijavite se z Google računom ali nadaljujte kot gost.</p>
+    <div class="flex flex-col gap-3"><button onclick="A.google()" class="b bg-white text-slate-800 border border-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-700">Prijava z Google</button>
+    <button onclick="A.guest()" class="b bg-blue-600 hover:bg-blue-500">Prijava kot gost</button></div></div></div>`;
 }
+
 function header(){
   const showInst=!standalone()&&(installEv||isIOS);
   const myName=me&&S.team.includes(me)?me:'Izberi osebo';
   return `<header class="bg-kd text-white sticky top-0 z-30 shadow-md"><div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
     <div class="flex items-center gap-3 cursor-pointer" onclick="A.tab('main')"><img src="${ICON}" class="w-10 h-10 rounded-xl ring-2 ring-white/20"><span class="font-bold text-lg">Odmor za kavo</span></div>
-    <div class="flex items-center gap-2 text-xs">${showInst?`<button onclick="A.install()" class="px-3 py-2 rounded-lg bg-kg border border-ka/50">📲 <span class="hidden sm:inline">Namesti</span></button>`:''}
-    <button onclick="A.pick()" class="px-3 py-2 rounded-lg bg-kg border border-slate-700 text-slate-200 flex items-center gap-1.5" title="Zamenjaj osebo na seznamu">
+    <div class="flex items-center gap-2 text-xs">${showInst?`<button onclick="A.install()" class="p-2 rounded-xl bg-kg border border-ka/50" title="Namesti aplikacijo">📲 <span class="hidden sm:inline">Namesti</span></button>`:''}
+    <button onclick="A.toggleTheme()" class="p-2 rounded-xl bg-slate-800 border border-slate-700 text-white transition hover:bg-slate-700" title="Preklopi temno/svetlo temo">
+      ${isDark ? '☀️' : '🌙'}
+    </button>
+    <button onclick="A.pick()" class="px-3 py-2 rounded-xl bg-kg border border-slate-700 text-slate-200 flex items-center gap-1.5 hover:bg-slate-800 transition" title="Zamenjaj osebo na seznamu">
       <span>👤 <strong>${esc(myName)}</strong></span>
       <span class="text-[10px] text-blue-300 underline">(zamenjaj)</span>
     </button>
-    <button onclick="A.logout()" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700">Odjava</button></div></div></header>`;
+    <button onclick="A.logout()" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-red-900/60 transition" title="Odjava">Odjava</button></div></div></header>`;
 }
+
 function hero(){
   const d=new Date().toLocaleDateString('sl-SI',{weekday:'long',day:'numeric',month:'long'});
-  return `<section class="bg-gradient-to-r from-kd via-kg to-ka text-white py-6 px-4"><div class="max-w-4xl mx-auto">
+  return `<section class="bg-gradient-to-r from-kd via-kg to-ka text-white py-6 px-4 shadow-inner"><div class="max-w-4xl mx-auto">
     <h1 class="text-2xl sm:text-3xl font-extrabold">Kdo časti kavo?</h1>
     <p class="text-slate-300 text-sm mt-1">Odmor za kavo • <span class="capitalize">${esc(d)}</span></p>
   </div></section>`;
 }
+
 function viewMain(){
   const n=nextName(S);
   const cols=CFG.cols==='auto'?(S.team.length%2?3:2):+CFG.cols;
+  const isConfirmed = !!S.todayPayer;
+
   const cards=S.team.map((name,i)=>{
     const isPayer=S.todayPayer===name,isNext=!S.todayPayer&&name===n;
-    let cls='border-slate-200 bg-white',st='⏳ Čaka na vrsto';
-    if(S.absent[name]){cls='border-slate-200 bg-slate-100 opacity-60';st='🌴 Dopust / odsoten'}
-    else if(S.unav[name]){cls='border-red-200 bg-red-50';st='❌ Danes ne more'}
-    else if(isPayer){cls='border-blue-400 bg-blue-50';st='⭐ Časti danes'}
-    else if(isNext){cls='border-amber-400 bg-amber-50 ring-2 ring-amber-300';st='👉 Na vrsti'}
-    else if(S.paid[name]){cls='border-blue-200 bg-blue-50/50';st='✅ Že dal'}
-    return `<div class="rounded-xl border p-3 ${cls}"><div class="flex items-center justify-between gap-1"><strong class="text-sm truncate ${name===me?'underline':''}">${esc(name)}</strong>
-      <span class="text-[11px] font-bold text-kg bg-blue-100 border border-blue-300 rounded-full px-2 py-0.5 whitespace-nowrap">☕ ${S.counts[name]||0}</span></div>
-      <div class="flex justify-end mt-1"><button onclick="A.toggleUnav(${i})" class="text-[11px] px-2 py-1 rounded-md bg-white border border-slate-300">${S.unav[name]?'❌ Odsoten':'✔️ Prisoten'}</button></div>
-      <div class="text-[11px] text-slate-500 mt-1">${st}</div></div>`;
+    let cls='border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800',st='⏳ Čaka na vrsto';
+    
+    if(S.absent[name]){cls='border-slate-200 bg-slate-100 opacity-60 dark:bg-slate-800/50 dark:border-slate-800';st='🌴 Dopust / odsoten'}
+    else if(S.unav[name]){cls='border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-900/40';st='❌ Danes ne more'}
+    else if(isPayer){cls='border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/40 dark:border-emerald-500 ring-2 ring-emerald-500/50';st='⭐ Časti danes'}
+    else if(isNext){cls='border-amber-400 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-500/80 ring-2 ring-amber-400/60';st='👉 Na vrsti'}
+    else if(S.paid[name]){cls='border-blue-200 bg-blue-50/50 dark:bg-slate-800/80 dark:border-slate-700';st='✅ Že dal'}
+    
+    return `<div class="rounded-xl border p-3 transition-all ${cls}"><div class="flex items-center justify-between gap-1">
+      <strong class="text-sm truncate ${name===me?'underline':''} ${isPayer ? 'text-emerald-700 dark:text-emerald-400 font-extrabold' : ''}">${esc(name)}</strong>
+      <span class="text-[11px] font-bold ${isPayer ? 'text-emerald-800 bg-emerald-100 border-emerald-300 dark:bg-emerald-900/60 dark:text-emerald-300 dark:border-emerald-700' : 'text-blue-800 bg-blue-100 border-blue-300 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800'} border rounded-full px-2 py-0.5 whitespace-nowrap">☕ ${S.counts[name]||0}</span></div>
+      <div class="flex justify-end mt-1.5"><button onclick="A.toggleUnav(${i})" class="text-[11px] px-2 py-0.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">${S.unav[name]?'❌ Odsoten':'✔️ Prisoten'}</button></div>
+      <div class="text-[11px] ${isPayer ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-500 dark:text-slate-400'} mt-1">${st}</div></div>`;
   }).join('');
-  return `<div class="${card} text-center mb-4">
-    <div class="text-xs text-slate-500">${S.todayPayer?'⭐ Danes potrjeno časti:':'Na vrsti da časti:'}</div>
-    <div class="text-3xl font-extrabold my-1 ${S.todayPayer?'text-blue-600':'text-slate-900'}">${esc(S.todayPayer||n||'-')}</div>
-    <div class="grid sm:grid-cols-2 gap-2 mt-3">
-      <button onclick="A.confirm()" class="b bg-blue-600">✅ Potrjujem rundo</button>
-      <button onclick="A.cant()" class="b bg-red-600">✕ Danes ne more</button>
-      <button onclick="A.sponsor()" class="b bg-amber-500">⭐ Jaz častim (izven vrstnega reda)</button>
-      <button onclick="A.invite()" class="b bg-indigo-600">⏰ Povabi na kavo (Teams)</button>
-      <button onclick="A.undo()" class="b bg-slate-600 sm:col-span-2">↩️ Razveljavi (Undo)</button></div></div>
+
+  // Slog za glavno kartico, ko je kava potrjena (zeleno obarvanje)
+  const headerCardStyle = isConfirmed
+    ? 'border-2 border-emerald-500 bg-emerald-50/90 dark:bg-emerald-950/40 dark:border-emerald-500/80 shadow-emerald-500/10'
+    : card;
+
+  const headerTextStyle = isConfirmed
+    ? 'text-emerald-600 dark:text-emerald-400 font-extrabold'
+    : 'text-slate-900 dark:text-white font-extrabold';
+
+  return `<div class="${headerCardStyle} text-center mb-4 transition-all">
+    <div class="text-xs ${isConfirmed ? 'text-emerald-700 dark:text-emerald-300 font-bold' : 'text-slate-500 dark:text-slate-400'}">${S.todayPayer?'⭐ Danes potrjeno časti:':'Na vrsti da časti:'}</div>
+    <div class="text-3xl sm:text-4xl my-1.5 ${headerTextStyle}">${esc(S.todayPayer||n||'-')}</div>
+    <div class="grid sm:grid-cols-2 gap-2 mt-4">
+      <button onclick="A.confirm()" class="b bg-emerald-600 hover:bg-emerald-500">✅ Potrjujem rundo</button>
+      <button onclick="A.cant()" class="b bg-red-600 hover:bg-red-500">✕ Danes ne more</button>
+      <button onclick="A.sponsor()" class="b bg-amber-500 hover:bg-amber-400">⭐ Jaz častim (izven vrstnega reda)</button>
+      <button onclick="A.invite()" class="b bg-indigo-600 hover:bg-indigo-500">⏰ Povabi na kavo (Teams)</button>
+      <button onclick="A.undo()" class="b bg-slate-600 hover:bg-slate-500 dark:bg-slate-700 sm:col-span-2">↩️ Razveljavi (Undo)</button></div></div>
   <div class="mg" style="--c:${cols}">${cards}</div>
-  <div class="text-xs text-slate-500 mt-4 flex items-center justify-between">
-    <span>Izbrana oseba s seznama: <strong>${esc(me&&S.team.includes(me)?me:'Niste izbrali osebe')}</strong> <a href="#" class="underline text-blue-600" onclick="A.pick();return false">(zamenjaj)</a></span>
+  <div class="text-xs text-slate-500 dark:text-slate-400 mt-4 flex items-center justify-between">
+    <span>Izbrana oseba s seznama: <strong class="text-slate-800 dark:text-slate-200">${esc(me&&S.team.includes(me)?me:'Niste izbrali osebe')}</strong> <a href="#" class="underline text-blue-600 dark:text-blue-400" onclick="A.pick();return false">(zamenjaj)</a></span>
     <span>${loaded?'✅ Sinhronizirano':'⏳ Nalagam …'}</span></div>`;
 }
+
 const TYPE={turn:'po vrsti',sponsor:'prostovoljno',invite:'vabilo',manual:'ročno'};
 function viewLog(){
-  const rows=[...S.log].reverse().slice(0,60).map(l=>`<div class="flex items-center justify-between px-3 py-2 text-sm"><span><strong>${esc(l.who)}</strong> <span class="text-slate-500 text-xs">(${TYPE[l.type]||l.type})</span></span><span class="text-xs font-mono text-slate-500">${esc(l.d)} ${esc(l.t)}</span></div>`).join('');
-  return `<div class="${card}"><h2 class="font-bold text-lg mb-1">Zgodovina rund</h2><p class="text-xs text-slate-500 mb-3">Zadnjih 60 potrjenih rund.</p>
-    <div class="divide-y divide-slate-100 border border-slate-200 rounded-xl">${rows||'<div class="p-4 text-sm text-slate-500">Še ni zabeleženih rund.</div>'}</div></div>`;
+  const rows=[...S.log].reverse().slice(0,60).map(l=>`<div class="flex items-center justify-between px-3 py-2 text-sm"><span><strong class="dark:text-slate-200">${esc(l.who)}</strong> <span class="text-slate-500 text-xs">(${TYPE[l.type]||l.type})</span></span><span class="text-xs font-mono text-slate-500 dark:text-slate-400">${esc(l.d)} ${esc(l.t)}</span></div>`).join('');
+  return `<div class="${card}"><h2 class="font-bold text-lg mb-1">Zgodovina rund</h2><p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Zadnjih 60 potrjenih rund.</p>
+    <div class="divide-y divide-slate-100 dark:divide-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl">${rows||'<div class="p-4 text-sm text-slate-500">Še ni zabeleženih rund.</div>'}</div></div>`;
 }
 
 function viewAdmin(){
-  const ck=(id,v,t)=>`<label class="flex items-center gap-2 text-sm"><input type="checkbox" id="${id}" ${v?'checked':''} class="w-4 h-4 accent-blue-600">${t}</label>`;
+  const ck=(id,v,t)=>`<label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" id="${id}" ${v?'checked':''} class="w-4 h-4 accent-blue-600">${t}</label>`;
   
   // Teams obvestila kartice
-  const msgs=(CFG.teamsMsgs||[]).map((m,i)=>`<div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2 text-xs">
+  const msgs=(CFG.teamsMsgs||[]).map((m,i)=>`<div class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 space-y-2 text-xs">
     <div class="flex items-center justify-between gap-2">
-      <span class="font-bold text-slate-700">Obvestilo #${i+1}</span>
-      <button onclick="A.delTeamMsg(${i})" class="px-2 py-1 rounded bg-red-100 text-red-700 border border-red-300 font-semibold">🗑️ Izbriši</button>
+      <span class="font-bold text-slate-700 dark:text-slate-300">Obvestilo #${i+1}</span>
+      <button onclick="A.delTeamMsg(${i})" class="px-2 py-1 rounded bg-red-100 text-red-700 border border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800 font-semibold">🗑️ Izbriši</button>
     </div>
     <div class="grid sm:grid-cols-2 gap-2">
       <label class="${lbl}">Opis / Ime obvestila<input id="t_name_${i}" value="${esc(m.name)}" class="inp mt-1"></label>
@@ -449,19 +503,19 @@ function viewAdmin(){
     <label class="${lbl}">Besedilo obvestila ({ime}, {cas}, {datum})<textarea id="t_text_${i}" rows="2" class="inp mt-1">${esc(m.text)}</textarea></label>
   </div>`).join('');
 
-  const team=S.team.map((n,i)=>`<div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2 text-xs">
-    <div class="flex gap-1"><input id="rn${i}" value="${esc(n)}" class="inp"><button onclick="A.rename(${i})" class="px-2 rounded-lg bg-blue-500 text-white">✏️</button><button onclick="A.remove(${i})" class="px-2 rounded-lg bg-red-600 text-white">🗑️</button></div>
-    <div class="flex items-center justify-between"><span class="font-semibold">Skupaj rund:</span><span class="flex items-center gap-1"><button onclick="A.count(${i},-1)" class="px-2 py-1 rounded bg-slate-300">➖</button><strong class="w-6 text-center">${S.counts[n]}</strong><button onclick="A.count(${i},1)" class="px-2 py-1 rounded bg-slate-300">➕</button></span></div>
-    <div class="flex flex-wrap gap-1"><button onclick="A.setNext(${i})" class="px-2 py-1 rounded bg-blue-500 text-white">👉 Naslednji</button>
-    <button onclick="A.togglePaid(${i})" class="px-2 py-1 rounded text-white ${S.paid[n]?'bg-blue-600':'bg-slate-500'}">${S.paid[n]?'✅':'⭕'} Že dal</button>
+  const team=S.team.map((n,i)=>`<div class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 space-y-2 text-xs">
+    <div class="flex gap-1"><input id="rn${i}" value="${esc(n)}" class="inp"><button onclick="A.rename(${i})" class="px-2 rounded-lg bg-blue-600 text-white">✏️</button><button onclick="A.remove(${i})" class="px-2 rounded-lg bg-red-600 text-white">🗑️</button></div>
+    <div class="flex items-center justify-between"><span class="font-semibold">Skupaj rund:</span><span class="flex items-center gap-1"><button onclick="A.count(${i},-1)" class="px-2 py-1 rounded bg-slate-200 dark:bg-slate-700">➖</button><strong class="w-6 text-center">${S.counts[n]}</strong><button onclick="A.count(${i},1)" class="px-2 py-1 rounded bg-slate-200 dark:bg-slate-700">➕</button></span></div>
+    <div class="flex flex-wrap gap-1"><button onclick="A.setNext(${i})" class="px-2 py-1 rounded bg-blue-600 text-white">👉 Naslednji</button>
+    <button onclick="A.togglePaid(${i})" class="px-2 py-1 rounded text-white ${S.paid[n]?'bg-emerald-600':'bg-slate-500'}">${S.paid[n]?'✅':'⭕'} Že dal</button>
     <button onclick="A.toggleAbs(${i})" class="px-2 py-1 rounded text-white ${S.absent[n]?'bg-red-600':'bg-slate-500'}">${S.absent[n]?'🌴':'⭕'} Dopust</button>
-    <button onclick="A.move(${i},-1)" class="px-2 py-1 rounded bg-slate-300">⬆️</button><button onclick="A.move(${i},1)" class="px-2 py-1 rounded bg-slate-300">⬇️</button></div></div>`).join('');
+    <button onclick="A.move(${i},-1)" class="px-2 py-1 rounded bg-slate-200 dark:bg-slate-700">⬆️</button><button onclick="A.move(${i},1)" class="px-2 py-1 rounded bg-slate-200 dark:bg-slate-700">⬇️</button></div></div>`).join('');
   
   const now=Date.now();
   const users=[...presence].sort((a,b)=>(b.lastSeen?.toMillis?.()||0)-(a.lastSeen?.toMillis?.()||0)).map(u=>{
     const ms=u.lastSeen?.toMillis?.()||0,on=now-ms<=180000;
-    return `<div class="flex items-center justify-between gap-2 px-3 py-2 text-xs"><span class="min-w-0"><span class="inline-block w-2 h-2 rounded-full mr-1 ${on?'bg-blue-500':'bg-slate-300'}"></span><strong>${esc(u.member||u.name||'Brez imena')}</strong> <span class="text-slate-500">${u.isAnonymous?'Gost':esc(u.email)}</span><div class="text-slate-400">Zadnjič: ${ms?new Date(ms).toLocaleString('sl-SI'):'-'}</div></span>
-    <button onclick="A.delUser('${esc(u.id)}')" class="px-2 py-1 rounded bg-red-100 text-red-700 border border-red-300">Izbriši</button></div>`;
+    return `<div class="flex items-center justify-between gap-2 px-3 py-2 text-xs"><span class="min-w-0"><span class="inline-block w-2 h-2 rounded-full mr-1 ${on?'bg-emerald-500':'bg-slate-300 dark:bg-slate-700'}"></span><strong class="dark:text-slate-200">${esc(u.member||u.name||'Brez imena')}</strong> <span class="text-slate-500 dark:text-slate-400">${u.isAnonymous?'Gost':esc(u.email)}</span><div class="text-slate-400">Zadnjič: ${ms?new Date(ms).toLocaleString('sl-SI'):'-'}</div></span>
+    <button onclick="A.delUser('${esc(u.id)}')" class="px-2 py-1 rounded bg-red-100 text-red-700 border border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800">Izbriši</button></div>`;
   }).join('');
   const online=presence.filter(u=>now-(u.lastSeen?.toMillis?.()||0)<=180000).length;
 
@@ -478,21 +532,21 @@ function viewAdmin(){
   <div class="${card} space-y-4">
     <div class="flex items-center justify-between">
       <h2 class="font-bold text-lg">🔔 Teams obvestila</h2>
-      <button onclick="A.addTeamMsg()" class="b bg-blue-600 text-xs">➕ Dodaj obvestilo</button>
+      <button onclick="A.addTeamMsg()" class="b bg-blue-600 hover:bg-blue-500 text-xs">➕ Dodaj obvestilo</button>
     </div>
-    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-2">
+    <div class="bg-slate-50 dark:bg-slate-800/80 p-3 rounded-xl border border-slate-200 dark:border-slate-700 mb-2">
       ${ck('t_enabled',CFG.teamsEnabled,'Vklopi pošiljanje obvestil na Teams')}
     </div>
     <label class="${lbl}">Power Automate Webhook URL<input id="t_url" value="${esc(CFG.webhook)}" class="inp mt-1" placeholder="https://..."></label>
     <div class="space-y-3">${msgs||'<div class="text-xs text-slate-500 p-2">Ni nastavljenih Teams obvestil. Kliknite "Dodaj obvestilo".</div>'}</div>
-    <div class="flex gap-2 pt-2"><button onclick="A.saveCfg()" class="b bg-kg">💾 Shrani nastavitve</button><button onclick="A.testTeams()" class="b bg-indigo-600">Pošlji test na Teams</button></div>
+    <div class="flex gap-2 pt-2"><button onclick="A.saveCfg()" class="b bg-kg hover:bg-slate-800">💾 Shrani nastavitve</button><button onclick="A.testTeams()" class="b bg-indigo-600 hover:bg-indigo-500">Pošlji test na Teams</button></div>
   </div>
 
   <div class="${card} space-y-3"><h2 class="font-bold text-lg">👥 Ekipa</h2><div class="grid sm:grid-cols-2 gap-2">${team}</div>
-    <div class="flex gap-2"><input id="newName" placeholder="Ime novega sodelavca" class="inp"><button onclick="A.add()" class="b bg-blue-600 whitespace-nowrap">➕ Dodaj</button></div></div>
+    <div class="flex gap-2"><input id="newName" placeholder="Ime novega sodelavca" class="inp"><button onclick="A.add()" class="b bg-blue-600 hover:bg-blue-500 whitespace-nowrap">➕ Dodaj</button></div></div>
 
-  <div class="${card} space-y-3"><h2 class="font-bold text-lg">🔵 Uporabniki <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">${online} aktivnih</span></h2>
-    <div class="max-h-80 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl">${users||'<div class="p-4 text-xs text-slate-500">Ni zapisov.</div>'}</div></div></div>`;
+  <div class="${card} space-y-3"><h2 class="font-bold text-lg flex items-center gap-2">👥 Uporabniki <span class="text-xs bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800 px-2.5 py-0.5 rounded-full font-semibold">${online} aktivnih</span></h2>
+    <div class="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl">${users||'<div class="p-4 text-xs text-slate-500">Ni zapisov.</div>'}</div></div></div>`;
 }
 
 function render(){
@@ -502,8 +556,8 @@ function render(){
   const tabs=[['main','☕ Kava'],['log','🕘 Zgodovina'],...(isAdmin()?[['admin','🛡️ Skrbnik']]:[])];
   const body={main:viewMain,log:viewLog,admin:isAdmin()?viewAdmin:viewMain}[tab]();
   app.innerHTML=`${header()}${hero()}<main class="max-w-4xl mx-auto px-4 py-5">
-    ${CFG.notice?`<div class="mb-4 p-3 rounded-xl bg-slate-100 border border-slate-300 text-sm">ℹ️ ${esc(CFG.notice)}</div>`:''}
-    <nav class="flex gap-2 mb-5">${tabs.map(([id,t])=>`<button onclick="A.tab('${id}')" class="flex-1 px-2 py-2.5 rounded-xl text-xs sm:text-sm font-medium border border-slate-200 ${tab===id?'bg-kg text-white':'bg-white text-slate-600'}">${t}</button>`).join('')}</nav>
+    ${CFG.notice?`<div class="mb-4 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm">ℹ️ ${esc(CFG.notice)}</div>`:''}
+    <nav class="flex gap-2 mb-5">${tabs.map(([id,t])=>`<button onclick="A.tab('${id}')" class="flex-1 px-2 py-2.5 rounded-xl text-xs sm:text-sm font-medium border border-slate-200 dark:border-slate-800 ${tab===id?'bg-kg text-white':'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300'}">${t}</button>`).join('')}</nav>
     ${body}</main>`;
 }
 
