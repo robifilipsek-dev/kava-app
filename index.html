@@ -130,7 +130,6 @@ let S=norm({});
 // ===== LOGIKA VRSTE =====
 const valid=(s,n)=>!s.absent[n]&&!s.unav[n];
 
-// Poišče osebo z najmanjšim številom rund. Če imata dve enako rund, velja vrstni red na seznamu.
 function fair(s,unpaidOnly){
   const c=[];
   for(let i=0;i<s.team.length;i++){
@@ -163,7 +162,6 @@ function pay(s,who,type,by,inTurn=true){
   checkRound(s);if(inTurn)adv(s);
 }
 
-// Funkcija za izklop/preklic statusa "Časti danes"
 function clearTodayPayerState(s){
   if(!s.todayPayer) return;
   const payer = s.todayPayer;
@@ -364,13 +362,23 @@ const A=window.A={
       ? `<button onclick="A.logout()" class="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm font-semibold">Odjava</button>`
       : `<button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm font-semibold">Prekliči</button>`;
 
+    const googleBtn = user && user.isAnonymous ? `
+      <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-center">
+        <button onclick="A.google()" class="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline flex items-center justify-center gap-1.5 w-full py-1.5">
+          <span>🔑</span> Prijavi se z Google računom (za skrbnika / sinhronizacijo)
+        </button>
+      </div>
+    ` : '';
+
     document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md"><div class="bg-white dark:bg-slate-900 dark:text-slate-100 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center border border-slate-200 dark:border-slate-800">
       <h3 class="font-bold text-lg">Kdo si na seznamu?</h3><p class="text-sm text-slate-600 dark:text-slate-400 mt-1 mb-3">Izberi svoje ime s seznama ekipe, da vemo kdo uporablja aplikacijo.</p>
       <select id="pickSel" class="inp">${S.team.map(n=>`<option ${n===me?'selected':''}>${esc(n)}</option>`).join('')}</select>
       <div class="flex gap-3 mt-5">
         ${cancelBtn}
         <button onclick="A.setMe()" class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-bold shadow hover:bg-blue-500">Potrdi ime</button>
-      </div></div></div>`;
+      </div>
+      ${googleBtn}
+      </div></div>`;
   },
   setMe(){
     const sel=document.getElementById('pickSel');
@@ -464,7 +472,7 @@ const A=window.A={
     try{
       const res = await signInWithPopup(auth,pr);
       if(res && res.user){
-        me = ls.get('kava_member_' + res.user.uid) || '';
+        me = ls.get('kava_member_' + res.user.uid) || me || '';
         if(!me || !S.team.includes(me)){
           A.pick();
         }
@@ -478,7 +486,7 @@ const A=window.A={
     try{
       const res = await signInAnonymously(auth);
       if(res && res.user){
-        me = ls.get('kava_member_' + res.user.uid) || '';
+        me = ls.get('kava_member_' + res.user.uid) || me || '';
         if(!me || !S.team.includes(me)){
           A.pick();
         }
@@ -503,17 +511,19 @@ const lbl='block text-xs font-semibold text-slate-600 dark:text-slate-400';
 function loginView(){
   return `<div class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-kd via-kg to-ka"><div class="${card} max-w-sm w-full text-center">
     <img src="${ICON}" class="w-16 h-16 rounded-2xl mx-auto mb-3 shadow"><h1 class="font-bold text-xl text-slate-900 dark:text-white">Odmor za kavo</h1>
-    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-5">Prijavite se z Google računom ali nadaljujte kot gost.</p>
-    <div class="flex flex-col gap-3"><button onclick="A.google()" class="b bg-white text-slate-800 border border-slate-300 dark:bg-slate-800 dark:text-white dark:border-slate-700">Prijava z Google</button>
-    <button onclick="A.guest()" class="b bg-blue-600 hover:bg-blue-500">Prijava kot gost</button></div></div></div>`;
+    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 mb-5">Kliknite spodaj za vstop v aplikacijo.</p>
+    <div class="flex flex-col gap-3">
+      <button onclick="A.guest()" class="b bg-blue-600 hover:bg-blue-500 font-bold text-sm py-3 shadow-lg">🚀 Vstopi v aplikacijo</button>
+    </div></div></div>`;
 }
 
 function header(){
   const showInst=!standalone()&&(installEv||isIOS);
   const myName=me&&S.team.includes(me)?me:'Izberi osebo';
+  
   const adminBtn = isAdmin() ? `
     <button onclick="A.toggleAdmin()" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 transition flex items-center gap-1.5 text-xs text-white" title="Skrbniške nastavitve">
-      ⚙️ <span class="hidden sm:inline font-semibold">${tab==='admin'?'Meni kava':'Skrbnik'}</span>
+      ${tab==='admin' ? '☕ <span class="hidden sm:inline font-semibold">Meni kava</span>' : '⚙️ <span class="hidden sm:inline font-semibold">Skrbnik</span>'}
     </button>
   ` : '';
 
@@ -525,7 +535,6 @@ function header(){
     </button>
     <button onclick="A.pick()" class="px-3 py-2 rounded-xl bg-kg border border-slate-700 text-slate-200 flex items-center gap-1.5 hover:bg-slate-800 transition" title="Zamenjaj osebo na seznamu">
       <span>👤 <strong>${esc(myName)}</strong></span>
-      <span class="text-[10px] text-blue-300 underline">(zamenjaj)</span>
     </button>
     ${adminBtn}
     <button onclick="A.logout()" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-red-900/60 transition" title="Odjava">Odjava</button></div></div></header>`;
@@ -574,14 +583,14 @@ function viewMain(){
       <div class="text-[11px] ${isPayer ? 'text-emerald-600 dark:text-emerald-400 font-bold' : isNext ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-500 dark:text-slate-400'} mt-1">${st}</div></div>`;
   }).join('');
 
-  const displayTitle = isConfirmed ? '⭐ Danes potrjeno časti:' : '👉 Na vrsti da časti (najmanj rund):';
+  const displayTitle = isConfirmed ? '⭐ Danes potrjeno časti:' : '👉 Na vrsti da časti:';
   const displayName = isConfirmed ? S.todayPayer : (nextPerson || '-');
   const displayClass = isConfirmed ? 'text-emerald-600 dark:text-emerald-400' : 'text-blue-600 dark:text-blue-400';
 
   return `<div class="${card} text-center mb-4 transition-all">
     <div class="text-xs ${isConfirmed ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-500 dark:text-slate-400'}">${displayTitle}</div>
     <div class="text-3xl sm:text-4xl my-1.5 font-extrabold ${displayClass}">${esc(displayName)}</div>
-    ${isConfirmed && nextPerson && nextPerson !== S.todayPayer ? `<div class="text-xs text-slate-500 dark:text-slate-400 mb-2">Naslednji na vrsti za naslednjo kavo: <strong>${esc(nextPerson)}</strong></div>` : ''}
+    ${isConfirmed && nextPerson && nextPerson !== S.todayPayer ? `<div class="text-xs text-slate-500 dark:text-slate-400 mb-2">Naslednji na vrsti: <strong>${esc(nextPerson)}</strong></div>` : ''}
     <div class="grid sm:grid-cols-2 gap-2 mt-4">
       <button onclick="A.confirm()" class="b bg-emerald-600 hover:bg-emerald-500">✅ Potrjujem rundo</button>
       <button onclick="A.cant()" class="b bg-red-600 hover:bg-red-500">✕ Danes ne more</button>
@@ -590,7 +599,7 @@ function viewMain(){
       <button onclick="A.undo()" class="b bg-slate-600 hover:bg-slate-500 dark:bg-slate-700 sm:col-span-2">↩️ Razveljavi (Undo)</button></div></div>
   <div class="mg" style="--c:${cols}">${cards}</div>
   <div class="text-xs text-slate-500 dark:text-slate-400 mt-4 flex items-center justify-between">
-    <span>Izbrana oseba s seznama: <strong class="text-slate-800 dark:text-slate-200">${esc(me&&S.team.includes(me)?me:'Niste izbrali osebe')}</strong> <a href="#" class="underline text-blue-600 dark:text-blue-400" onclick="A.pick();return false">(zamenjaj)</a></span>
+    <span>Izbrana oseba s seznama: <strong class="text-slate-800 dark:text-slate-200">${esc(me&&S.team.includes(me)?me:'Niste izbrali osebe')}</strong></span>
     <span>${loaded?'✅ Sinhronizirano':'⏳ Nalagam …'}</span></div>`;
 }
 
