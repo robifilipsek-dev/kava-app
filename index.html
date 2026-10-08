@@ -1,443 +1,360 @@
 <!DOCTYPE html>
 <html lang="sl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Odmor za kavo</title>
-<meta name="theme-color" content="#0f291e">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Kava">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{kd:'#0f291e',kg:'#1a4332',ka:'#2d6a4f',bean:'#8a5a34'}}}}</script>
-<style>
-body{font-family:Inter,system-ui,sans-serif;background:#f1f5f9}
-.mg{display:grid;gap:8px;grid-template-columns:repeat(var(--c),1fr)}
-@media(max-width:480px){.mg{grid-template-columns:repeat(2,1fr)!important}}
-.inp{width:100%;padding:.5rem .75rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.875rem;background:#fff}
-.b{padding:.6rem 1rem;border-radius:.75rem;font-weight:600;font-size:.8rem;color:#fff;transition:.15s}
-.b:hover{filter:brightness(.92)}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odmor za kavo - aplikacija</title>
+
+    <!-- Ikona za zavihek / zaznamke v brskalniku (teniška žogica) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3CclipPath%20id='c'%3E%3Ccircle%20r='22'/%3E%3C/clipPath%3E%3C/defs%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23f1ede4'/%3E%3Crect%20x='11'%20y='13'%20width='42'%20height='40'%20rx='5'%20fill='%23fff'/%3E%3Crect%20x='11'%20y='13'%20width='42'%20height='11'%20rx='5'%20fill='%231a4332'/%3E%3Crect%20x='11'%20y='19'%20width='42'%20height='5'%20fill='%231a4332'/%3E%3Crect%20x='11'%20y='13'%20width='42'%20height='40'%20rx='5'%20fill='none'%20stroke='%230f291e'%20stroke-width='1.4'/%3E%3Crect%20x='19.5'%20y='9'%20width='3.4'%20height='7.7'%20rx='1.7'%20fill='%230f291e'/%3E%3Crect%20x='41.1'%20y='9'%20width='3.4'%20height='7.7'%20rx='1.7'%20fill='%230f291e'/%3E%3Cg%20fill='%23cbd5e1'%3E%3Ccircle%20cx='20'%20cy='31.6'%20r='1.7'/%3E%3Ccircle%20cx='28.2'%20cy='31.6'%20r='1.7'/%3E%3Ccircle%20cx='36.3'%20cy='31.6'%20r='1.7'/%3E%3Ccircle%20cx='44.4'%20cy='31.6'%20r='1.7'/%3E%3Ccircle%20cx='20'%20cy='39.3'%20r='1.7'/%3E%3Ccircle%20cx='28.2'%20cy='39.3'%20r='1.7'/%3E%3Ccircle%20cx='44.4'%20cy='39.3'%20r='1.7'/%3E%3Ccircle%20cx='20'%20cy='46.9'%20r='1.7'/%3E%3Ccircle%20cx='28.2'%20cy='46.9'%20r='1.7'/%3E%3Ccircle%20cx='36.3'%20cy='46.9'%20r='1.7'/%3E%3Ccircle%20cx='44.4'%20cy='46.9'%20r='1.7'/%3E%3C/g%3E%3Cg%20transform='translate(36.3%2039.3)%20scale(.295)'%3E%3Ccircle%20r='22'%20fill='%23d4e83a'/%3E%3Cg%20clip-path='url(%23c)'%20fill='none'%20stroke='%23fff'%20stroke-width='3'%20stroke-linecap='round'%3E%3Cpath%20d='M-20%20-22Q8%200%20-20%2022'/%3E%3Cpath%20d='M20%20-22Q-8%200%2020%2022'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
+    <meta name="theme-color" content="#0f291e">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Odmor za kavo">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- PWA: ikona (PNG, generirana s canvasom), manifest in zajem namestitvenega poziva -->
+    <script>
+        (function () {
+            // Nariše ikono (koledar z teniško žogico) – ista podoba kot favicon
+            function rr(ctx, x, y, w, h, r) {
+                ctx.beginPath();
+                ctx.moveTo(x + r, y);
+                ctx.arcTo(x + w, y, x + w, y + h, r);
+                ctx.arcTo(x + w, y + h, x, y + h, r);
+                ctx.arcTo(x, y + h, x, y, r);
+                ctx.arcTo(x, y, x + w, y, r);
+                ctx.closePath();
+            }
+
+            function drawBallPng(size, maskable) {
+                var canvas = document.createElement('canvas');
+                canvas.width = size; canvas.height = size;
+                var ctx = canvas.getContext('2d');
+                ctx.scale(size / 64, size / 64);
+
+                ctx.fillStyle = '#f1ede4';
+                if (maskable) { ctx.fillRect(0, 0, 64, 64); } else { rr(ctx, 0, 0, 64, 64, 14); ctx.fill(); }
+
+                ctx.save();
+                if (maskable) { ctx.translate(32, 32); ctx.scale(0.78, 0.78); ctx.translate(-32, -32); }
+
+                rr(ctx, 11, 13, 42, 40, 5); ctx.fillStyle = '#ffffff'; ctx.fill();
+                rr(ctx, 11, 13, 42, 11, 5); ctx.fillStyle = '#1a4332'; ctx.fill();
+                ctx.fillRect(11, 19, 42, 5);
+                rr(ctx, 11, 13, 42, 40, 5); ctx.strokeStyle = '#0f291e'; ctx.lineWidth = 1.4; ctx.stroke();
+
+                ctx.fillStyle = '#0f291e';
+                rr(ctx, 19.5, 9, 3.4, 7.7, 1.7); ctx.fill();
+                rr(ctx, 41.1, 9, 3.4, 7.7, 1.7); ctx.fill();
+
+                ctx.fillStyle = '#cbd5e1';
+                [31.6, 39.3, 46.9].forEach(function (y) {
+                    [20, 28.2, 36.3, 44.4].forEach(function (x) {
+                        if (y === 39.3 && x === 36.3) return;
+                        ctx.beginPath(); ctx.arc(x, y, 1.7, 0, Math.PI * 2); ctx.fill();
+                    });
+                });
+
+                ctx.save();
+                ctx.translate(36.3, 39.3); ctx.scale(0.295, 0.295);
+                ctx.fillStyle = '#d4e83a';
+                ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.clip();
+                ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+                ctx.stroke(new Path2D('M-20 -22Q8 0 -20 22'));
+                ctx.stroke(new Path2D('M20 -22Q-8 0 20 22'));
+                ctx.restore();
+
+                ctx.restore();
+                return canvas.toDataURL('image/png');
+            }
+
+            function setupPwa() {
+                try {
+                    var iconAny = drawBallPng(512, false);
+                    var iconMask = drawBallPng(512, true);
+
+                    var apple = document.querySelector('link[rel="apple-touch-icon"]');
+                    if (!apple) {
+                        apple = document.createElement('link');
+                        apple.rel = 'apple-touch-icon';
+                        document.head.appendChild(apple);
+                    }
+                    apple.href = drawBallPng(180, false);
+
+                    var manifest = {
+                        name: 'Odmor za kavo',
+                        short_name: 'Kava',
+                        start_url: location.href.split('#')[0],
+                        display: 'standalone',
+                        background_color: '#f1ede4',
+                        theme_color: '#0f291e',
+                        icons: [
+                            { src: iconAny, sizes: '512x512', type: 'image/png', purpose: 'any' },
+                            { src: iconMask, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+                        ]
+                    };
+                    var url = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/json' }));
+                    var link = document.querySelector('link[rel="manifest"]');
+                    if (!link) {
+                        link = document.createElement('link');
+                        link.rel = 'manifest';
+                        document.head.appendChild(link);
+                    }
+                    link.href = url;
+                } catch (e) {
+                    console.warn('PWA ikona/manifest ni bil ustvarjen:', e);
+                }
+            }
+            setupPwa();
+
+            // Brskalnik lahko sproži poziv za namestitev, še preden se naloži Vue – zato ga shranimo tukaj
+            window.__pwaPrompt = null;
+            window.addEventListener('beforeinstallprompt', function (e) {
+                e.preventDefault();
+                window.__pwaPrompt = e;
+                window.dispatchEvent(new Event('pwa-state-changed'));
+            });
+            window.addEventListener('appinstalled', function () {
+                window.__pwaPrompt = null;
+                window.__pwaInstalled = true;
+                window.dispatchEvent(new Event('pwa-state-changed'));
+            });
+        })();
+    </script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts (Inter & Outfit) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clay: {
+                            50: '#fff7f5',
+                            100: '#ffeee8',
+                            200: '#ffd9cc',
+                            500: '#e05638',
+                            600: '#c24127',
+                            700: '#a1311b',
+                            800: '#852a1a',
+                        },
+                        court: {
+                            dark: '#0f291e',
+                            green: '#1a4332',
+                            accent: '#2d6a4f',
+                            light: '#40916c',
+                            grass: '#52b788',
+                            lime: '#74c69d',
+                            highlight: '#d8f3dc'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+        [v-cloak] { display: none !important; }
+        
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    
+        /* Mobilni datum: native koledar ostane znotraj vidnega okvirčka */
+        .date-picker-native { min-height: 42px; }
+        .date-picker-native::-webkit-calendar-picker-indicator { opacity: 0.9; cursor: pointer; padding: 2px; }
+        @media (max-width: 640px) { .date-picker-native { width: 10rem; } }
 </style>
 </head>
-<body class="min-h-screen text-slate-800">
-<div id="app"></div>
-<div id="modal"></div>
-<div id="toast" class="fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 sm:max-w-sm z-[60]"></div>
+<body class="text-slate-800 bg-slate-100 min-h-screen flex flex-col antialiased">
 
+
+<body class="text-slate-800 bg-slate-100 min-h-screen flex flex-col antialiased">
+<div id="app" v-cloak class="flex-grow flex flex-col">
+<header class="bg-court-dark text-white shadow-lg sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 rounded-xl bg-court-accent/30 border border-court-accent/50 flex items-center justify-center text-xl">☕</div>
+      <div class="min-w-0"><div class="font-display font-extrabold text-base sm:text-lg truncate">Odmor za kavo</div><div class="text-[11px] text-slate-400">Kroženje kave · sinhronizirano</div></div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button v-if="canInstall" @click="installApp" class="p-2 rounded-lg bg-court-green/80 hover:bg-court-accent text-court-highlight border border-court-accent/50" title="Namesti aplikacijo"><i class="fa-solid fa-download"></i><span class="hidden sm:inline ml-2 text-xs">Namesti</span></button>
+      <button v-if="isAdmin" @click="openAdmin" class="p-2 rounded-lg bg-court-green/80 hover:bg-court-accent text-court-highlight border border-court-accent/50" title="Nastavitve"><i class="fa-solid fa-gear"></i><span class="hidden sm:inline ml-2 text-xs">Nastavitve</span></button>
+      <template v-if="currentUser">
+        <button @click="openProfile" class="p-2 rounded-lg bg-court-green/80 hover:bg-court-accent text-court-highlight border border-court-accent/50" title="Moj profil"><i class="fa-solid fa-user-gear"></i><span class="hidden sm:inline ml-2 text-xs">{{ userName || 'Profil' }}</span></button>
+        <button @click="logout" class="p-2 rounded-lg bg-slate-800 hover:bg-red-950/80 text-slate-300 border border-slate-700" title="Odjava"><i class="fa-solid fa-right-from-bracket"></i></button>
+      </template>
+      <template v-else>
+        <button @click="loginGoogle" class="px-3 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-800 font-semibold text-xs"><i class="fa-brands fa-google mr-1"></i> Google</button>
+        <button @click="openGuest" class="px-3 py-2 rounded-lg bg-court-accent hover:bg-court-light text-white font-semibold text-xs border border-court-light/40">Gost</button>
+      </template>
+    </div>
+  </div>
+</header>
+
+<section class="bg-gradient-to-r from-court-dark via-court-green to-court-accent text-white py-6 px-4 sm:px-6 lg:px-8 border-b border-court-accent shadow-inner">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      <div><h1 class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">Današnja kava</h1><p class="text-slate-300 text-xs sm:text-sm mt-1 max-w-2xl">Prijava, sinhronizacija, profil in skrbniške nastavitve so urejeni kot v glavni aplikaciji; poslovna logika pa je namenjena kavi.</p></div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs min-w-0 lg:min-w-[430px]">
+        <div class="bg-slate-900/50 border border-white/10 rounded-xl p-3"><span class="text-slate-400">Na vrsti</span><strong class="block text-sm text-court-highlight mt-1">{{ nextPerson }}</strong></div>
+        <div class="bg-slate-900/50 border border-white/10 rounded-xl p-3"><span class="text-slate-400">Danes časti</span><strong class="block text-sm text-emerald-300 mt-1">{{ todayPayer || '—' }}</strong></div>
+        <div class="col-span-2 sm:col-span-1 bg-slate-900/50 border border-white/10 rounded-xl p-3"><span class="text-slate-400">Stanje</span><strong class="block text-sm mt-1" :class="syncOk ? 'text-emerald-300' : 'text-amber-300'">{{ syncText }}</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+  <div v-if="!authReady" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center"><i class="fa-solid fa-spinner fa-spin text-2xl text-court-accent"></i><p class="text-sm text-slate-500 mt-3">Vzpostavljam prijavo …</p></div>
+  <div v-else-if="!currentUser" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center"><div class="w-14 h-14 rounded-2xl bg-court-light/20 text-court-dark flex items-center justify-center mx-auto text-2xl">☕</div><h2 class="font-display font-bold text-xl mt-4">Prijavite se za uporabo</h2><p class="text-sm text-slate-500 mt-2">Uporabite Google prijavo ali Gost in vpišite ime in priimek.</p></div>
+  <template v-else>
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div><div class="text-xs uppercase tracking-wider font-bold text-slate-400">Trenutna runda</div><div class="font-display text-2xl font-extrabold text-slate-900 mt-1">{{ todayPayer ? '☕ ' + todayPayer + ' časti danes' : '👉 ' + nextPerson + ' je na vrsti' }}</div><p class="text-xs text-slate-500 mt-1">Če je kdo odsoten ali danes ne more, se vrstni red samodejno prilagodi.</p></div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:w-auto">
+          <button @click="confirmCoffee" :disabled="!!todayPayer || nextPerson === '—'" class="px-3 py-2.5 rounded-xl bg-court-accent text-white font-bold text-xs disabled:opacity-40"><i class="fa-solid fa-check mr-1"></i> Potrdi</button>
+          <button @click="cantGive" :disabled="!!todayPayer || nextPerson === '—'" class="px-3 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs disabled:opacity-40"><i class="fa-solid fa-xmark mr-1"></i> Ne morem</button>
+          <button @click="sponsor" class="px-3 py-2.5 rounded-xl bg-blue-500 text-white font-bold text-xs"><i class="fa-solid fa-gift mr-1"></i> Častim</button>
+          <button @click="invite" class="px-3 py-2.5 rounded-xl bg-violet-500 text-white font-bold text-xs"><i class="fa-solid fa-paper-plane mr-1"></i> Vabilo</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+      <div class="flex items-center justify-between mb-4"><div><h2 class="font-display font-bold text-xl">Ekipa</h2><p class="text-xs text-slate-500 mt-1">Število prikazuje, kolikokrat je član plačal kavo v trenutnem štetju.</p></div><span class="text-xs px-3 py-1 rounded-full bg-slate-100 border border-slate-200">{{ team.length }} članov</span></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div v-for="name in team" :key="name" class="rounded-2xl border p-4 transition" :class="cardClass(name)">
+          <div class="flex items-start justify-between gap-3"><div><div class="font-bold text-slate-900">{{ name }}</div><div class="text-xs mt-1" :class="statusClass(name)">{{ statusText(name) }}</div></div><span class="shrink-0 rounded-full px-2 py-1 text-xs font-bold bg-white/70 border border-slate-200">☕ {{ counts[name] || 0 }}</span></div>
+          <div class="mt-3 flex gap-2"><button v-if="!todayPayer && name === nextPerson" @click="confirmCoffee" class="flex-1 py-2 rounded-lg bg-court-accent text-white text-xs font-bold">Potrdi kavo</button><button @click="toggleAbsence(name)" class="px-3 py-2 rounded-lg bg-white/80 border border-slate-300 text-xs font-semibold">{{ absent[name] ? 'Prisoten' : 'Odsoten' }}</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-5"><h2 class="font-display font-bold text-lg">Pregled kroga</h2><div class="mt-4 overflow-x-auto"><table class="w-full text-xs"><thead><tr class="text-left text-slate-400 border-b"><th class="py-2">Član</th><th class="py-2">Runde</th><th class="py-2">Današnje stanje</th></tr></thead><tbody><tr v-for="name in team" :key="name" class="border-b last:border-0"><td class="py-2.5 font-semibold">{{ name }}</td><td class="py-2.5">{{ counts[name] || 0 }}</td><td class="py-2.5">{{ statusText(name) }}</td></tr></tbody></table></div></div>
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5"><h2 class="font-display font-bold text-lg">Teams</h2><p class="text-xs text-slate-500 mt-2">Vabilo lahko pošlješ neposredno v Teams. Besedilo se nastavlja v skrbniških nastavitvah.</p><button @click="invite" class="mt-4 w-full py-2.5 rounded-xl bg-violet-500 hover:bg-violet-600 text-white text-xs font-bold"><i class="fa-solid fa-paper-plane mr-1"></i> Povabi na kavo</button><div class="mt-4 text-[11px] text-slate-400">{{ teamsConfigured ? 'Webhook je nastavljen.' : 'Webhook ni nastavljen.' }}</div></div>
+    </div>
+  </template>
+</main>
+
+<footer class="border-t border-slate-200 bg-white"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-[11px] text-slate-400 flex justify-between"><span>Odmor za kavo</span><span>{{ userName || 'Neprijavljen' }}</span></div></footer>
+
+<!-- Guest -->
+<div v-if="showGuest" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"><div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl"><h3 class="font-display font-bold text-xl">Prijava kot gost</h3><p class="text-xs text-slate-500 mt-1">Vpišite ime in priimek.</p><input v-model="guestName" @keyup.enter="confirmGuest" class="mt-4 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm" placeholder="Janez Novak"><p v-if="guestError" class="text-xs text-red-600 mt-2">{{ guestError }}</p><div class="flex gap-2 mt-5"><button @click="showGuest=false" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-xs font-semibold">Prekliči</button><button @click="confirmGuest" class="flex-1 py-2.5 rounded-xl bg-court-accent text-white text-xs font-bold">Nadaljuj</button></div></div></div>
+<!-- Profile -->
+<div v-if="showProfile" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"><div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl"><div class="flex justify-between"><h3 class="font-display font-bold text-xl">Moj profil</h3><button @click="showProfile=false">✕</button></div><label class="block text-xs font-semibold text-slate-500 mt-5">Prikazano ime</label><input v-model="profileName" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"><div class="flex gap-2 mt-5"><button @click="showProfile=false" class="flex-1 py-2.5 rounded-xl bg-slate-100 text-xs font-semibold">Prekliči</button><button @click="saveProfile" class="flex-1 py-2.5 rounded-xl bg-court-accent text-white text-xs font-bold">Shrani</button></div></div></div>
+<!-- Admin -->
+<div v-if="showAdmin" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/70 backdrop-blur-sm"><div class="bg-white rounded-2xl max-w-5xl w-full max-h-[92vh] overflow-y-auto shadow-2xl"><div class="sticky top-0 z-10 bg-white border-b border-slate-200 px-5 py-4 flex items-center justify-between"><div><h3 class="font-display font-bold text-xl">Skrbniške nastavitve</h3><p class="text-xs text-slate-500">Nastavitve ekipe, vrstnega reda, štetja, Teams in prikaza.</p></div><button @click="showAdmin=false" class="text-slate-400 hover:text-slate-700 text-xl">✕</button></div><div class="p-5 grid grid-cols-1 lg:grid-cols-2 gap-5">
+  <section class="border border-slate-200 rounded-2xl p-4"><h4 class="font-bold">Člani ekipe</h4><div class="mt-3 space-y-2"><div v-for="(name,i) in team" :key="name" class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="flex items-center gap-2"><input v-model="team[i]" class="min-w-0 flex-1 rounded-lg border border-slate-300 px-2 py-1.5 text-xs"><button @click="moveMember(i,-1)" class="px-2 py-1 rounded bg-white border text-xs">↑</button><button @click="moveMember(i,1)" class="px-2 py-1 rounded bg-white border text-xs">↓</button><button @click="removeMember(name)" class="px-2 py-1 rounded bg-red-50 text-red-600 border border-red-200 text-xs">🗑</button></div><div class="flex items-center justify-between mt-2 text-xs"><span>Runde: <b>{{ counts[name] || 0 }}</b></span><span class="flex gap-1"><button @click="changeCount(name,-1)" class="px-2 py-1 rounded bg-slate-200">−</button><button @click="changeCount(name,1)" class="px-2 py-1 rounded bg-slate-200">+</button><button @click="setNext(i)" class="px-2 py-1 rounded bg-court-light/30">Na vrsto</button></span></div></div></div><div class="flex gap-2 mt-3"><input v-model="newMember" @keyup.enter="addMember" class="flex-1 rounded-lg border border-slate-300 px-2 py-2 text-xs" placeholder="Novo ime"><button @click="addMember" class="px-3 py-2 rounded-lg bg-court-accent text-white text-xs font-bold">Dodaj</button></div></section>
+  <section class="space-y-5"><div class="border border-slate-200 rounded-2xl p-4"><h4 class="font-bold">Teams sporočilo</h4><label class="block text-xs text-slate-500 mt-3">Power Automate Webhook URL</label><input v-model="adminWebhook" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-2 text-xs"><label class="block text-xs text-slate-500 mt-3">Vabilo</label><textarea v-model="adminInvite" rows="3" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-2 text-xs"></textarea><p class="text-[11px] text-slate-400 mt-1">Uporabi {ime} in {cas}.</p></div><div class="border border-slate-200 rounded-2xl p-4"><h4 class="font-bold">Prikaz</h4><label class="block text-xs text-slate-500 mt-3">Število stolpcev ekipe</label><select v-model="adminColumns" class="mt-1 w-full rounded-lg border border-slate-300 px-2 py-2 text-xs"><option value="auto">Samodejno</option><option value="2">2</option><option value="3">3</option></select></div><div class="border border-slate-200 rounded-2xl p-4"><h4 class="font-bold">Vzdrževanje</h4><button @click="undo" class="mt-3 w-full py-2 rounded-lg bg-slate-800 text-white text-xs font-bold">Povrni zadnjo spremembo</button><button @click="resetRound" class="mt-2 w-full py-2 rounded-lg bg-amber-500 text-white text-xs font-bold">Ponastavi trenutno rundo</button></div></section>
+</div><div class="px-5 py-4 border-t bg-slate-50 flex justify-end gap-2"><button @click="showAdmin=false" class="px-4 py-2 rounded-xl bg-white border text-xs font-semibold">Prekliči</button><button @click="saveAdmin" class="px-5 py-2 rounded-xl bg-court-accent text-white text-xs font-bold">Shrani vse spremembe</button></div></div></div>
+<!-- Toast -->
+<div v-if="toast.show" class="fixed bottom-5 left-4 right-4 sm:left-auto sm:right-5 z-[60] sm:max-w-sm"><div class="p-4 rounded-2xl shadow-2xl border bg-slate-900 text-white flex gap-3"><i class="fa-solid" :class="toast.type==='error'?'fa-circle-xmark text-red-300':'fa-circle-check text-emerald-300'"></i><div><b class="block text-xs">{{ toast.title }}</b><span class="text-xs text-slate-300">{{ toast.message }}</span></div></div></div>
+</div>
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,signInAnonymously,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import {getFirestore,doc,collection,onSnapshot,setDoc,deleteDoc,runTransaction,serverTimestamp} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { createApp, ref, computed, onMounted } from 'https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.prod.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signInAnonymously, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-// ===== NASTAVITVE =====
-const ADMIN_EMAIL='robi.filipsek@gmail.com';
-const firebaseConfig={
-  apiKey:"AIzaSyDbRouSg-8ANONlm7bmTh6BSDSx6nf2sxQ",
-  authDomain:"kava-inel.firebaseapp.com",
-  projectId:"kava-inel",
-  storageBucket:"kava-inel.firebasestorage.app",
-  messagingSenderId:"675983563038",
-  appId:"1:675983563038:web:f16fe25249691cfd54110f"
-};
-const DEFAULT_TEAM=["Filipšek","Fidler","Pirnat","Oprešnik","Govedić","Fendre","Šetina","Vrtačnik","Gračner","Rihter"];
-const DEF={active:true,openHour:6,closeHour:18,dailyLimit:3,weeklyLimit:15,workDays:[1,2,3,4,5],notice:'',cols:'auto',inviteTime:'12:00',
-  webhook:"https://default3caae3ec12124a678d46afe2847c45.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/806a9b79b01b4219bc66ed4d449ffbfd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTxW5wgDGp3I9TXnX6fSdLQ2r7sBnumVkzROnPYLIig",
-  msgInvite:"☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!",msgRound:"☕ Danes časti **{ime}**.",notifyRound:false};
+const firebaseConfig={apiKey:'AIzaSyDbRouSg-8ANONlm7bmTh6BSDSx6nf2sxQ',authDomain:'kava-inel.firebaseapp.com',projectId:'kava-inel',storageBucket:'kava-inel.firebasestorage.app',messagingSenderId:'675983563038',appId:'1:675983563038:web:f16fe25249691cfd54110f'};
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app), cloudRef=doc(db,'coffeeApp','main');
+const ADMIN_EMAIL='robi.filipsek@gmail.com', ADMIN_PIN='1234';
+const DEFAULT_TEAM=['Filipšek','Fidler','Pirnat','Oprešnik','Govedić','Fendre','Šetina','Vrtačnik','Gračner','Rihter'];
+const DEFAULT_WEBHOOK='https://default3caae3ec12124a678d46afe2847c45.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/806a9b79b01b4219bc66ed4d449ffbfd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTxW5wgDGp3I9TXnX6fSdLQ2r7sBnumVkzROnPYLIig';
+const DEFAULT_INVITE='☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!';
 
-const fb=initializeApp(firebaseConfig),auth=getAuth(fb),db=getFirestore(fb);
-const p=n=>String(n).padStart(2,'0');
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const iso=d=>`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
-const today=()=>iso(new Date());
-function weekB(){const d=new Date(),k=d.getDay(),m=new Date(d);m.setDate(d.getDate()+(k===0?-6:1-k));const s=new Date(m);s.setDate(m.getDate()+6);return[iso(m),iso(s)];}
-const ls={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+function today(){const d=new Date();return d.toISOString().slice(0,10)}
+function validName(s){const p=(s||'').trim().replace(/\s+/g,' ').split(' ').filter(Boolean);return p.length>=2 && p.every(x=>x.replace(/[^\p{L}]/gu,'').length>=2)}
+function deepCopy(x){return JSON.parse(JSON.stringify(x))}
 
-// ===== IKONA / PWA =====
-const CUP=`<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><rect width='512' height='512' rx='112' fill='#0f291e'/><g transform='translate(256 256) scale(.95) translate(-286 -276)'><g fill='none' stroke-linecap='round'><path d='M214 172c-18-20 18-36 0-58M282 172c-18-20 18-36 0-58' stroke='#fff' stroke-width='20' opacity='.6'/><path d='M348 258h20a44 44 0 0 1 0 88h-28' stroke='#10b981' stroke-width='26'/><path d='M170 438h156' stroke='#fff' stroke-width='20'/></g><path d='M148 218h200v82a100 100 0 0 1-200 0z' fill='#34d399'/></g></svg>`;
-const ICON='data:image/svg+xml,'+encodeURIComponent(CUP);
-(function(){
-  const l=document.createElement('link');l.rel='icon';l.href=ICON;document.head.appendChild(l);
-  const img=new Image();
-  img.onload=()=>{try{
-    const png=s=>{const c=document.createElement('canvas');c.width=c.height=s;c.getContext('2d').drawImage(img,0,0,s,s);return c.toDataURL('image/png')};
-    const a=document.createElement('link');a.rel='apple-touch-icon';a.href=png(180);document.head.appendChild(a);
-    const m={name:'Odmor za kavo',short_name:'Kava',start_url:location.href.split('#')[0],display:'standalone',background_color:'#0f291e',theme_color:'#0f291e',icons:[{src:png(512),sizes:'512x512',type:'image/png',purpose:'any'}]};
-    const mk=document.createElement('link');mk.rel='manifest';mk.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(mk);
-  }catch(e){}};
-  img.src=ICON;
-})();
-let installEv=null;
-const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEv=e;render()});
-addEventListener('appinstalled',()=>{installEv=null;render()});
-
-// ===== STANJE =====
-let user=null,tab='main',me='',presence=[],unsubs=[],loaded=false,rolling=false,hist=[];
-let CFG={...DEF};
-function norm(s){
-  s.team=s.team?.length?s.team:[...DEFAULT_TEAM];
-  for(const k of['counts','absent','paid','unav'])s[k]=s[k]||{};
-  s.team.forEach(n=>{s.counts[n]=s.counts[n]||0;s.absent[n]=!!s.absent[n];s.paid[n]=!!s.paid[n];s.unav[n]=!!s.unav[n]});
-  s.log=s.log||[];s.todayPayer=s.todayPayer||null;s.day=s.day||'';s.ver=s.ver||0;
-  s.idx=Math.min(Math.max(s.idx||0,0),Math.max(s.team.length-1,0));
-  return s;
-}
-let S=norm({});
-
-// ===== LOGIKA VRSTE (iz stare aplikacije) =====
-const valid=(s,n)=>!s.absent[n]&&!s.unav[n];
-function fair(s,unpaidOnly){
-  const c=[];
-  for(let i=0;i<s.team.length;i++){const ix=(s.idx+i)%s.team.length,n=s.team[ix];
-    if(!valid(s,n)||(unpaidOnly&&s.paid[n]))continue;c.push({ix,o:i,c:s.counts[n]||0});}
-  if(!c.length)return -1;
-  c.sort((a,b)=>a.c-b.c||a.o-b.o);return c[0].ix;
-}
-const nextIx=s=>{const i=fair(s,true);return i<0?fair(s,false):i};
-const nextName=s=>{const i=nextIx(s);return i<0?null:s.team[i]};
-function adv(s){const i=nextIx(s);if(i>=0)s.idx=i}
-function checkRound(s){
-  const av=s.team.filter(n=>valid(s,n));
-  if(av.length&&av.every(n=>s.paid[n])){
-    s.team.forEach(n=>s.paid[n]=false);
-    s.team.forEach(n=>{if(s.absent[n])s.counts[n]++}); // odsotni ne zaostajajo
-  }
-}
-function pay(s,who,type,by,inTurn=true){
-  const d=new Date();
-  s.counts[who]++;s.paid[who]=true;s.todayPayer=who;s.unav[who]=false;
-  s.log.push({d:today(),t:`${p(d.getHours())}:${p(d.getMinutes())}`,who,type,by});
-  if(s.log.length>100)s.log.splice(0,s.log.length-100);
-  checkRound(s);if(inTurn)adv(s);
-}
-
-// ===== FIRESTORE (transakcije, da sočasna dejanja ne povozijo drug drugega) =====
-async function mutate(fn,noHist){
-  const ref=doc(db,'kava','state');let before,after;
-  await runTransaction(db,async tx=>{
-    const sn=await tx.get(ref);const cur=norm(sn.exists()?sn.data():{});
-    before=structuredClone(cur);fn(cur);norm(cur);cur.ver++;tx.set(ref,cur);after=cur;
-  });
-  if(!noHist){hist.push({before,ver:after.ver});if(hist.length>20)hist.shift()}
-  S=after;render();
-}
-async function run(fn,ok,after){
-  try{await mutate(fn);if(ok)toast(ok);after&&after()}
-  catch(e){console.error(e);toast(e.message==='none'?'Ni dostopnih članov za kavo.':'Shranjevanje ni uspelo (preverite Firestore pravila).','err')}
-}
-function rollover(){
-  if(!loaded||rolling||S.day===today())return;
-  rolling=true;
-  mutate(s=>{s.team.forEach(n=>s.unav[n]=false);s.todayPayer=null;s.day=today()},true).catch(e=>console.warn(e)).finally(()=>rolling=false);
-}
-function startListeners(){
-  stop();
-  unsubs.push(onSnapshot(doc(db,'kava','state'),sn=>{S=norm(sn.exists()?sn.data():{});loaded=true;rollover();render()},
-    e=>{console.error(e);toast('Podatkov ni mogoče naložiti. Preverite Firestore pravila.','err')}));
-  unsubs.push(onSnapshot(doc(db,'settings','main'),sn=>{CFG={...DEF,...(sn.exists()?sn.data():{})};render()},e=>console.warn(e)));
-  if(isAdmin())unsubs.push(onSnapshot(collection(db,'presence'),sn=>{presence=sn.docs.map(d=>({id:d.id,...d.data()}));if(tab==='admin')render()},e=>console.warn(e)));
-}
-function stop(){unsubs.forEach(u=>u());unsubs=[];loaded=false;presence=[]}
-async function beat(){
-  if(!user)return;
-  try{await setDoc(doc(db,'presence',user.uid),{uid:user.uid,name:who(),member:me,email:user.email||'',isAnonymous:!!user.isAnonymous,lastSeen:serverTimestamp()},{merge:true})}catch(e){}
-}
-setInterval(()=>{if(document.visibilityState==='visible'){beat();rollover();render()}},60000);
-
-// ===== POMOŽNE =====
-const isAdmin=()=>!!user&&!user.isAnonymous&&(user.email||'').toLowerCase()===ADMIN_EMAIL&&user.emailVerified!==false;
-const who=()=>me&&S.team.includes(me)?me:(user?.displayName||user?.email||'Neznano');
-const dayN=()=>S.log.filter(l=>l.d===today()).length;
-const weekN=()=>{const[a,b]=weekB();return S.log.filter(l=>l.d>=a&&l.d<=b).length};
-function closedReason(){
-  if(!CFG.active)return 'Aplikacija je trenutno izklopljena.';
-  const d=new Date();
-  if(!CFG.workDays.includes(d.getDay()))return 'Danes ni delovni dan.';
-  if(d.getHours()<CFG.openHour||d.getHours()>=CFG.closeHour)return `Kavni odmor je mogoč med ${p(CFG.openHour)}:00 in ${p(CFG.closeHour)}:00.`;
-  return null;
-}
-function gate(quota){
-  if(isAdmin())return null;
-  const c=closedReason();if(c)return c;
-  if(quota){
-    if(dayN()>=CFG.dailyLimit)return 'Dnevna kvota rund je dosežena.';
-    if(weekN()>=CFG.weeklyLimit)return 'Tedenska kvota rund je dosežena.';
-  }
-  return null;
-}
-function toast(msg,type='ok'){
-  const c={ok:'bg-emerald-800',err:'bg-red-800',info:'bg-slate-800'}[type]||'bg-slate-800';
-  document.getElementById('toast').innerHTML=`<div class="${c} text-white text-sm p-4 rounded-2xl shadow-2xl">${esc(msg)}</div>`;
-  clearTimeout(toast.t);toast.t=setTimeout(()=>document.getElementById('toast').innerHTML='',4000);
-}
-let ansRes=null;
-function ask(title,text,ok='Potrdi',inner=''){
-  return new Promise(res=>{
-    ansRes=res;
-    document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60"><div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
-      <h3 class="font-bold text-lg">${esc(title)}</h3><p class="text-sm text-slate-600 mt-2">${esc(text)}</p>${inner}
-      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm font-semibold">Prekliči</button>
-      <button onclick="A.ans(true)" class="flex-1 py-2.5 rounded-xl bg-kg text-white text-sm font-bold">${esc(ok)}</button></div></div></div>`;
-  });
-}
-async function teams(msg){
-  if(!CFG.webhook||!CFG.webhook.trim())return null;
-  try{
-    const r=await fetch(CFG.webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'message',attachments:[{contentType:'application/vnd.microsoft.card.adaptive',contentUrl:null,content:{$schema:'http://adaptivecards.io/schemas/adaptive-card.json',type:'AdaptiveCard',version:'1.2',body:[{type:'TextBlock',text:msg,wrap:true}]}}]})});
-    return r.ok;
-  }catch(e){console.error('Teams:',e);return false}
-}
-const fill=(t,o)=>t.replace(/{ime}/g,o.ime||'').replace(/{cas}/g,o.cas||'').replace(/{datum}/g,o.datum||'');
-
-// ===== DEJANJA =====
-const A=window.A={
-  ans(v){document.getElementById('modal').innerHTML='';ansRes&&ansRes(v);ansRes=null},
-  tab(t){tab=t;render();scrollTo({top:0})},
-  async confirm(){
-    const g=gate(true);if(g)return toast(g,'err');
-    const n=nextName(S);if(!n)return toast('Ni dostopnih članov za kavo.','err');
-    if(!await ask('Potrditev runde',`Ali potrjuješ, da bo ${n} danes dal za kavo?`))return;
-    let w=n;
-    run(s=>{w=nextName(s);if(!w)throw new Error('none');pay(s,w,'turn',who())},'Runda potrjena.',()=>{if(CFG.notifyRound)teams(fill(CFG.msgRound,{ime:w}))});
-  },
-  async cant(){
-    const g=gate();if(g)return toast(g,'err');
-    const n=nextName(S);if(!n)return toast('Ni dostopnih članov za kavo.','err');
-    if(!await ask('Danes ne more',`Označim, da ${n} danes ne more dati za kavo?`))return;
-    run(s=>{const w=nextName(s);if(!w)throw new Error('none');s.unav[w]=true;s.paid[w]=false;checkRound(s);adv(s)},'Zabeleženo, naslednji je na vrsti.');
-  },
-  async sponsor(){
-    if(!me||!S.team.includes(me))return A.pick();
-    const g=gate(true);if(g)return toast(g,'err');
-    if(!await ask('Častim danes',`Potrjuješ, da ${me} danes prostovoljno časti kavo?`))return;
-    run(s=>{const nx=nextName(s);pay(s,me,'sponsor',me,nx===me)},'Hvala za častitko!',()=>{if(CFG.notifyRound)teams(fill(CFG.msgRound,{ime:me}))});
-  },
-  async invite(){
-    const g=gate();if(g)return toast(g,'err');
-    const inner=`<input id="invTime" type="time" value="${esc(CFG.inviteTime)}" class="inp mt-4 text-center">`;
-    if(!await ask('Povabi na kavo (Teams)','Ob kateri uri gremo na kavo?','Pošlji vabilo',inner))return;
-    const time=(document.getElementById('invTime')||{}).value||CFG.inviteTime;
-    // vabilo velja tudi kot potrditev runde, a samo če runda danes še ni potrjena
-    const will=!S.todayPayer&&nextName(S);
-    if(will){const q=gate(true);if(q)return toast(q,'err')}
-    const send=async(note)=>{
-      const r=await teams(fill(CFG.msgInvite,{ime:who(),cas:time,datum:today()}));
-      toast(r===null?'Teams webhook ni nastavljen.':r?`Vabilo za ob ${time} je poslano na Teams.${note}`:'Vabila na Teams ni bilo mogoče poslati.',r?'ok':'err');
-    };
-    if(!will)return send('');
-    let w=null;
-    run(s=>{w=nextName(s);if(!w)throw new Error('none');pay(s,w,'invite',who())},'',()=>send(` Runda (${w}) potrjena.`));
-  },
-  undo(){
-    const h=hist.pop();if(!h)return toast('Ni dejanj za razveljavitev.','info');
-    runTransaction(db,async tx=>{
-      const ref=doc(db,'kava','state'),sn=await tx.get(ref);
-      if((sn.exists()?sn.data().ver:0)!==h.ver)throw new Error('changed');
-      const b=structuredClone(h.before);b.ver=h.ver+1;tx.set(ref,b);S=b;
-    }).then(()=>{render();toast('Stanje je povrnjeno.')})
-      .catch(e=>toast(e.message==='changed'?'Stanje se je medtem spremenilo – razveljavitev ni več mogoča.':'Razveljavitev ni uspela.','err'));
-  },
-  toggleUnav(i){run(s=>{const n=s.team[i];s.unav[n]=!s.unav[n];checkRound(s);adv(s)})},
-  pick(){
-    document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60"><div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
-      <h3 class="font-bold text-lg">Kdo si?</h3><p class="text-sm text-slate-600 mt-1 mb-3">Izberi svoje ime s seznama ekipe.</p>
-      <select id="pickSel" class="inp">${S.team.map(n=>`<option ${n===me?'selected':''}>${esc(n)}</option>`).join('')}</select>
-      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm font-semibold">Pozneje</button>
-      <button onclick="A.setMe()" class="flex-1 py-2.5 rounded-xl bg-kg text-white text-sm font-bold">Shrani</button></div></div></div>`;
-  },
-  setMe(){me=document.getElementById('pickSel').value;ls.set('kava_member_'+user.uid,me);A.ans(true);beat();render()},
-  // --- skrbnik ---
-  async saveCfg(){
-    const g=id=>document.getElementById(id),n=id=>parseInt(g(id).value,10);
-    const c={active:g('s_active').checked,openHour:n('s_open'),closeHour:n('s_close'),dailyLimit:n('s_day'),weeklyLimit:n('s_week'),
-      workDays:[1,2,3,4,5,6,0].filter(d=>g('wd'+d).checked),notice:g('s_notice').value.trim(),cols:g('s_cols').value,inviteTime:g('s_time').value||'12:00',
-      webhook:g('t_url').value.trim(),msgInvite:g('t_inv').value.trim(),msgRound:g('t_rnd').value.trim(),notifyRound:g('t_notify').checked};
-    if(![c.openHour,c.closeHour,c.dailyLimit,c.weeklyLimit].every(Number.isInteger)||c.openHour<0||c.closeHour>24||c.openHour>=c.closeHour||c.dailyLimit<1||c.weeklyLimit<1)
-      return toast('Preverite ure obratovanja in kvote.','err');
-    try{await setDoc(doc(db,'settings','main'),c);toast('Nastavitve shranjene.')}catch(e){console.error(e);toast('Shranjevanje ni uspelo (Firestore pravila).','err')}
-  },
-  async testTeams(){const r=await teams('✅ Testno sporočilo iz aplikacije Odmor za kavo.');toast(r===null?'Webhook ni nastavljen.':r?'Testno sporočilo poslano.':'Pošiljanje ni uspelo.',r?'ok':'err')},
-  count(i,d){run(s=>{const n=s.team[i];s.counts[n]=Math.max(0,s.counts[n]+d)})},
-  setNext(i){run(s=>{s.idx=i},`${S.team[i]} je nastavljen kot naslednji.`)},
-  togglePaid(i){run(s=>{const n=s.team[i];s.paid[n]=!s.paid[n]})},
-  toggleAbs(i){run(s=>{const n=s.team[i];s.absent[n]=!s.absent[n];checkRound(s);adv(s)})},
-  move(i,d){const j=i+d;if(j<0||j>=S.team.length)return;run(s=>{[s.team[i],s.team[j]]=[s.team[j],s.team[i]]})},
-  rename(i){
-    const nn=document.getElementById('rn'+i).value.trim(),old=S.team[i];
-    if(!nn||nn===old||S.team.includes(nn))return;
-    run(s=>{s.team[i]=nn;for(const k of['counts','absent','paid','unav']){s[k][nn]=s[k][old];delete s[k][old]}
-      if(s.todayPayer===old)s.todayPayer=nn;s.log.forEach(l=>{if(l.who===old)l.who=nn})},'Ime spremenjeno.');
-    if(me===old){me=nn;ls.set('kava_member_'+user.uid,me)}
-  },
-  async remove(i){
-    if(S.team.length<2)return toast('V ekipi mora ostati vsaj en član.','err');
-    const n=S.team[i];if(!await ask('Odstrani člana',`Odstranim člana ${n}?`,'Odstrani'))return;
-    run(s=>{s.team=s.team.filter(x=>x!==n);for(const k of['counts','absent','paid','unav'])delete s[k][n];if(s.todayPayer===n)s.todayPayer=null},'Član odstranjen.');
-  },
-  add(){
-    const el=document.getElementById('newName'),n=el.value.trim();
-    if(!n||S.team.includes(n))return toast('Vnesite unikatno ime.','err');
-    run(s=>{s.team.push(n)},'Član dodan.');el.value='';
-  },
-  async delUser(id){try{await deleteDoc(doc(db,'presence',id))}catch(e){toast('Brisanje ni uspelo.','err')}},
-  async google(){
-    const pr=new GoogleAuthProvider();pr.setCustomParameters({prompt:'select_account'});
-    try{await signInWithPopup(auth,pr)}catch(e){
-      if(e.code==='auth/popup-blocked')return signInWithRedirect(auth,pr);
-      if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast('Prijava ni uspela ('+(e.code||'napaka')+')','err');
-    }
-  },
-  async guest(){try{await signInAnonymously(auth)}catch(e){toast('Gostujoča prijava ni uspela. Preverite, ali je v Firebase omogočen "Anonymous".','err')}},
-  async logout(){
-    try{if(user)await setDoc(doc(db,'presence',user.uid),{lastSeen:0},{merge:true})}catch(e){}
-    await signOut(auth);
-  },
-  async install(){
-    if(installEv){installEv.prompt();await installEv.userChoice;installEv=null;render()}
-    else toast(isIOS?"Tapni 'Deli' v Safariju in izberi 'Dodaj na začetni zaslon'.":"V meniju brskalnika izberi 'Namesti aplikacijo'.",'info');
-  },
-  contact(){location.href='mailto:'+['robi.filipsek','gmail.com'].join('@')+'?subject='+encodeURIComponent('Odmor za kavo')}
-};
-
-// ===== PRIKAZ =====
-const card='bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5';
-const lbl='block text-xs font-semibold text-slate-600';
-function loginView(){
-  return `<div class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-kd via-kg to-ka"><div class="${card} max-w-sm w-full text-center">
-    <img src="${ICON}" class="w-16 h-16 rounded-2xl mx-auto mb-3 shadow"><h1 class="font-bold text-xl">Odmor za kavo</h1>
-    <p class="text-sm text-slate-500 mt-1 mb-5">Prijavite se z Google računom ali nadaljujte kot gost.</p>
-    <div class="flex flex-col gap-3"><button onclick="A.google()" class="py-2.5 rounded-xl bg-white border border-slate-300 font-semibold text-sm">Prijava z Google</button>
-    <button onclick="A.guest()" class="py-2.5 rounded-xl bg-kg text-white font-semibold text-sm">Prijava kot gost</button></div></div></div>`;
-}
-function header(){
-  const showInst=!standalone()&&(installEv||isIOS);
-  return `<header class="bg-kd text-white sticky top-0 z-30 shadow-md"><div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
-    <div class="flex items-center gap-3 cursor-pointer" onclick="A.tab('main')"><img src="${ICON}" class="w-10 h-10 rounded-xl ring-2 ring-white/20"><span class="font-bold text-lg">Odmor za kavo</span></div>
-    <div class="flex items-center gap-2 text-xs">${showInst?`<button onclick="A.install()" class="px-3 py-2 rounded-lg bg-kg border border-ka/50">📲 <span class="hidden sm:inline">Namesti</span></button>`:''}
-    <span class="hidden md:block text-slate-300">${esc(who())}</span>
-    <button onclick="A.logout()" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700">Odjava</button></div></div></header>`;
-}
-function hero(){
-  const dq=dayN(),wq=weekN();
-  return `<section class="bg-gradient-to-r from-kd via-kg to-ka text-white py-6 px-4"><div class="max-w-4xl mx-auto">
-    <h1 class="text-2xl sm:text-3xl font-extrabold">Kdo časti kavo?</h1>
-    <p class="text-slate-300 text-sm mt-1">Kavni odmor: <strong>${p(CFG.openHour)}:00 do ${p(CFG.closeHour)}:00</strong>, ${new Date().toLocaleDateString('sl-SI',{weekday:'long',day:'numeric',month:'long'})}.</p>
-    <div class="grid grid-cols-2 gap-3 text-xs mt-4">
-      <div class="bg-slate-900/50 border border-white/10 rounded-xl p-3"><span class="text-slate-400">Dnevna kvota</span><div class="text-sm font-bold ${dq>=CFG.dailyLimit?'text-amber-400':'text-emerald-300'}">${dq} / ${CFG.dailyLimit} rund</div></div>
-      <div class="bg-slate-900/50 border border-white/10 rounded-xl p-3"><span class="text-slate-400">Tedenska kvota</span><div class="text-sm font-bold ${wq>=CFG.weeklyLimit?'text-amber-400':'text-emerald-300'}">${wq} / ${CFG.weeklyLimit} rund</div></div>
-    </div></div></section>`;
-}
-function viewMain(){
-  const n=nextName(S),cr=closedReason();
-  const cols=CFG.cols==='auto'?(S.team.length%2?3:2):+CFG.cols;
-  const cards=S.team.map((name,i)=>{
-    const isPayer=S.todayPayer===name,isNext=!S.todayPayer&&name===n;
-    let cls='border-slate-200 bg-white',st='⏳ Čaka na vrsto';
-    if(S.absent[name]){cls='border-slate-200 bg-slate-100 opacity-60';st='🌴 Dopust / odsoten'}
-    else if(S.unav[name]){cls='border-red-200 bg-red-50';st='❌ Danes ne more'}
-    else if(isPayer){cls='border-emerald-400 bg-emerald-50';st='⭐ Časti danes'}
-    else if(isNext){cls='border-amber-400 bg-amber-50 ring-2 ring-amber-300';st='👉 Na vrsti'}
-    else if(S.paid[name]){cls='border-emerald-200 bg-emerald-50/50';st='✅ Že dal'}
-    return `<div class="rounded-xl border p-3 ${cls}"><div class="flex items-center justify-between gap-1"><strong class="text-sm truncate ${name===me?'underline':''}">${esc(name)}</strong>
-      <span class="text-[11px] font-bold text-kg bg-emerald-100 border border-emerald-300 rounded-full px-2 py-0.5 whitespace-nowrap">☕ ${S.counts[name]||0}</span></div>
-      <div class="flex justify-end mt-1"><button onclick="A.toggleUnav(${i})" class="text-[11px] px-2 py-1 rounded-md bg-white border border-slate-300">${S.unav[name]?'❌ Odsoten':'✔️ Prisoten'}</button></div>
-      <div class="text-[11px] text-slate-500 mt-1">${st}</div></div>`;
-  }).join('');
-  return `${cr?`<div class="mb-4 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">⚠️ ${esc(cr)}</div>`:''}
-  <div class="${card} text-center mb-4">
-    <div class="text-xs text-slate-500">${S.todayPayer?'⭐ Danes potrjeno časti:':'Na vrsti da časti:'}</div>
-    <div class="text-3xl font-extrabold my-1 ${S.todayPayer?'text-emerald-600':'text-slate-900'}">${esc(S.todayPayer||n||'-')}</div>
-    <div class="grid sm:grid-cols-2 gap-2 mt-3">
-      <button onclick="A.confirm()" class="b bg-emerald-600">✅ Potrjujem rundo</button>
-      <button onclick="A.cant()" class="b bg-red-600">✕ Danes ne more</button>
-      <button onclick="A.sponsor()" class="b bg-amber-500">⭐ Jaz častim (izven vrstnega reda)</button>
-      <button onclick="A.invite()" class="b bg-indigo-600">⏰ Povabi na kavo (Teams)</button>
-      <button onclick="A.undo()" class="b bg-slate-600 sm:col-span-2">↩️ Razveljavi (Undo)</button></div></div>
-  <div class="mg" style="--c:${cols}">${cards}</div>
-  <div class="text-xs text-slate-500 mt-4 flex items-center justify-between">
-    <span>Prijavljen kot: <strong>${esc(me&&S.team.includes(me)?me:'—')}</strong> <a href="#" class="underline text-kg" onclick="A.pick();return false">(zamenjaj)</a></span>
-    <span>${loaded?'✅ Sinhronizirano':'⏳ Nalagam …'}</span></div>`;
-}
-const TYPE={turn:'po vrsti',sponsor:'prostovoljno',invite:'vabilo',manual:'ročno'};
-function viewLog(){
-  const rows=[...S.log].reverse().slice(0,60).map(l=>`<div class="flex items-center justify-between px-3 py-2 text-sm"><span><strong>${esc(l.who)}</strong> <span class="text-slate-500 text-xs">(${TYPE[l.type]||l.type})</span></span><span class="text-xs font-mono text-slate-500">${esc(l.d)} ${esc(l.t)}</span></div>`).join('');
-  return `<div class="${card}"><h2 class="font-bold text-lg mb-1">Zgodovina rund</h2><p class="text-xs text-slate-500 mb-3">Zadnjih 60 potrjenih rund.</p>
-    <div class="divide-y divide-slate-100 border border-slate-200 rounded-xl">${rows||'<div class="p-4 text-sm text-slate-500">Še ni zabeleženih rund.</div>'}</div></div>`;
-}
-function viewInfo(){
-  const dn=['Ned','Pon','Tor','Sre','Čet','Pet','Sob'];
-  return `<div class="${card} space-y-3 text-sm text-slate-600"><h2 class="font-bold text-lg text-slate-900">Pravila & info</h2>
-    <p>☕ <strong>Vrsta:</strong> na vrsti je tisti, ki je v tekočem krogu plačal najmanj rund; pri izenačenju velja vrstni red ekipe.</p>
-    <p>⭐ <strong>Prostovoljna častitka:</strong> kdor časti izven vrste, ne preskoči nikogar – pravi na vrsti ostane naslednji.</p>
-    <p>❌ <strong>Danes ne more:</strong> oseba je tisti dan preskočena; naslednji dan je spet na voljo.</p>
-    <p>🌴 <strong>Dopust:</strong> skrbnik označi dolgotrajno odsotnost; za zamujene kroge se odsotnim samodejno prišteje runda.</p>
-    <p>📊 <strong>Kvote:</strong> največ ${CFG.dailyLimit} rund na dan in ${CFG.weeklyLimit} na teden.</p>
-    <p>🕒 <strong>Delovni čas:</strong> ${CFG.workDays.map(d=>dn[d]).join(', ')} (${p(CFG.openHour)}:00 – ${p(CFG.closeHour)}:00)</p>
-    <p><a href="#" class="underline text-kg font-semibold" onclick="A.contact();return false">Pošlji sporočilo skrbniku</a></p></div>`;
-}
-function viewAdmin(){
-  const ck=(id,v,t)=>`<label class="flex items-center gap-2 text-sm"><input type="checkbox" id="${id}" ${v?'checked':''} class="w-4 h-4 accent-emerald-600">${t}</label>`;
-  const days=[[1,'Pon'],[2,'Tor'],[3,'Sre'],[4,'Čet'],[5,'Pet'],[6,'Sob'],[0,'Ned']].map(([d,t])=>ck('wd'+d,CFG.workDays.includes(d),t)).join('');
-  const team=S.team.map((n,i)=>`<div class="p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2 text-xs">
-    <div class="flex gap-1"><input id="rn${i}" value="${esc(n)}" class="inp"><button onclick="A.rename(${i})" class="px-2 rounded-lg bg-blue-500 text-white">✏️</button><button onclick="A.remove(${i})" class="px-2 rounded-lg bg-red-600 text-white">🗑️</button></div>
-    <div class="flex items-center justify-between"><span class="font-semibold">Skupaj rund:</span><span class="flex items-center gap-1"><button onclick="A.count(${i},-1)" class="px-2 py-1 rounded bg-slate-300">➖</button><strong class="w-6 text-center">${S.counts[n]}</strong><button onclick="A.count(${i},1)" class="px-2 py-1 rounded bg-slate-300">➕</button></span></div>
-    <div class="flex flex-wrap gap-1"><button onclick="A.setNext(${i})" class="px-2 py-1 rounded bg-blue-500 text-white">👉 Naslednji</button>
-    <button onclick="A.togglePaid(${i})" class="px-2 py-1 rounded text-white ${S.paid[n]?'bg-emerald-600':'bg-slate-500'}">${S.paid[n]?'✅':'⭕'} Že dal</button>
-    <button onclick="A.toggleAbs(${i})" class="px-2 py-1 rounded text-white ${S.absent[n]?'bg-red-600':'bg-slate-500'}">${S.absent[n]?'🌴':'⭕'} Dopust</button>
-    <button onclick="A.move(${i},-1)" class="px-2 py-1 rounded bg-slate-300">⬆️</button><button onclick="A.move(${i},1)" class="px-2 py-1 rounded bg-slate-300">⬇️</button></div></div>`).join('');
-  const now=Date.now();
-  const users=[...presence].sort((a,b)=>(b.lastSeen?.toMillis?.()||0)-(a.lastSeen?.toMillis?.()||0)).map(u=>{
-    const ms=u.lastSeen?.toMillis?.()||0,on=now-ms<=180000;
-    return `<div class="flex items-center justify-between gap-2 px-3 py-2 text-xs"><span class="min-w-0"><span class="inline-block w-2 h-2 rounded-full mr-1 ${on?'bg-emerald-500':'bg-slate-300'}"></span><strong>${esc(u.member||u.name||'Brez imena')}</strong> <span class="text-slate-500">${u.isAnonymous?'Gost':esc(u.email)}</span><div class="text-slate-400">Zadnjič: ${ms?new Date(ms).toLocaleString('sl-SI'):'-'}</div></span>
-    <button onclick="A.delUser('${esc(u.id)}')" class="px-2 py-1 rounded bg-red-100 text-red-700 border border-red-300">Izbriši</button></div>`;
-  }).join('');
-  const online=presence.filter(u=>now-(u.lastSeen?.toMillis?.()||0)<=180000).length;
-  return `<div class="space-y-4">
-  <div class="${card} space-y-3"><h2 class="font-bold text-lg">⚙️ Obratovanje in kvote</h2>
-    ${ck('s_active',CFG.active,'Aplikacija je aktivna')}
-    <div class="grid sm:grid-cols-4 gap-3"><label class="${lbl}">Začetek (ura)<input id="s_open" type="number" min="0" max="23" value="${CFG.openHour}" class="inp"></label>
-      <label class="${lbl}">Konec (ura)<input id="s_close" type="number" min="1" max="24" value="${CFG.closeHour}" class="inp"></label>
-      <label class="${lbl}">Dnevna kvota (rund)<input id="s_day" type="number" min="1" value="${CFG.dailyLimit}" class="inp"></label>
-      <label class="${lbl}">Tedenska kvota (rund)<input id="s_week" type="number" min="1" value="${CFG.weeklyLimit}" class="inp"></label></div>
-    <div class="flex flex-wrap gap-x-4 gap-y-1">${days}</div>
-    <div class="grid sm:grid-cols-3 gap-3"><label class="${lbl} sm:col-span-2">Obvestilo za uporabnike<input id="s_notice" maxlength="160" value="${esc(CFG.notice)}" class="inp"></label>
-      <label class="${lbl}">Privzeta ura vabila<input id="s_time" type="time" value="${esc(CFG.inviteTime)}" class="inp"></label></div>
-    <label class="${lbl}">Število stolpcev ekipe<select id="s_cols" class="inp">${['auto','2','3'].map(v=>`<option value="${v}" ${CFG.cols===v?'selected':''}>${v==='auto'?'Samodejno':v}</option>`).join('')}</select></label>
-    <h3 class="font-bold pt-2">🔔 Teams</h3>
-    <label class="${lbl}">Power Automate Webhook URL<input id="t_url" value="${esc(CFG.webhook)}" class="inp"></label>
-    <label class="${lbl}">Sporočilo vabila ({ime}, {cas}, {datum})<input id="t_inv" value="${esc(CFG.msgInvite)}" class="inp"></label>
-    <label class="${lbl}">Sporočilo ob potrjeni rundi ({ime})<input id="t_rnd" value="${esc(CFG.msgRound)}" class="inp"></label>
-    ${ck('t_notify',CFG.notifyRound,'Ob potrditvi runde pošlji obvestilo na Teams')}
-    <div class="flex gap-2"><button onclick="A.saveCfg()" class="b bg-kg">💾 Shrani nastavitve</button><button onclick="A.testTeams()" class="b bg-indigo-600">Pošlji test na Teams</button></div></div>
-  <div class="${card} space-y-3"><h2 class="font-bold text-lg">👥 Ekipa</h2><div class="grid sm:grid-cols-2 gap-2">${team}</div>
-    <div class="flex gap-2"><input id="newName" placeholder="Ime novega sodelavca" class="inp"><button onclick="A.add()" class="b bg-emerald-600 whitespace-nowrap">➕ Dodaj</button></div></div>
-  <div class="${card} space-y-3"><h2 class="font-bold text-lg">🟢 Uporabniki <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">${online} aktivnih</span></h2>
-    <div class="max-h-80 overflow-y-auto divide-y divide-slate-100 border border-slate-200 rounded-xl">${users||'<div class="p-4 text-xs text-slate-500">Ni zapisov.</div>'}</div></div></div>`;
-}
-function render(){
-  const app=document.getElementById('app');
-  if(!user){app.innerHTML=loginView();return}
-  if(tab==='admin'&&document.activeElement&&/INPUT|SELECT/.test(document.activeElement.tagName)&&app.contains(document.activeElement))return; // ne motimo vnosa
-  const tabs=[['main','☕ Kava'],['log','🕘 Zgodovina'],['info','ℹ️ Info'],...(isAdmin()?[['admin','🛡️ Skrbnik']]:[])];
-  const body={main:viewMain,log:viewLog,info:viewInfo,admin:isAdmin()?viewAdmin:viewMain}[tab]();
-  app.innerHTML=`${header()}${hero()}<main class="max-w-4xl mx-auto px-4 py-5">
-    ${CFG.notice?`<div class="mb-4 p-3 rounded-xl bg-slate-100 border border-slate-300 text-sm">ℹ️ ${esc(CFG.notice)}</div>`:''}
-    <nav class="flex gap-2 mb-5">${tabs.map(([id,t])=>`<button onclick="A.tab('${id}')" class="flex-1 px-2 py-2.5 rounded-xl text-xs sm:text-sm font-medium border border-slate-200 ${tab===id?'bg-kg text-white':'bg-white text-slate-600'}">${t}</button>`).join('')}</nav>
-    ${body}</main>`;
-}
-
-// ===== PRIJAVA =====
-onAuthStateChanged(auth,u=>{
-  user=u;
-  if(u){
-    me=ls.get('kava_member_'+u.uid)||'';
-    startListeners();beat();
-    setTimeout(()=>{if(user&&(!me||!S.team.includes(me)))A.pick()},1500);
-  }else{stop();me='';tab='main'}
-  render();
-});
-render();
+createApp({setup(){
+ const currentUser=ref(null), authReady=ref(false), userName=ref(localStorage.getItem('ponikva_user_name')||'');
+ const team=ref([...DEFAULT_TEAM]), counts=ref({}), absent=ref({}), currentRoundPaid=ref({}), dailyUnavailable=ref({}), todayPayer=ref(null), currentIndex=ref(0), lastRotationDate=ref('');
+ const teamsWebhookUrl=ref(DEFAULT_WEBHOOK), teamsMsgInvite=ref(DEFAULT_INVITE), gridColumnsSetting=ref('auto');
+ const adminOriginalNames=ref([]);
+ const syncOk=ref(false), syncText=ref('Sinhronizacija …'), toast=ref({show:false,title:'',message:'',type:'success'}), showGuest=ref(false), guestName=ref(''), guestError=ref(''), showProfile=ref(false), profileName=ref(''), showAdmin=ref(false), newMember=ref(''), adminWebhook=ref(''), adminInvite=ref(''), adminColumns=ref('auto');
+ const history=ref([]); let unsubscribe=null, deferredInstallPrompt=null;
+ const isAdmin=computed(()=>currentUser.value?.email===ADMIN_EMAIL || userName.value==='Filipšek');
+ const nextPerson=computed(()=>getNextEligible());
+ const teamGridClass=computed(()=>gridColumnsSetting.value==='2'?'grid-cols-1 sm:grid-cols-2':(gridColumnsSetting.value==='3'?'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3':(team.value.length%2===0?'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2':'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3')));
+ const teamsConfigured=computed(()=>!!teamsWebhookUrl.value?.trim());
+ const canInstall=ref(false);
+ function toastMsg(title,message,type='success'){toast.value={show:true,title,message,type};setTimeout(()=>toast.value.show=false,3500)}
+ function ensure(){team.value.forEach(n=>{if(counts.value[n]==null)counts.value[n]=0;if(absent.value[n]==null)absent.value[n]=false;if(currentRoundPaid.value[n]==null)currentRoundPaid.value[n]=false;if(dailyUnavailable.value[n]==null)dailyUnavailable.value[n]=false});currentIndex.value=Math.max(0,Math.min(currentIndex.value,Math.max(0,team.value.length-1)))}
+ function payload(){return {team:team.value,counts:counts.value,absent:absent.value,currentRoundPaid:currentRoundPaid.value,dailyUnavailable:dailyUnavailable.value,todayPayer:todayPayer.value,currentIndex:currentIndex.value,lastRotationDate:lastRotationDate.value,teamsWebhookUrl:teamsWebhookUrl.value,teamsMsgInvite:teamsMsgInvite.value,gridColumnsSetting:gridColumnsSetting.value,updatedAt:serverTimestamp()}}
+ function apply(d={}){if(Array.isArray(d.team)&&d.team.length)team.value=d.team;if(d.counts)counts.value=d.counts;if(d.absent)absent.value=d.absent;if(d.currentRoundPaid)currentRoundPaid.value=d.currentRoundPaid;if(d.dailyUnavailable)dailyUnavailable.value=d.dailyUnavailable;if('todayPayer' in d)todayPayer.value=d.todayPayer||null;if(Number.isInteger(d.currentIndex))currentIndex.value=d.currentIndex;if(d.lastRotationDate)lastRotationDate.value=d.lastRotationDate;if(d.teamsWebhookUrl!==undefined)teamsWebhookUrl.value=d.teamsWebhookUrl;if(d.teamsMsgInvite!==undefined)teamsMsgInvite.value=d.teamsMsgInvite;if(d.gridColumnsSetting!==undefined)gridColumnsSetting.value=d.gridColumnsSetting;ensure();localStorage.setItem('coffeeState',JSON.stringify({team:team.value,counts:counts.value,absent:absent.value,currentRoundPaid:currentRoundPaid.value,dailyUnavailable:dailyUnavailable.value,todayPayer:todayPayer.value,currentIndex:currentIndex.value,lastRotationDate:lastRotationDate.value,teamsWebhookUrl:teamsWebhookUrl.value,teamsMsgInvite:teamsMsgInvite.value,gridColumnsSetting:gridColumnsSetting.value}))}
+ function checkDateRollover(){const t=today();if(lastRotationDate.value!==t){todayPayer.value=null;dailyUnavailable.value={};lastRotationDate.value=t;ensure()}}
+ function loadLocal(){try{const d=JSON.parse(localStorage.getItem('coffeeState')||'null');if(d)apply(d)}catch{}ensure();checkDateRollover()}
+ async function saveCloud(){ensure();try{await setDoc(cloudRef,payload(),{merge:true});syncOk.value=true;syncText.value='Sinhronizirano'}catch(e){console.error(e);syncOk.value=false;syncText.value='Lokalno';throw e}}
+ function snapshot(){history.value.push({team:deepCopy(team.value),counts:deepCopy(counts.value),absent:deepCopy(absent.value),currentRoundPaid:deepCopy(currentRoundPaid.value),dailyUnavailable:deepCopy(dailyUnavailable.value),todayPayer:todayPayer.value,currentIndex:currentIndex.value,lastRotationDate:lastRotationDate.value});if(history.value.length>20)history.value.shift()}
+ function getNextEligible(){if(!team.value.length)return '—';ensure();const eligible=team.value.filter(n=>!absent.value[n]&&!dailyUnavailable.value[n]);if(!eligible.length)return '—';const min=Math.min(...eligible.map(n=>Number(counts.value[n]||0)));const lowest=eligible.filter(n=>Number(counts.value[n]||0)===min);for(let step=0;step<team.value.length;step++){const i=(currentIndex.value+step)%team.value.length;const n=team.value[i];if(lowest.includes(n))return n}return lowest[0]||'—'}
+ function completeRoundIfNeeded(){const active=team.value.filter(n=>!absent.value[n]);if(active.length && active.every(n=>currentRoundPaid.value[n]||dailyUnavailable.value[n]||absent.value[n])){team.value.forEach(n=>{currentRoundPaid.value[n]=false;dailyUnavailable.value[n]=false});todayPayer.value=null;currentIndex.value=(currentIndex.value+1)%Math.max(1,team.value.length);lastRotationDate.value=today()}}
+ async function action(fn,msg){snapshot();fn();completeRoundIfNeeded();try{await saveCloud();toastMsg('Shranjeno',msg)}catch{toastMsg('Lokalno shranjeno',msg+' Sinhronizacija trenutno ni uspela.','error')}}
+ async function confirmCoffee(){if(todayPayer.value||nextPerson.value==='—')return;const n=nextPerson.value;if(!confirm(`Ali potrjuješ, da bo ${n} danes dal za kavo?`))return;await action(()=>{counts.value[n]=(counts.value[n]||0)+1;currentRoundPaid.value[n]=true;todayPayer.value=n;dailyUnavailable.value[n]=false;currentIndex.value=(team.value.indexOf(n)+1)%team.value.length},`Današnja kava je potrjena za ${n}.`)}
+ async function cantGive(){const n=nextPerson.value;if(todayPayer.value||n==='—')return;if(!confirm(`Označi ${n}, da danes ne more dati za kavo?`))return;await action(()=>{dailyUnavailable.value[n]=true;currentRoundPaid.value[n]=false;currentIndex.value=(team.value.indexOf(n)+1)%team.value.length},'Član je označen kot nedosegljiv za danes.')}
+ async function sponsor(){if(!currentUser.value)return;const n=userName.value;if(!confirm(`Ali potrjuješ, da ${n} danes prostovoljno časti kavo?`))return;await action(()=>{counts.value[n]=(counts.value[n]||0)+1;currentRoundPaid.value[n]=true;todayPayer.value=n;dailyUnavailable.value[n]=false},`${n} danes časti kavo.`)}
+ async function invite(){const time=prompt('Ob kateri uri gremo danes na kavo?','12:00');if(!time)return;const inviter=userName.value||'Neznano';let confirmed=null;if(!todayPayer.value&&nextPerson.value!=='—'){confirmed=nextPerson.value;await action(()=>{counts.value[confirmed]=(counts.value[confirmed]||0)+1;currentRoundPaid.value[confirmed]=true;todayPayer.value=confirmed;currentIndex.value=(team.value.indexOf(confirmed)+1)%team.value.length},`Vabilo poslano; runda (${confirmed}) je potrjena.`)}const text=teamsMsgInvite.value.replace(/{ime}/g,inviter).replace(/{cas}/g,time.trim());const ok=await sendTeams(text);toastMsg(ok?'Teams poslano':'Teams ni dosegljiv',ok?`Vabilo za ${time.trim()} je poslano.`:'Vabilo je bilo izvedeno, vendar Teams webhook ni uspel.',ok?'success':'error')}
+ async function sendTeams(message){if(!teamsWebhookUrl.value?.trim())return false;try{const payload={type:'message',attachments:[{contentType:'application/vnd.microsoft.card.adaptive',contentUrl:null,content:{'$schema':'http://adaptivecards.io/schemas/adaptive-card.json',type:'AdaptiveCard',version:'1.2',body:[{type:'TextBlock',text:message,wrap:true}]}}]};const r=await fetch(teamsWebhookUrl.value,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});return r.ok}catch(e){console.error(e);return false}}
+ async function toggleAbsence(n){await action(()=>{absent.value[n]=!absent.value[n];if(absent.value[n])dailyUnavailable.value[n]=false},`${n}: ${absent.value[n]?'odsoten':'prisoten'}.`)}
+ function cardClass(n){if(absent.value[n])return 'bg-slate-50 border-slate-300 opacity-60';if(dailyUnavailable.value[n])return 'bg-red-50 border-red-200';if(todayPayer.value===n)return 'bg-blue-50 border-blue-300';if(!todayPayer.value&&nextPerson.value===n)return 'bg-emerald-50 border-court-accent';if(currentRoundPaid.value[n])return 'bg-slate-50 border-slate-200';return 'bg-white border-slate-200'}
+ function statusText(n){if(absent.value[n])return '🌴 Odsoten';if(dailyUnavailable.value[n])return '❌ Danes ne more';if(todayPayer.value===n)return '⭐ Časti danes';if(!todayPayer.value&&nextPerson.value===n)return '👉 Na vrsti';if(currentRoundPaid.value[n])return '✅ V tej rundi že plačal';return '⏳ Čaka na vrsto'}
+ function statusClass(n){return todayPayer.value===n?'text-blue-700':(!todayPayer.value&&nextPerson.value===n?'text-emerald-700':'text-slate-500')}
+ async function loginGoogle(){try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){if(e.code==='auth/popup-blocked')await signInWithRedirect(auth,new GoogleAuthProvider());else toastMsg('Prijava ni uspela',e.message,'error')}}
+ function openGuest(){guestName.value=userName.value&&userName.value!=='Gost'?userName.value:'';guestError.value='';showGuest.value=true}
+ async function confirmGuest(){const n=guestName.value.trim().replace(/\s+/g,' ');if(!validName(n)){guestError.value='Vpišite veljavno ime in priimek.';return}try{if(!auth.currentUser)await signInAnonymously(auth);userName.value=n;localStorage.setItem('ponikva_user_name',n);showGuest.value=false;await trackUser();toastMsg('Prijava uspešna',`Pozdravljeni, ${n}!`)}catch(e){guestError.value='Anonimna prijava ni uspela. Preverite Firebase Authentication.'}}
+ async function trackUser(){const u=auth.currentUser;if(!u)return;try{await setDoc(doc(db,'users',u.uid),{uid:u.uid,name:userName.value||u.displayName||'Gost',email:u.email||'',isAnonymous:u.isAnonymous,lastSeenAt:serverTimestamp()},{merge:true})}catch(e){console.warn('tracking',e)}}
+ function openProfile(){profileName.value=userName.value||currentUser.value?.displayName||'';showProfile.value=true}
+ async function saveProfile(){if(!validName(profileName.value)){toastMsg('Napaka','Vpišite ime in priimek.','error');return}userName.value=profileName.value.trim().replace(/\s+/g,' ');localStorage.setItem('ponikva_user_name',userName.value);await trackUser();showProfile.value=false;toastMsg('Profil shranjen','Ime je posodobljeno.')}
+ async function logout(){await signOut(auth);userName.value='';localStorage.removeItem('ponikva_user_name')}
+ async function openAdmin(){if(!isAdmin.value)return;const pin=prompt('🔒 Vnesi admin PIN:');if(pin!==ADMIN_PIN){toastMsg('Dostop zavrnjen','Napačen PIN.','error');return}adminOriginalNames.value=[...team.value];adminWebhook.value=teamsWebhookUrl.value;adminInvite.value=teamsMsgInvite.value;adminColumns.value=gridColumnsSetting.value;showAdmin.value=true}
+ function moveMember(i,d){const j=i+d;if(j<0||j>=team.value.length)return;snapshot();[team.value[i],team.value[j]]=[team.value[j],team.value[i]];currentIndex.value=team.value.indexOf(nextPerson.value)}
+ function addMember(){const n=newMember.value.trim();if(!n||team.value.includes(n))return;snapshot();team.value.push(n);counts.value[n]=0;absent.value[n]=false;currentRoundPaid.value[n]=false;dailyUnavailable.value[n]=false;newMember.value=''}
+ function removeMember(n){if(team.value.length<=1)return;if(!confirm(`Odstrani člana ${n}?`))return;snapshot();team.value=team.value.filter(x=>x!==n);delete counts.value[n];delete absent.value[n];delete currentRoundPaid.value[n];delete dailyUnavailable.value[n];if(todayPayer.value===n)todayPayer.value=null}
+ function changeCount(n,a){snapshot();counts.value[n]=Math.max(0,(counts.value[n]||0)+a)}
+ function setNext(i){snapshot();currentIndex.value=i;todayPayer.value=null;team.value.forEach(n=>{currentRoundPaid.value[n]=false;dailyUnavailable.value[n]=false})}
+ function undo(){const p=history.value.pop();if(!p)return;team.value=p.team;counts.value=p.counts;absent.value=p.absent;currentRoundPaid.value=p.currentRoundPaid;dailyUnavailable.value=p.dailyUnavailable;todayPayer.value=p.todayPayer;currentIndex.value=p.currentIndex;lastRotationDate.value=p.lastRotationDate;saveCloud();toastMsg('Povrnjeno','Zadnja sprememba je bila povrnjena.')}
+ function resetRound(){snapshot();team.value.forEach(n=>{currentRoundPaid.value[n]=false;dailyUnavailable.value[n]=false});todayPayer.value=null;saveCloud();toastMsg('Runda ponastavljena','Trenutna runda je bila ponastavljena.')}
+ async function saveAdmin(){const before=[...adminOriginalNames.value];const after=team.value.map(x=>x.trim()).filter(Boolean);const newCounts={},newAbsent={},newPaid={},newUnavailable={};after.forEach((n,i)=>{const old=before[i];newCounts[n]=old && counts.value[old]!=null?(counts.value[old]||0):(counts.value[n]||0);newAbsent[n]=old && absent.value[old]!=null?!!absent.value[old]:!!absent.value[n];newPaid[n]=old && currentRoundPaid.value[old]!=null?!!currentRoundPaid.value[old]:!!currentRoundPaid.value[n];newUnavailable[n]=old && dailyUnavailable.value[old]!=null?!!dailyUnavailable.value[old]:!!dailyUnavailable.value[n]});team.value=after;counts.value=newCounts;absent.value=newAbsent;currentRoundPaid.value=newPaid;dailyUnavailable.value=newUnavailable;if(todayPayer.value&&before.includes(todayPayer.value)){const i=before.indexOf(todayPayer.value);todayPayer.value=after[i]||null}adminWebhook.value=adminWebhook.value.trim();teamsWebhookUrl.value=adminWebhook.value;teamsMsgInvite.value=adminInvite.value||DEFAULT_INVITE;gridColumnsSetting.value=adminColumns.value;ensure();await saveCloud();showAdmin.value=false;toastMsg('Nastavitve shranjene','Vse skrbniške spremembe so sinhronizirane.')}
+ function installApp(){if(deferredInstallPrompt){deferredInstallPrompt.prompt();deferredInstallPrompt=null;canInstall.value=false}}
+ onMounted(async()=>{loadLocal();try{const snap=await getDoc(cloudRef);if(snap.exists())apply(snap.data());else await saveCloud();checkDateRollover();await saveCloud()}catch(e){console.warn(e);syncText.value='Lokalno'};unsubscribe=onSnapshot(cloudRef,s=>{if(s.exists())apply(s.data());syncOk.value=true;syncText.value='Sinhronizirano'},e=>{console.warn(e);syncOk.value=false;syncText.value='Lokalno'});onAuthStateChanged(auth,async u=>{currentUser.value=u;authReady.value=true;if(u){if(u.displayName&&!userName.value)userName.value=u.displayName;await trackUser()}});try{await getRedirectResult(auth)}catch{} });
+ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;canInstall.value=true});
+ return {currentUser,authReady,userName,team,counts,teamGridClass,absent,currentRoundPaid,dailyUnavailable,todayPayer,nextPerson,syncOk,syncText,toast,showGuest,guestName,guestError,showProfile,profileName,showAdmin,newMember,adminWebhook,adminInvite,adminColumns,isAdmin,teamsConfigured,canInstall,loginGoogle,openGuest,confirmGuest,openProfile,saveProfile,logout,openAdmin,confirmCoffee,cantGive,sponsor,invite,toggleAbsence,cardClass,statusText,statusClass,moveMember,addMember,removeMember,changeCount,setNext,undo,resetRound,saveAdmin,installApp};
+}}).mount('#app');
 </script>
-</body>
-</html>
+</body></html>
