@@ -41,7 +41,7 @@ const firebaseConfig={
 };
 const DEFAULT_TEAM=["Filipšek","Fidler","Pirnat","Oprešnik","Govedić","Fendre","Šetina","Vrtačnik","Gračner","Rihter"];
 const DEF={
-  active:true,notice:'',cols:'auto',inviteTime:'12:00',
+  active:true,notice:'',cols:'auto',inviteTime:'12:00',teamsEnabled:true,
   webhook:"https://default3caae3ec12124a678d46afe2847c45.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/806a9b79b01b4219bc66ed4d449ffbfd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTxW5wgDGp3I9TXnX6fSdLQ2r7sBnumVkzROnPYLIig",
   teamsMsgs:[
     {id:'1',name:'Vabilo na kavo',trigger:'invite',text:'☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!'},
@@ -106,7 +106,7 @@ function checkRound(s){
   const av=s.team.filter(n=>valid(s,n));
   if(av.length&&av.every(n=>s.paid[n])){
     s.team.forEach(n=>s.paid[n]=false);
-    s.team.forEach(n=>{if(s.absent[n])s.counts[n]++}); // odsotni ne zaostajajo
+    s.team.forEach(n=>{if(s.absent[n])s.counts[n]++});
   }
 }
 function pay(s,who,type,by,inTurn=true){
@@ -179,7 +179,7 @@ function ask(title,text,ok='Potrdi',inner=''){
   });
 }
 async function teams(msg){
-  if(!CFG.webhook||!CFG.webhook.trim())return null;
+  if(!CFG.teamsEnabled||!CFG.webhook||!CFG.webhook.trim())return null;
   try{
     const r=await fetch(CFG.webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'message',attachments:[{contentType:'application/vnd.microsoft.card.adaptive',contentUrl:null,content:{$schema:'http://adaptivecards.io/schemas/adaptive-card.json',type:'AdaptiveCard',version:'1.2',body:[{type:'TextBlock',text:msg,wrap:true}]}}]})});
     return r.ok;
@@ -188,7 +188,7 @@ async function teams(msg){
 const fill=(t,o)=>t.replace(/{ime}/g,o.ime||'').replace(/{cas}/g,o.cas||'').replace(/{datum}/g,o.datum||'');
 
 async function triggerTeams(actionType,extraData={}){
-  if(!CFG.webhook||!CFG.webhook.trim())return;
+  if(!CFG.teamsEnabled||!CFG.webhook||!CFG.webhook.trim())return;
   const msgs=(CFG.teamsMsgs||[]).filter(m=>m.trigger===actionType&&m.text&&m.text.trim());
   const data={ime:who(),cas:CFG.inviteTime,datum:today(),...extraData};
   for(const m of msgs){
@@ -201,6 +201,7 @@ const A=window.A={
   ans(v){document.getElementById('modal').innerHTML='';ansRes&&ansRes(v);ansRes=null},
   tab(t){tab=t;render();scrollTo({top:0})},
   async confirm(){
+    if(!me||!S.team.includes(me))return A.pick();
     const g=gate();if(g)return toast(g,'err');
     const n=nextName(S);if(!n)return toast('Ni dostopnih članov za kavo.','err');
     if(!await ask('Potrditev runde',`Ali potrjuješ, da bo ${n} danes dal za kavo?`))return;
@@ -208,6 +209,7 @@ const A=window.A={
     run(s=>{w=nextName(s);if(!w)throw new Error('none');pay(s,w,'turn',who())},'Runda potrjena.',()=>{triggerTeams('confirm',{ime:w})});
   },
   async cant(){
+    if(!me||!S.team.includes(me))return A.pick();
     const g=gate();if(g)return toast(g,'err');
     const n=nextName(S);if(!n)return toast('Ni dostopnih članov za kavo.','err');
     if(!await ask('Danes ne more',`Označim, da ${n} danes ne more dati za kavo?`))return;
@@ -221,6 +223,7 @@ const A=window.A={
     run(s=>{const nx=nextName(s);pay(s,me,'sponsor',me,nx===me)},'Hvala za častitko!',()=>{triggerTeams('sponsor',{ime:me})});
   },
   async invite(){
+    if(!me||!S.team.includes(me))return A.pick();
     const g=gate();if(g)return toast(g,'err');
     const inner=`<input id="invTime" type="time" value="${esc(CFG.inviteTime)}" class="inp mt-4 text-center">`;
     if(!await ask('Povabi na kavo (Teams)','Ob kateri uri gremo na kavo?','Pošlji vabilo',inner))return;
@@ -248,12 +251,18 @@ const A=window.A={
   toggleUnav(i){run(s=>{const n=s.team[i];s.unav[n]=!s.unav[n];checkRound(s);adv(s)})},
   pick(){
     document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60"><div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
-      <h3 class="font-bold text-lg">Kdo si?</h3><p class="text-sm text-slate-600 mt-1 mb-3">Izberi svoje ime s seznama ekipe.</p>
+      <h3 class="font-bold text-lg">Kdo si na seznamu?</h3><p class="text-sm text-slate-600 mt-1 mb-3">Izberi svoje ime s seznama ekipe, da vemo za katero osebo gre.</p>
       <select id="pickSel" class="inp">${S.team.map(n=>`<option ${n===me?'selected':''}>${esc(n)}</option>`).join('')}</select>
-      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm font-semibold">Pozneje</button>
-      <button onclick="A.setMe()" class="flex-1 py-2.5 rounded-xl bg-kg text-white text-sm font-bold">Shrani</button></div></div></div>`;
+      <div class="flex gap-3 mt-5"><button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm font-semibold">Prekliči</button>
+      <button onclick="A.setMe()" class="flex-1 py-2.5 rounded-xl bg-kg text-white text-sm font-bold">Potrdi ime</button></div></div></div>`;
   },
-  setMe(){me=document.getElementById('pickSel').value;ls.set('kava_member_'+user.uid,me);A.ans(true);beat();render()},
+  setMe(){
+    const sel=document.getElementById('pickSel');
+    if(!sel)return;
+    me=sel.value;
+    if(user)ls.set('kava_member_'+user.uid,me);
+    A.ans(true);beat();render();
+  },
   
   // --- SKRBNIK & TEAMS OBVESTILA ---
   addTeamMsg(){
@@ -295,12 +304,19 @@ const A=window.A={
       notice:g('s_notice').value.trim(),
       cols:g('s_cols').value,
       inviteTime:g('s_time').value||'12:00',
+      teamsEnabled:g('t_enabled').checked,
       webhook:g('t_url').value.trim(),
       teamsMsgs:msgs
     };
     try{await setDoc(doc(db,'settings','main'),c);toast('Nastavitve shranjene.')}catch(e){console.error(e);toast('Shranjevanje ni uspelo (Firestore pravila).','err')}
   },
-  async testTeams(){const r=await teams('✅ Testno sporočilo iz aplikacije Odmor za kavo.');toast(r===null?'Webhook ni nastavljen.':r?'Testno sporočilo poslano.':'Pošiljanje ni uspelo.',r?'ok':'err')},
+  async testTeams(){
+    if(!g('t_enabled').checked){
+      return toast('Teams obvestila so izklopljena v nastavitvah!','err');
+    }
+    const r=await teams('✅ Testno sporočilo iz aplikacije Odmor za kavo.');
+    toast(r===null?'Webhook ni nastavljen ali pa so obvestila izklopljena.':r?'Testno sporočilo poslano.':'Pošiljanje ni uspelo.',r?'ok':'err');
+  },
   
   // --- EKIPA ---
   count(i,d){run(s=>{const n=s.team[i];s.counts[n]=Math.max(0,s.counts[n]+d)})},
@@ -357,10 +373,14 @@ function loginView(){
 }
 function header(){
   const showInst=!standalone()&&(installEv||isIOS);
+  const myName=me&&S.team.includes(me)?me:'Izberi osebo';
   return `<header class="bg-kd text-white sticky top-0 z-30 shadow-md"><div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
     <div class="flex items-center gap-3 cursor-pointer" onclick="A.tab('main')"><img src="${ICON}" class="w-10 h-10 rounded-xl ring-2 ring-white/20"><span class="font-bold text-lg">Odmor za kavo</span></div>
     <div class="flex items-center gap-2 text-xs">${showInst?`<button onclick="A.install()" class="px-3 py-2 rounded-lg bg-kg border border-ka/50">📲 <span class="hidden sm:inline">Namesti</span></button>`:''}
-    <span class="hidden md:block text-slate-300">${esc(who())}</span>
+    <button onclick="A.pick()" class="px-3 py-2 rounded-lg bg-kg border border-slate-700 text-slate-200 flex items-center gap-1.5" title="Zamenjaj osebo na seznamu">
+      <span>👤 <strong>${esc(myName)}</strong></span>
+      <span class="text-[10px] text-blue-300 underline">(zamenjaj)</span>
+    </button>
     <button onclick="A.logout()" class="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700">Odjava</button></div></div></header>`;
 }
 function hero(){
@@ -397,7 +417,7 @@ function viewMain(){
       <button onclick="A.undo()" class="b bg-slate-600 sm:col-span-2">↩️ Razveljavi (Undo)</button></div></div>
   <div class="mg" style="--c:${cols}">${cards}</div>
   <div class="text-xs text-slate-500 mt-4 flex items-center justify-between">
-    <span>Prijavljen kot: <strong>${esc(me&&S.team.includes(me)?me:'—')}</strong> <a href="#" class="underline text-kg" onclick="A.pick();return false">(zamenjaj)</a></span>
+    <span>Izbrana oseba s seznama: <strong>${esc(me&&S.team.includes(me)?me:'Niste izbrali osebe')}</strong> <a href="#" class="underline text-blue-600" onclick="A.pick();return false">(zamenjaj)</a></span>
     <span>${loaded?'✅ Sinhronizirano':'⏳ Nalagam …'}</span></div>`;
 }
 const TYPE={turn:'po vrsti',sponsor:'prostovoljno',invite:'vabilo',manual:'ročno'};
@@ -460,6 +480,9 @@ function viewAdmin(){
       <h2 class="font-bold text-lg">🔔 Teams obvestila</h2>
       <button onclick="A.addTeamMsg()" class="b bg-blue-600 text-xs">➕ Dodaj obvestilo</button>
     </div>
+    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-2">
+      ${ck('t_enabled',CFG.teamsEnabled,'Vklopi pošiljanje obvestil na Teams')}
+    </div>
     <label class="${lbl}">Power Automate Webhook URL<input id="t_url" value="${esc(CFG.webhook)}" class="inp mt-1" placeholder="https://..."></label>
     <div class="space-y-3">${msgs||'<div class="text-xs text-slate-500 p-2">Ni nastavljenih Teams obvestil. Kliknite "Dodaj obvestilo".</div>'}</div>
     <div class="flex gap-2 pt-2"><button onclick="A.saveCfg()" class="b bg-kg">💾 Shrani nastavitve</button><button onclick="A.testTeams()" class="b bg-indigo-600">Pošlji test na Teams</button></div>
@@ -475,7 +498,7 @@ function viewAdmin(){
 function render(){
   const app=document.getElementById('app');
   if(!user){app.innerHTML=loginView();return}
-  if(tab==='admin'&&document.activeElement&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)&&app.contains(document.activeElement))return; // ne motimo vnosa
+  if(tab==='admin'&&document.activeElement&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)&&app.contains(document.activeElement))return;
   const tabs=[['main','☕ Kava'],['log','🕘 Zgodovina'],...(isAdmin()?[['admin','🛡️ Skrbnik']]:[])];
   const body={main:viewMain,log:viewLog,admin:isAdmin()?viewAdmin:viewMain}[tab]();
   app.innerHTML=`${header()}${hero()}<main class="max-w-4xl mx-auto px-4 py-5">
@@ -490,7 +513,11 @@ onAuthStateChanged(auth,u=>{
   if(u){
     me=ls.get('kava_member_'+u.uid)||'';
     startListeners();beat();
-    setTimeout(()=>{if(user&&(!me||!S.team.includes(me)))A.pick()},1500);
+    setTimeout(()=>{
+      if(user && (!me || !S.team.includes(me))) {
+        A.pick();
+      }
+    },1000);
   }else{stop();me='';tab='main'}
   render();
 });
