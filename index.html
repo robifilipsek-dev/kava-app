@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="sl">
 <head>
+<meta name="theme-color" content="#0f172a">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>☕ Odmor za kavo</title>
-    <link rel="manifest" href="manifest.json">
+    <title>Odmor za kavo</title>
+<link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Odmor%20za%20kavo%22,%22short_name%22:%22Kava%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%230f172a%22,%22theme_color%22:%22%230f172a%22}">
     <meta name="theme-color" content="#0f172a">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%2334d399%22/%3E%3Cstop offset=%221%22 stop-color=%22%2310b981%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22%230f172a%22/%3E%3Cg fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M214 172c-18-20 18-36 0-58M282 172c-18-20 18-36 0-58%22 stroke=%22%2394a3b8%22 stroke-width=%2220%22/%3E%3Cpath d=%22M348 258h20a44 44 0 0 1 0 88h-28%22 stroke=%22%2310b981%22 stroke-width=%2226%22/%3E%3Cpath d=%22M170 438h156%22 stroke=%22%23f1f5f9%22 stroke-width=%2220%22/%3E%3C/g%3E%3Cpath d=%22M148 218h200v82a100 100 0 0 1-200 0z%22 fill=%22url(%23g)%22/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" sizes="64x64" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAADsOAAA7DgHMtqGDAAAFKklEQVR42u1bW1AbVRhO353s5rLZJIUELEJ2NwhNoehEy9CRAkPpmFILCKGhigMdWykUbIUGC4VKoC29WOv0Jnaq1pmOtY60XmidtrbedXxo1RdffFDHB6t1xvrye86mEDJZAil7krBLZr5JZs7J+ff79vz/nj1zPo1m+s8CyuJYQrFcj9bEXaJM/A/o+zbF8pBMEK/JxN0Ur5HldqBrdmlm+VmgZbm1aPAfk43sjIFuFmXm12AuMTHXMsIipObnc5Z4JK5TbGb6jMjrGP4RRP43BZEfnw1/oO/lUclTrFCE8uc/xZGfEIG7Q5sdhVOQz0xHKv2uWPKTZoKW4TMiK72ycn46XAsrjKjaV6mIfBCMUBm6+3P5UXfv9eBm8O6bnXmqIz8OI7cYFT++V7UCsNyLmuDSUZ0CIO5jeAb8pNoZgJbK+AnwN+lAQn4pDBw+A8+09U/Zp3Fzv9jHubQsfjMAcdfEI1CJpxEOnrwgIr9wtWQfTB63P9/3alxnQVwEMNkWw+4jZ0WCNU9vk+zj8bZMiIT7K0oAQ0oO7D12TiT3ZGN0AQ68fh7MaUuUJcCKSSlQULQmol1vzYb+g6fF9m27jigvBfxDr4nkeoZPgc7ijGh3F9dMCFS00qcsASzp+RPkKqqflexT29QltuM6gWeDogTA+T8uQF3zdsk+VU91iO3Dx98DW5ZbeSnQ3B4QCe45+q5ku8NVDPtHRsU+5VUblCdAaubD0NQ+IBbDaIUS98F9FSdAMmNegHkB5gWQZ6AUbyXwI51EgWMkrQBpWxrA9f1hosAxklYAe1sD5H73ClHgGEksgA9yvj1EFPZ9LUBVVwRRXgzUUrRqNAvJIYCt1QfZ37xMFPYrg0B/sCMcb20FunYVUBIvWXEVILV1HTi/PkAUtiuBSAHGMdgMlP3BBD4FNtcD/9V+okgd7QX6ZEcQZ16IFGFnY2IF4L7cRxQ4Rljch9xAH9oUJgJV+lhiBFjY4oWsL4aJAseIiG1D0/5EW3gqJEIA63NeeOCzvUSBY0jFpj1lIQFGu2MqiPIJsLEWMq7vIQocQ1KA3ILwWpDpir8ArNcD91/bTRSmOo+0AO5l4XUghqeBbAIYy0sg/dMhomDKSqTjt9eFBDjVkZgaQHN5aKESAPvVQTK4HACdIy8ydkUp0Oe7QwJsqk7c67D1RAekIhFIwPp2V2gZjFH/OFCBpvDcf6cTqAxX4gRgfJWQcnmACJiPd069CsR4H1X/4uWJ3RChFzrBfLoTrJ+8JCssl3aBLhr5N1DeLytMjh0hfUUJWC72ixctC9BYev96oEe2hJbBGMdage5DS98nVgKVkp1cW2KGllpg0YXLAcPGmjm4J4je0Q3bG8A01jcrGLoaZv2+n9BNUZ3PA8YLPWBEBSwmoP/o6z0K2RUW8oHuXg/6DxGpj3qnhS7QDHROgQK3xZEQ1DoP0EMbUEFrB905vwj8W3yDw3cc94n3triW5f9S7TE5lr+lUeUx2cnHZdFhwYsqPyiJDEYyDlq4Yi1s9QdkBR6TjAC8X4PdVXIO+vMvv8Ktf+7ICjwmCQFoRsi5a5ZA7iqZBh158yz8eftf2cjjsfCYBPL/Rsgug6xl6iuADk+4ZUa0lqnmmPzVCC8hxWalqcc0JSySdI5hSxm2linaNmfkHo3qHbyPEdzKNU4KRTNyj4oeQmQtU1LO4xSP2TyNrWV4uTiHp/wNxGH1bF3kGuyuwgYjvHQULepxcJnci/vjrn1+DK3wuimGz50Juf8BZ1d/HXR9gJAAAAAASUVORK5CYII=">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAACXBIWXMAADsOAAA7DgHMtqGDAAAJFklEQVR42u3d6VNV5x3A8fwH59wLeAHZA7iwyqoossQQRA0qalQiWJEUXJBAEBXREmURMWjABJuIpjqZmKlN1CQmNdW06Zru7Uxf5E37Jp1pZ9ppZ9qZ9tWvz7kZkth7WM4Fr/ec+33xeeM4z4zP+XrmLM957iOaZ7EATvEIkwCCBggaIGiAoEHQAEEDBA0QNEDQIGiAoAGCBggaIGgQNEDQAEEDBA0QNAgaIGiAoAGCBggaBA0QNEDQAEEDBA2CBggaIGiAoAGCBkEDBA0QNEDQIGgmAgQdyqKT8iWzsEoiE/NmPVZyRqmk5VeKKyqduSXowCtdUy/Dl27J6JX35ez4LVlZWevXOK7odGnuGPSOYzh25jWJX7icOSbowIlKzP8i5glG1MZZ1upYq6ob7hvH0NHzkuiRacw1QQdGRkGVT4SG1u5zlsd6urnbdKyytTuZa4IOjMiEXBkev+UT4ci3bktKRpmlsYxwzYI+MvAqc03QgbN6c7NpiJWbmqxdQ6ubwIMnL5iOFZ1UwFwTdGC4ozPk9Dff8omwbs9xy2MVlm82DTpr2TrmmqADp3/0mk+E9XutB51dtM40aOPPmWeCDgjjiYZZhE9u2295rI072kzH4vEdQQdM7TNHTCM0Xo5YvXTpHXnDZ5ye4avMM0EH7inHC6/e8InQuKa2+qbPeEFj9h+jbs8x5pqgA6O69oBphE81dFoax3h5cvTUuOlYC3MeZ64J+sEzIuw7/6ZPgOcuvytxC4osjZWzoto05rbjo8w1QQfG4twnTCNsaD1peaxtjYdNx8ov2chcE3RgGE8x5uoSoXvwks84xuIk1nEQdMDsbu31ibBPPY/2ZyzjVflsr8NB0LPS+GyfadBWz6rG3zcLeitBE3QgrZ/kCUf19hbLYxmXF/8/zvDFm5YXOIGg/ZaWZ35TePbyO5a/XNk+yU3h3s4h5pqgA6e95/yc3BgmLCr2Pu7zuTEceo15JujASUovkTOvvH1fhKfGvi1hMVmWx6oyWYbqz4o9EPSs5BZv+GK1nbEWw9+lnsbNofFkY+JM3dI1LB71ap05JuiAMz5wjUkunJMvtcNjs73fKjKvBA0QNAgaIGiAoAGCBggaBA0QNEDQD1Lq6RbJ+/0FR4osf4ygQ+0fnDLYIrm/G3Mkgg7RoHPUwXciD0GHXtDJg/tlyW9fdiRPeTlBEzRBE7Sdgz61T7J/85IjecoIOuSCflQFnaUOvhMRdCgGPaCC/vV5R/IM7RX9UJ0Pbc8W0WurRVutvn1MWULQjvouUAWdqQ6+E8272yf6Bz1Te/8boo2ovay/prYdS8wmaPsHvVcyfjXqSDMK+quuHxGtfr1o8zMI2q4SVdDp6uA7keWgJ1xsEy0jn6BtGXS/CvqXI440726vf0FPnK1LSwnabhJU0Gm/GHGked+bRdCK9s4x0ZcXE7Tdgl6sDr4TzTZob9RvHhZtUR5B2ybovj2y+OcvOtK8E8+I3rLNV1e96MPqkd57x2cWtfEUxKZ7VYdc0PEq6EXq4DtRROk0u5caj+l21Yj+Vtf0Ua+tIGhbBN3bLAs/OedI0wY9YWGu6BcOTB315edEi04j6GAXp4JeoA6+E804aEN8lvdx3ZRRP15O0LYI+mdnHclS0IaspaK/O/l1tda5g6CDXawKOlUdfCeyHLTh4I7Jz9BvHLLdzWHoBX2ySVJ+OuxI4SXWgzaeO095c5icQ9DBLEYFnawOvhP5E7RxBtZvHJ086Pwigg7qoE98XZJ/8oIjha/089W1eqIx6Vm64jGCDmbRXQ3yqDr4TuTOX+HfvFxqJ2i7imqrk6Qfn3EkV1qBf5ccb09xyVG4nKCDmadxszOD/tGQ6PHWf7xIW7qcm0I7i6h6QhLVwXeahJs9fs2H3lY7edDGQiUe2wU3d/ZSSTACcJiYsXbr85FeoF6sHJs86MN1vFgJelFpEnf7hMT/8LSjRD5nMb6YDNHHplnPUbGKoG3xpOPMPscFHV5p4dds1XWx/uK+qWO+2qEWJ6UTtC2uo+s2StzHg44Re7dftLjMGZ2VtW3rvIv4p10XvX41y0ftwpWaIzH3BiTWiMEBIq90qnXOGyelt24XvU8t/r/RPbMvV9SlCAv8bSby7H6J/cEpRwj/8MSsP72672NZG38BHrJBh1VVSIyKwe7mfzQgrrmK+T21CU1ZKR/J2vat4eUOmf/9AVsL//Dk3MSsFihpq1cJ2xjY+Zl0daVEqyjsKkqdneck5isHRctdxkYzjngVPnpAoj/qt6WwO7O8dlY3iVrTFvU5VqawFZhTnnhkL5PIOycl6l6/rXiuHfE/5PE2746kWmqOsFmjE28Q6zdI5L0+2/DcUK+rjc1g1Ees3i1zT+yektbxtOiNm0SrqRIts0DYTjcUXrb0N0mk2uww6KndkdwV/DgQQU8nNkMixtrEo6IJZu6dNRwrgp7hUsrkJRJxtdO7R1wwCmvZznEiaItRqxul8IvtEqECCibu1lqOD0H7KSFLwtTmhhHqpcVD98Hz4tq6jmNC0LOkFue4dm+S8O8+730b91BcU6viVpRwLAh6Di9BildK2Hi79yVGwKj/RK5D9aIlZXEMCPoBULtw6js3iPs7XeJWwT1Qoy2iFxUz5wQdAGoRva5ewrhf7xS3OovOGfX2zjW0R7SSUuaYoB/O9bURn36kXlzqOtdlXCJYdVu9gn5ZfdPXUOPdr5l5JejgkVUo2qY1n//8Q2/j5198GLsRqTO5sZJNf+VZ78886Ed3egP2fnyawPUxQQMEDYIGCBogaICgAYIGQYeKssqt0nTgqDS3dtvCruZOSUnn9ThBmxgevST//Pd/beezv/xNVq1hwT9Bf0Ve0Rpbxjzh7sefEDFBf2n9lkZbB/3pHz8jYoL+UsKCIvnzX/9u26DHr14nYoK+39qaXfKHT/9kq5D/8a//yPWbdyQ+dRkRE7S5mORCiUtZagueuCUcM4IGQQMEDRA0QNAAQYOgAYIGCBogaICgQdAAQQMEDRA0QNAgaICgAYIGCBoEDRA0QNAAQQMEDYIGCBogaICgAYIGQQMEDRA0QNAAQYOgAYIGCBogaICgQdAAQQMEDcze/wAK1Q/vFaUTGgAAAABJRU5ErkJggg==">
+    <meta name="apple-mobile-web-app-title" content="Kava">
+
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -45,6 +52,11 @@
             box-shadow: var(--shadow);
             position: relative;
         }
+
+
+        .cup-icon { width: 1em; height: 1em; display: inline-block; flex-shrink: 0; vertical-align: -0.16em; color: var(--text); }
+        .cup-icon.lg { width: 26px; height: 26px; vertical-align: middle; }
+        .cup-icon.sm { width: 17px; height: 14px; color: var(--accent); vertical-align: middle; overflow: visible; }
 
         .header {
             display: flex;
@@ -144,8 +156,9 @@
         .btn-confirm { background: var(--accent); color: #0f172a; }
         .btn-confirm:hover { background: #34d399; }
 
-        .btn-cant { background: var(--danger); color: white; }
-        .btn-cant:hover { background: #f87171; }
+        .btn-cant { background: #dc2626; color: white; }
+        .btn-cant:hover { background: #ef4444; }
+        .btn-cant svg { flex-shrink: 0; }
 
         .btn-sponsor { background: var(--info); color: white; grid-column: span 2; }
         .btn-sponsor:hover { background: #60a5fa; }
@@ -158,7 +171,7 @@
 
         .members-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(var(--member-cols, 2), 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -340,22 +353,90 @@
             padding: 12px;
             margin-bottom: 15px;
         }
+
+        .round-badge {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--accent);
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            padding: 3px 10px;
+            min-width: 38px;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .install-btn {
+            display: none;
+        }
+        .install-btn.visible {
+            display: flex;
+        }
+
+        /* Ozek zaslon (telefon): manj robov, mreža vedno 2 stolpca za simetrijo */
+        @media (max-width: 480px) {
+            body { padding: 12px 6px; }
+            .container { padding: 16px; border-radius: 18px; }
+            h1 { font-size: 17px; }
+            .action-buttons { gap: 8px; }
+            .btn { padding: 11px; font-size: 12px; }
+            .members-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px;
+            }
+            .member-card { padding: 10px 12px; min-height: 54px; }
+            .member-name { font-size: 12.5px; }
+            .footer { font-size: 11px; }
+        }
+
+        @media (max-width: 360px) {
+            .members-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="cupGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#10b981"/>
+    </linearGradient>
+    <symbol id="icon-cup" viewBox="120 100 325 360">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M214 172c-18-20 18-36 0-58M282 172c-18-20 18-36 0-58" stroke="currentColor" stroke-width="20" opacity=".55"/>
+        <path d="M348 258h20a44 44 0 0 1 0 88h-28" stroke="#10b981" stroke-width="26"/>
+        <path d="M170 438h156" stroke="currentColor" stroke-width="20"/>
+      </g>
+      <path d="M148 218h200v82a100 100 0 0 1-200 0z" fill="url(#cupGrad)"/>
+    </symbol>
+    <symbol id="icon-cup-sm" viewBox="138 206 298 252">
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M348 258h20a44 44 0 0 1 0 88h-28" stroke="currentColor" stroke-width="30"/>
+        <path d="M170 438h156" stroke="currentColor" stroke-width="26"/>
+      </g>
+      <path d="M148 218h200v82a100 100 0 0 1-200 0z" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
 <div class="overlay" id="loginOverlay" style="display: flex;">
     <div class="modal" style="text-align: center; max-width: 400px;">
-        <h2>☕ Kdo se prijavlja?</h2>
+        <h2><svg class="cup-icon lg"><use href="#icon-cup"/></svg> Kdo se prijavlja?</h2>
         <p style="font-size: 13px; color: var(--text);">Izberi svoje ime za sodelovanje v aplikaciji:</p>
-        <select id="loginSelect"></select>
-        <button class="btn btn-confirm" style="width: 100%; margin-top: 10px;" onclick="handleLogin()">Prijava v aplikacijo</button>
+        <div id="firebaseSetupNotice" class="admin-section" style="display:none">Firebase CONFIG še ni nastavljen; glejte navodila.</div><div id="authActions"><button class="btn btn-confirm" style="width:100%;margin:8px 0" onclick="signInGoogle()">🔵 Nadaljuj z Google</button><button class="btn btn-sponsor" style="width:100%" onclick="signInAnonymous()">👤 Nadaljuj anonimno</button></div><div id="memberChooser" style="display:none"><p>Izberite profil ekipe:</p><select id="loginSelect"></select><button class="btn btn-confirm" style="width:100%;margin-top:10px" onclick="handleLogin()">Shrani profil</button></div>
     </div>
 </div>
 
 <div class="container">
     <div class="header">
-        <h1>☕ Odmor za kavo</h1>
+        <h1><svg class="cup-icon lg"><use href="#icon-cup"/></svg> Odmor za kavo</h1>
         <div class="header-info">
             <span id="dateBadge" class="badge">-</span>
             <span id="syncStatus" class="badge">Nalagam...</span>
@@ -363,13 +444,12 @@
     </div>
 
     <div class="status-box">
-        <span id="statusSubtitle">Danes je na vrsti za kavo:</span>
+        <span id="statusSubtitle">Na vrsti da časti:</span>
         <strong id="currentPersonName">-</strong>
-        <div id="nextPersonSubtext" class="next-person-info" style="display: none;"></div>
         <div class="action-buttons">
             <button class="btn btn-confirm" onclick="confirmMyCoffee()">✅ Potrjujem rundo</button>
-            <button class="btn btn-cant" onclick="cantGiveCoffee()">❌ Danes ne morem</button>
-            <button class="btn btn-sponsor" onclick="sponsorCoffee()">⭐ Jaz častim danes</button>
+            <button class="btn btn-cant" onclick="cantGiveCoffee()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg> Danes ne morem</button>
+            <button class="btn btn-sponsor" onclick="sponsorCoffee()">⭐ Jaz častim danes (izven vrstnega reda)</button>
             <button class="btn btn-invite" onclick="inviteToCoffee()">⏰ Povabi na kavo (Teams)</button>
             <button class="btn btn-undo" onclick="undoLastAction()">↩️ Razveljavi (Undo)</button>
         </div>
@@ -380,9 +460,10 @@
     <div class="footer">
         <div class="user-info">
             Prijavljen: <span id="loggedInUserDisplay">-</span>
-            <span class="link-btn" onclick="openLoginModal()">(Zamenjaj)</span>
+            <button class="link-btn" onclick="showUserChooser()">(Profil)</button><button class="link-btn" onclick="signOutCoffee()">(Odjava)</button>
         </div>
         <div style="display: flex; gap: 6px;">
+            <button class="icon-btn install-btn" id="installBtn" onclick="handleInstallClick()" title="Namesti aplikacijo na telefon">📲</button>
             <button class="icon-btn" onclick="syncWithCloud(null, true)" title="Osveži podatke s strežnika">🔄</button>
             <button class="icon-btn" id="settingsBtn" onclick="openAdminModal()" title="Nastavitve" style="display: none;">⚙️</button>
         </div>
@@ -405,39 +486,50 @@
                 <button class="btn btn-confirm" style="padding: 10px 15px;" onclick="addMember()">➕ Dodaj</button>
             </div>
 
-            <h3 style="font-size: 13px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 1px;">🔔 Teams Webhook in sporočila</h3>
+            <h3 style="font-size: 13px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 1px;">🔲 Postavitev mreže</h3>
             <div class="admin-section">
-                <label for="teamsWebhookInput">Power Automate Webhook URL:</label>
-                <input type="text" id="teamsWebhookInput" placeholder="https://...">
-
-                <label for="teamsMsgConfirmInput">1. Potrditev runde (✅):</label>
-                <input type="text" id="teamsMsgConfirmInput">
-
-                <label for="teamsMsgCantInput">2. Oseba danes ne more (❌):</label>
-                <input type="text" id="teamsMsgCantInput">
-
-                <label for="teamsMsgSponsorInput">3. Prostovoljna častitka (⭐):</label>
-                <input type="text" id="teamsMsgSponsorInput">
-
-                <label for="teamsMsgInviteInput">4. Vabilo na kavo (⏰):</label>
-                <input type="text" id="teamsMsgInviteInput">
+                <label for="gridColumnsSelect">Število stolpcev prikaza sodelavcev:</label>
+                <select id="gridColumnsSelect">
+                    <option value="auto">Samodejno (glede na sodo/liho število oseb)</option>
+                    <option value="2">Vedno 2 stolpca</option>
+                    <option value="3">Vedno 3 stolpci</option>
+                </select>
             </div>
 
+            <h3 style="font-size: 13px; color: var(--text-bright); text-transform: uppercase; letter-spacing: 1px;">🔔 Teams Webhook in sporočilo</h3>
+            <div class="admin-section">
+                <label for="teamsWebhookInput">Cloud Function URL za Teams obvestila:</label>
+                <input type="url" id="teamsWebhookInput" placeholder="https://REGION-PROJECT.cloudfunctions.net/sendCoffeeNotification">
+
+
+
+                <label for="teamsMsgInviteInput">Sporočilo ob vabilu na kavo (⏰):</label>
+                <input type="text" id="teamsMsgInviteInput">
+            </div>
+            <h3 style="font-size:13px;color:var(--text-bright)">🔐 Zadnje prijave in aktivnosti</h3><div id="adminActivity" class="admin-section" style="max-height:260px;overflow:auto"></div>
             <button class="btn btn-confirm" style="width: 100%; margin-top: 5px; padding: 14px; font-size: 14px;" onclick="saveAllAdminChanges()">💾 Shrani vse spremembe</button>
         </div>
     </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
     const DEFAULT_TEAM = ["Filipšek", "Fidler", "Pirnat", "Oprešnik", "Govedić", "Fendre", "Šetina", "Vrtačnik", "Gračner", "Rihter"];
-    
-    // Posodobljen Google Apps Script URL:
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby4H0GzARyLrWQov36Ukf-vpF2pTbwYHBBOEvswLgi0qQqzCnS_Mka2HRyg_3Gwvu4F/exec";
 
-    let teamsWebhookUrl = "https://default3caae3ec12124a678d46afe2847c45.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/15/workflows/806a9b79b01b4219bc66ed4d449ffbfd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=hTxW5wgDGp3I9TXnX6fSdLQ2r7sBnumVkzROnPYLIig";
-    let teamsMsgConfirm = "✅ **{ime}** je potrdil/a rundo za danes ob 12:00! Pripravite skodelice. ☕";
-    let teamsMsgCant = "❌ **{ime}** danes ne more častiti. Naslednji na vrsti je **{naslednji}**.";
-    let teamsMsgSponsor = "⭐ **{ime}** se je javil/a in danes prostovoljno časti kavo! ☕🥳";
+    const firebaseConfig = {
+        apiKey: "AIzaSyDbRouSg-8ANONlm7bmTh6BSDSx6nf2sxQ",
+        authDomain: "kava-inel.firebaseapp.com",
+        projectId: "kava-inel",
+        storageBucket: "kava-inel.firebasestorage.app",
+        messagingSenderId: "675983563038",
+        appId: "1:675983563038:web:f16fe25249691cfd54110f"
+    };
+    const ADMIN_EMAIL='robi.filipsek@gmail.com';
+    const configMissing=firebaseConfig.apiKey.startsWith('VSTAVI_'); let auth=null,db=null,stateRef=null,activityRef=null,currentUser=null;
+    if(!configMissing){firebase.initializeApp(firebaseConfig);auth=firebase.auth();db=firebase.firestore();stateRef=db.collection('appState').doc('coffee');activityRef=db.collection('activities');}
+    let teamsWebhookUrl='';
     let teamsMsgInvite = "☕ **{ime}** vas vabi na kavo! Zberemo se ob **{cas}**!";
 
     let team = [...DEFAULT_TEAM];
@@ -445,7 +537,7 @@
     let absent = {};
     let currentRoundPaid = {};
     let dailyUnavailable = {}; 
-    let todayPayer = null; 
+    let todayPayer = null;
     let currentIndex = 0;
     let lastRotationDate = "";
     
@@ -453,29 +545,9 @@
     let appTimestamp = Date.now();
     let syncTimer = null;
     let historyStack = [];
+    let gridColumnsSetting = "auto"; // "auto" | "2" | "3"
 
-    function sendTeamsNotification(message) {
-        if (!teamsWebhookUrl || teamsWebhookUrl.trim() === "") return;
-        const payload = {
-            "type": "message",
-            "attachments": [{
-                "contentType": "application/vnd.microsoft.card.adaptive",
-                "contentUrl": null,
-                "content": {
-                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                    "type": "AdaptiveCard",
-                    "version": "1.2",
-                    "body": [{ "type": "TextBlock", "text": message, "wrap": true }]
-                }
-            }]
-        };
-        fetch(teamsWebhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        }).catch(err => console.error("Napaka Teams:", err));
-    }
-
+    async function sendTeamsNotification(message) { if(!teamsWebhookUrl){console.info('Teams Function URL še ni nastavljen.');return;} try { const token=await auth.currentUser.getIdToken(); await fetch(teamsWebhookUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({message})}); } catch(e){ console.error('Napaka Teams obvestila',e); } }
     function saveStateSnapshot() {
         historyStack.push({
             team: [...team],
@@ -511,25 +583,7 @@
         alert("Stanje je bilo uspešno povrnjeno!");
     }
 
-    function init() {
-        loadLocalStorage();
-        setupLoginDropdown(); 
-        
-        if (!loggedInUser) {
-            document.getElementById('loginOverlay').style.display = 'flex';
-        } else {
-            document.getElementById('loggedInUserDisplay').innerText = loggedInUser;
-            document.getElementById('loginOverlay').style.display = 'none';
-        }
-        
-        syncWithCloud(() => {
-            setupLoginDropdown(); 
-            checkDateRollover();
-            renderUI();
-        }, true);
-
-        setInterval(() => { syncWithCloud(null, false); }, 5000);
-    }
+    function init(){loadLocalStorage();setupLoginDropdown();if(configMissing)document.getElementById('firebaseSetupNotice').style.display='block';if(!auth){renderUI();return;}auth.onAuthStateChanged(user=>{currentUser=user;if(user){loggedInUser=localStorage.getItem('coffee_profile_name')||user.displayName||'';document.getElementById('authActions').style.display=loggedInUser?'none':'block';document.getElementById('memberChooser').style.display=loggedInUser?'none':'block';document.getElementById('loggedInUserDisplay').innerText=loggedInUser||user.email||'Gost';document.getElementById('loginOverlay').style.display=loggedInUser?'none':'flex';document.getElementById('settingsBtn').style.display=adminUser()?'flex':'none';syncWithCloud(()=>{logActivity('sign_in');},true);}else{loggedInUser='';document.getElementById('loginOverlay').style.display='flex';document.getElementById('authActions').style.display='block';document.getElementById('memberChooser').style.display='none';renderUI();}});setInterval(()=>{if(auth.currentUser)syncWithCloud(null,false);},60000);}
 
     function clampIndex() {
         if (team.length === 0) {
@@ -543,7 +597,7 @@
 
     function loadLocalStorage() {
         try {
-            const saved = localStorage.getItem('COFFEE_APP_STATE_GSHEETS');
+            const saved = localStorage.getItem('COFFEE_APP_STATE_NO_TEAMS');
             if (saved) {
                 const data = JSON.parse(saved);
                 if (data.team?.length > 0) team = data.team;
@@ -555,12 +609,10 @@
                 if (typeof data.currentIndex === 'number') currentIndex = data.currentIndex;
                 if (data.lastRotationDate) lastRotationDate = data.lastRotationDate;
                 if (data.timestamp) appTimestamp = data.timestamp;
-                if (data.teamsWebhookUrl !== undefined) teamsWebhookUrl = data.teamsWebhookUrl;
-                if (data.teamsMsgConfirm !== undefined) teamsMsgConfirm = data.teamsMsgConfirm;
-                if (data.teamsMsgCant !== undefined) teamsMsgCant = data.teamsMsgCant;
-                if (data.teamsMsgSponsor !== undefined) teamsMsgSponsor = data.teamsMsgSponsor;
-                if (data.teamsMsgInvite !== undefined) teamsMsgInvite = data.teamsMsgInvite;
-                if (data.loggedInUser) loggedInUser = data.loggedInUser;
+                
+                if (data.teamsMsgInvite !== undefined) teamsMsgInvite = data.teamsMsgInvite; if(data.teamsWebhookUrl!==undefined)teamsWebhookUrl=data.teamsWebhookUrl; if(data.teamsWebhookUrl!==undefined)teamsWebhookUrl=data.teamsWebhookUrl;
+                loggedInUser = localStorage.getItem('coffee_profile_name') || ''; 
+                if (data.gridColumnsSetting !== undefined) gridColumnsSetting = data.gridColumnsSetting;
             }
         } catch(e) {}
 
@@ -575,8 +627,8 @@
 
     function saveLocalStorage() {
         clampIndex();
-        const state = { team, counts, absent, currentRoundPaid, dailyUnavailable, todayPayer, currentIndex, lastRotationDate, timestamp: appTimestamp, teamsWebhookUrl, teamsMsgConfirm, teamsMsgCant, teamsMsgSponsor, teamsMsgInvite, loggedInUser };
-        localStorage.setItem('COFFEE_APP_STATE_GSHEETS', JSON.stringify(state));
+        const state = { team, counts, absent, currentRoundPaid, dailyUnavailable, todayPayer, currentIndex, lastRotationDate, timestamp: appTimestamp, teamsWebhookUrl, teamsMsgInvite, loggedInUser, gridColumnsSetting };
+        localStorage.setItem('COFFEE_APP_STATE_NO_TEAMS', JSON.stringify(state));
     }
 
     function setupLoginDropdown() {
@@ -594,23 +646,9 @@
         }
     }
 
-    function handleLogin() {
-        const select = document.getElementById('loginSelect');
-        if (!select) return;
-        loggedInUser = select.value;
-        if (!loggedInUser) return;
-        
-        document.getElementById('loggedInUserDisplay').innerText = loggedInUser;
-        document.getElementById('loginOverlay').style.display = 'none';
+    function handleLogin(){if(!auth?.currentUser)return alert('Najprej se prijavite.');loggedInUser=document.getElementById('loginSelect').value;localStorage.setItem('coffee_profile_name',loggedInUser);document.getElementById('loggedInUserDisplay').innerText=loggedInUser;document.getElementById('loginOverlay').style.display='none';renderUI();pushToCloud();logActivity('profile_selected',{name:loggedInUser});}
 
-        renderUI();
-        pushToCloud();
-    }
-
-    function openLoginModal() {
-        setupLoginDropdown();
-        document.getElementById('loginOverlay').style.display = 'flex';
-    }
+    function openLoginModal(){showUserChooser();}
 
     function checkDateRollover() {
         const now = new Date();
@@ -637,25 +675,34 @@
         return !absent[name] && !dailyUnavailable[name];
     }
 
+    // Poišče indeks "najbolj pravičnega" upravičenega člana za naslednjo rundo:
+    // prednost ima tisti z manj rundami (counts), pri izenačenju pa vrstni red rotacije
+    // (najbližji naprej od currentIndex). Če requireUnpaid=true, upošteva samo tiste,
+    // ki v tem krogu (currentRoundPaid) še niso plačali.
+    function findFairestEligibleIndex(requireUnpaid) {
+        if (team.length === 0) return -1;
+        let candidates = [];
+        for (let i = 0; i < team.length; i++) {
+            let idx = (currentIndex + i) % team.length;
+            let name = team[idx];
+            if (!isPersonValid(name)) continue;
+            if (requireUnpaid && currentRoundPaid[name]) continue;
+            candidates.push({ idx, order: i, count: counts[name] || 0 });
+        }
+        if (candidates.length === 0) return -1;
+        candidates.sort((a, b) => (a.count !== b.count) ? a.count - b.count : a.order - b.order);
+        return candidates[0].idx;
+    }
+
     function getNextEligiblePerson() {
         if (team.length === 0) return "-";
         clampIndex();
 
-        for (let i = 0; i < team.length; i++) {
-            let idx = (currentIndex + i) % team.length;
-            let name = team[idx];
-            if (isPersonValid(name) && !currentRoundPaid[name]) {
-                return name;
-            }
-        }
+        let idx = findFairestEligibleIndex(true);
+        if (idx !== -1) return team[idx];
 
-        for (let i = 0; i < team.length; i++) {
-            let idx = (currentIndex + i) % team.length;
-            let name = team[idx];
-            if (isPersonValid(name)) {
-                return name;
-            }
-        }
+        idx = findFairestEligibleIndex(false);
+        if (idx !== -1) return team[idx];
 
         return "-";
     }
@@ -664,130 +711,49 @@
         if (team.length === 0) return;
         clampIndex();
 
-        for (let i = 1; i <= team.length; i++) {
-            let idx = (currentIndex + i) % team.length;
-            let name = team[idx];
-            if (isPersonValid(name) && !currentRoundPaid[name]) {
-                currentIndex = idx;
-                return;
-            }
-        }
+        let idx = findFairestEligibleIndex(true);
+        if (idx !== -1) { currentIndex = idx; return; }
 
-        for (let i = 1; i <= team.length; i++) {
-            let idx = (currentIndex + i) % team.length;
-            if (isPersonValid(team[idx])) {
-                currentIndex = idx;
-                return;
-            }
-        }
+        idx = findFairestEligibleIndex(false);
+        if (idx !== -1) { currentIndex = idx; return; }
     }
 
     function checkRoundCompletion() {
-        const activeMembers = team.filter(m => !absent[m]);
-        if (activeMembers.length > 0 && activeMembers.every(m => currentRoundPaid[m])) {
+        // Krog velja za zaključen, ko so vsi trenutno RAZPOLOŽLJIVI člani (torej
+        // niso ne dolgotrajno odsotni ne danes nedostopni) plačali svojo rundo.
+        // Če ravno zadnji "dolžnik" postane nedostopen/odsoten, se krog kljub temu
+        // pravilno zaključi in začne nov krog - namesto da bi vrsta pomotoma skočila
+        // na nekoga, ki je to rundo že plačal.
+        const availableMembers = team.filter(isPersonValid);
+        if (availableMembers.length > 0 && availableMembers.every(m => currentRoundPaid[m])) {
             team.forEach(m => { currentRoundPaid[m] = false; });
+
+            // Kdor je trenutno na daljšem dopustu/bolniški (absent), je ravnokar "zamudil"
+            // cel krog rund ostalih. Da po vrnitvi ne bo v zaostanku (in posledično
+            // nesorazmerno pogosto na vrsti zaradi manjšega št. rund), se mu za vsak
+            // tak zamujen krog samodejno prišteje ena runda.
+            team.forEach(m => {
+                if (absent[m]) {
+                    counts[m] = (counts[m] || 0) + 1;
+                }
+            });
+
             return true;
         }
         return false;
     }
 
-    function syncWithCloud(onComplete, forceServer = false) {
-        const syncStatus = document.getElementById('syncStatus');
-        if (syncStatus && forceServer) syncStatus.innerText = '⏳ Nalagam...';
-
-        if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("TUKAJ_VNESI")) {
-            if (syncStatus) syncStatus.innerText = '⚠️ Brez URL';
-            if (onComplete) onComplete(false);
-            return;
-        }
-
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'GET',
-            cache: 'no-cache'
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data && Object.keys(data).length > 0) {
-                const cloudData = data;
-                if (forceServer || !cloudData.timestamp || cloudData.timestamp > appTimestamp) {
-                    if (cloudData.team?.length > 0) team = cloudData.team;
-                    if (cloudData.counts) counts = cloudData.counts;
-                    if (cloudData.absent) absent = cloudData.absent;
-                    if (cloudData.currentRoundPaid) currentRoundPaid = cloudData.currentRoundPaid;
-                    if (cloudData.dailyUnavailable) dailyUnavailable = cloudData.dailyUnavailable;
-                    if (cloudData.todayPayer !== undefined) todayPayer = cloudData.todayPayer;
-                    if (typeof cloudData.currentIndex === 'number') currentIndex = cloudData.currentIndex;
-                    if (cloudData.lastRotationDate) lastRotationDate = cloudData.lastRotationDate;
-                    if (cloudData.teamsWebhookUrl !== undefined) teamsWebhookUrl = cloudData.teamsWebhookUrl;
-                    if (cloudData.teamsMsgConfirm !== undefined) teamsMsgConfirm = cloudData.teamsMsgConfirm;
-                    if (cloudData.teamsMsgCant !== undefined) teamsMsgCant = cloudData.teamsMsgCant;
-                    if (cloudData.teamsMsgSponsor !== undefined) teamsMsgSponsor = cloudData.teamsMsgSponsor;
-                    if (cloudData.teamsMsgInvite !== undefined) teamsMsgInvite = cloudData.teamsMsgInvite;
-                    
-                    appTimestamp = cloudData.timestamp || Date.now();
-                    clampIndex();
-                    saveLocalStorage();
-                }
-            }
-            if (syncStatus) syncStatus.innerText = '✅ Sinhronizirano';
-            setupLoginDropdown();
-            checkDateRollover();
-            renderUI();
-            if (onComplete) onComplete(true);
-        })
-        .catch((err) => {
-            console.error("Napaka nalaganja:", err);
-            if (syncStatus) syncStatus.innerText = '⚠️ Lokalno';
-            setupLoginDropdown();
-            renderUI();
-            if (onComplete) onComplete(false);
-        });
-    }
-
-    function performCloudAction(actionFn, onComplete) {
-        actionFn();
-        pushToCloud(onComplete);
-    }
-
-    function pushToCloud(onComplete) {
-        if (syncTimer) clearTimeout(syncTimer);
-        syncTimer = setTimeout(() => {
-            appTimestamp = Date.now();
-            clampIndex();
-            saveLocalStorage();
-            
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("TUKAJ_VNESI")) {
-                if (onComplete) onComplete(false);
-                return;
-            }
-
-            const payload = { team, counts, absent, currentRoundPaid, dailyUnavailable, todayPayer, currentIndex, lastRotationDate, timestamp: appTimestamp, teamsWebhookUrl, teamsMsgConfirm, teamsMsgCant, teamsMsgSponsor, teamsMsgInvite };
-
-            // Uporaba 'text/plain;charset=utf-8' prepreči nastanek zahtevka preflight OPTIONS in s tem reši CORS težave v brskalniku
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(data => {
-                const syncStatus = document.getElementById('syncStatus');
-                if (data && data.status === 'success') {
-                    if (syncStatus) syncStatus.innerText = '✅ Sinhronizirano';
-                    if (onComplete) onComplete(true);
-                } else {
-                    if (syncStatus) syncStatus.innerText = '⚠️ Napaka';
-                    if (onComplete) onComplete(false);
-                }
-            })
-            .catch((err) => {
-                console.error("Napaka shranjevanja:", err);
-                const syncStatus = document.getElementById('syncStatus');
-                if (syncStatus) syncStatus.innerText = '⚠️ Brez povezave';
-                if (onComplete) onComplete(false);
-            });
-        }, 200);
-    }
+    function fetchCloudRecord(){if(!stateRef||!auth?.currentUser)return Promise.reject(Error('Prijava/Firebase manjka'));return stateRef.get().then(s=>s.exists?s.data():null);}
+    function syncWithCloud(done,force=false){const el=document.getElementById('syncStatus');if(!auth?.currentUser){if(el)el.innerText=configMissing?'⚙️ Nastavite Firebase':'🔐 Prijava';return;}if(el&&force)el.innerText='⏳ Nalagam...';fetchCloudRecord().then(d=>{if(d){if(force||!d.timestamp||d.timestamp>appTimestamp){if(d.team?.length)team=d.team;if(d.counts)counts=d.counts;if(d.absent)absent=d.absent;if(d.currentRoundPaid)currentRoundPaid=d.currentRoundPaid;if(d.dailyUnavailable)dailyUnavailable=d.dailyUnavailable;if(d.todayPayer!==undefined)todayPayer=d.todayPayer;if(typeof d.currentIndex==='number')currentIndex=d.currentIndex;if(d.lastRotationDate)lastRotationDate=d.lastRotationDate;if(d.teamsMsgInvite!==undefined)teamsMsgInvite=d.teamsMsgInvite;if(d.gridColumnsSetting!==undefined)gridColumnsSetting=d.gridColumnsSetting;appTimestamp=d.timestamp||Date.now();clampIndex();saveLocalStorage();}}else pushToCloud();if(el)el.innerText='✅ Sinhronizirano';setupLoginDropdown();checkDateRollover();renderUI();if(done)done(true);}).catch(err=>{console.error(err);if(el)el.innerText='⚠️ Brez povezave';renderUI();if(done)done(false);});}
+    function performCloudAction(fn,done,mergeCounts=true){if(!auth?.currentUser){alert('Za uporabo se prijavite.');return;}fetchCloudRecord().then(d=>{if(mergeCounts&&d?.counts)for(const k in d.counts)counts[k]=Math.max(counts[k]||0,d.counts[k]||0);fn();pushToCloud(done);}).catch(()=>{fn();pushToCloud(done);});logActivity('coffee_action');}
+    function pushToCloud(done){if(syncTimer)clearTimeout(syncTimer);syncTimer=setTimeout(()=>{appTimestamp=Date.now();clampIndex();saveLocalStorage();if(!stateRef||!auth?.currentUser){if(done)done(false);return;}stateRef.set({team,counts,absent,currentRoundPaid,dailyUnavailable,todayPayer,currentIndex,lastRotationDate,timestamp:appTimestamp,teamsMsgInvite,gridColumnsSetting,teamsWebhookUrl,updatedBy:auth.currentUser.uid}).then(()=>{let s=document.getElementById('syncStatus');if(s)s.innerText='✅ Sinhronizirano';if(done)done(true);}).catch(err=>{console.error(err);if(done)done(false);});},200);}
+    function adminUser(){return !!currentUser&&currentUser.emailVerified&&(currentUser.email||'').toLowerCase()===ADMIN_EMAIL;}
+    function logActivity(type,details={}){let u=auth?.currentUser;if(!u||!activityRef)return;activityRef.add({uid:u.uid,email:u.email||null,displayName:u.displayName||loggedInUser||null,mode:u.isAnonymous?'anonymous':'google',type,details,createdAt:firebase.firestore.FieldValue.serverTimestamp(),clientTime:new Date().toISOString()}).catch(console.warn);}
+    function signInGoogle(){if(!auth)return alert('Vstavite Firebase CONFIG.');auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>alert(e.message));}
+    function signInAnonymous(){if(!auth)return alert('Vstavite Firebase CONFIG.');auth.signInAnonymously().catch(e=>alert(e.message));}
+    function signOutCoffee(){auth?.signOut();loggedInUser='';}
+    function showUserChooser(){document.getElementById('loginOverlay').style.display='flex';document.getElementById('authActions').style.display='none';document.getElementById('memberChooser').style.display='block';}
+    function loadAdminActivity(){let box=document.getElementById('adminActivity');if(!box||!adminUser())return;activityRef.orderBy('createdAt','desc').limit(100).get().then(s=>{box.innerHTML='';s.forEach(d=>{let x=d.data(),r=document.createElement('div');r.className='admin-section';r.textContent=(x.createdAt?.toDate?.().toLocaleString('sl-SI')||x.clientTime)+' · '+(x.email||x.displayName||x.uid)+' · '+x.type+' · '+x.mode;box.appendChild(r);});}).catch(e=>box.textContent=e.message);}
 
     function confirmMyCoffee() {
         const active = todayPayer || getNextEligiblePerson();
@@ -811,7 +777,6 @@
             }, (success) => {
                 if (success) {
                     alert("Runda uspešno potrjena in sinhronizirana!");
-                    sendTeamsNotification(teamsMsgConfirm.replace(/{ime}/g, active));
                 }
             });
         }
@@ -830,13 +795,13 @@
                 dailyUnavailable[active] = true; 
                 currentRoundPaid[active] = false;
                 
+                checkRoundCompletion();
                 advanceToNextEligiblePerson(); 
                 renderUI();
             }, (success) => {
                 const newActive = getNextEligiblePerson();
                 if (success) {
                     alert("Zabeleženo, naslednji je na vrsti.");
-                    sendTeamsNotification(teamsMsgCant.replace(/{ime}/g, active).replace(/{naslednji}/g, newActive));
                 }
             });
         }
@@ -850,45 +815,90 @@
         if (confirm(`Ali potrjuješ, da ${loggedInUser} danes prostovoljno časti kavo?`)) {
             performCloudAction(() => {
                 saveStateSnapshot();
+                // Kdo bi moral biti danes na vrsti PRED to častitko
+                const rightfulNext = getNextEligiblePerson();
+                const isInTurn = (loggedInUser === rightfulNext);
+
                 counts[loggedInUser] = (counts[loggedInUser] || 0) + 1;
                 currentRoundPaid[loggedInUser] = true;
                 todayPayer = loggedInUser;
                 dailyUnavailable[loggedInUser] = false;
                 
                 checkRoundCompletion();
-                advanceToNextEligiblePerson();
+
+                // Vrsto pomaknemo naprej samo, če je častil tisti, ki je bil dejansko na vrsti.
+                // Če je nekdo počastil izven vrstnega reda, ostane oseba, ki bi morala
+                // danes dati za kavo, še vedno naslednja na vrsti.
+                if (isInTurn) {
+                    advanceToNextEligiblePerson();
+                }
 
                 renderUI();
             }, (success) => {
                 if (success) {
                     alert("Hvala za častitko in sinhronizacijo!");
-                    sendTeamsNotification(teamsMsgSponsor.replace(/{ime}/g, loggedInUser));
                 }
             });
         }
     }
 
     function inviteToCoffee() {
-        let time = prompt("Ob kateri uri gremo danes na kavo?", "12:00");
-        if (time) {
-            let userToNotify = loggedInUser || "Neznano";
-            let msg = teamsMsgInvite.replace(/{ime}/g, userToNotify).replace(/{cas}/g, time);
-            sendTeamsNotification(msg);
-            alert(`Vabilo za ob ${time} je bilo uspešno poslano na Teams!`);
+        const time = prompt("Ob kateri uri gremo danes na kavo?", "12:00");
+        if (!time || !time.trim()) return;
+        const timeStr = time.trim();
+        const inviter = loggedInUser || "Neznano";
+
+        // Vabilo na kavo velja tudi kot potrditev runde - a samo, če runda danes še ni bila potrjena.
+        const roundAlreadyConfirmed = !!todayPayer;
+        const active = roundAlreadyConfirmed ? null : getNextEligiblePerson();
+        const shouldConfirm = !roundAlreadyConfirmed && active && active !== "-";
+
+        const sendInvite = () => {
+            sendTeamsNotification(teamsMsgInvite.replace(/{ime}/g, inviter).replace(/{cas}/g, timeStr));
+        };
+
+        if (!shouldConfirm) {
+            sendInvite();
+            alert(`Vabilo za ob ${timeStr} je bilo poslano na Teams!`);
+            return;
         }
+
+        performCloudAction(() => {
+            saveStateSnapshot();
+            counts[active] = (counts[active] || 0) + 1;
+            currentRoundPaid[active] = true;
+            todayPayer = active;
+            dailyUnavailable[active] = false;
+
+            checkRoundCompletion();
+            advanceToNextEligiblePerson();
+
+            renderUI();
+        }, (success) => {
+            sendInvite();
+            alert(success
+                ? `Vabilo za ob ${timeStr} je poslano na Teams, runda (${active}) pa potrjena!`
+                : `Vabilo za ob ${timeStr} je poslano na Teams. Rundo (${active}) sem zabeležil lokalno - sinhronizacija ni uspela.`);
+        });
     }
 
     function toggleAbsence(name) {
         performCloudAction(() => {
             saveStateSnapshot();
             dailyUnavailable[name] = !dailyUnavailable[name];
-            
-            const nextPerson = getNextEligiblePerson();
-            if (nextPerson === name && dailyUnavailable[name]) {
-                advanceToNextEligiblePerson();
-            }
+
+            checkRoundCompletion();
+            advanceToNextEligiblePerson();
             renderUI();
         });
+    }
+
+    function getEffectiveColumnCount() {
+        if (gridColumnsSetting === "2" || gridColumnsSetting === "3") {
+            return parseInt(gridColumnsSetting, 10);
+        }
+        // "auto": sodo število oseb -> 2 stolpca, liho -> 3 stolpci (praviloma se lepše izide)
+        return (team.length % 2 === 0) ? 2 : 3;
     }
 
     function renderUI() {
@@ -897,29 +907,22 @@
         
         const subtitleEl = document.getElementById('statusSubtitle');
         const nameEl = document.getElementById('currentPersonName');
-        const subtextEl = document.getElementById('nextPersonSubtext');
 
         if (todayPayer) {
             subtitleEl.innerText = "⭐ Danes potrjeno časti:";
             nameEl.innerText = todayPayer;
             nameEl.style.color = "var(--accent)";
-            if (subtextEl) {
-                subtextEl.style.display = "block";
-                subtextEl.innerText = `Naslednji na vrsti za kavo (jutri): ${nextPerson}`;
-            }
         } else {
-            subtitleEl.innerText = "Danes je na vrsti za kavo:";
+            subtitleEl.innerText = "Na vrsti da časti:";
             nameEl.innerText = nextPerson;
             nameEl.style.color = "var(--text-bright)";
-            if (subtextEl) {
-                subtextEl.style.display = "none";
-            }
         }
 
         document.getElementById('settingsBtn').style.display = (loggedInUser === "Filipšek") ? 'flex' : 'none';
 
         const grid = document.getElementById('membersGrid');
         grid.innerHTML = '';
+        grid.style.setProperty('--member-cols', getEffectiveColumnCount());
 
         team.forEach(name => {
             const isTodayPayer = (todayPayer && name === todayPayer);
@@ -939,20 +942,25 @@
                 statusText = "❌ Danes ne more";
             } else if (isTodayPayer) {
                 cardClass += " is-paid";
-                statusText = "⭐ Častil danes";
+                statusText = "⭐ Časti danes";
             } else if (isNext) {
                 cardClass += " is-next";
-                statusText = "👉 Na vrsti danes";
+                statusText = "👉 Na vrsti";
             } else if (isTodayPaid) {
                 cardClass += " is-paid";
-                statusText = "✅ Že dal v tem krogu";
+                statusText = "✅ Že dal";
             }
+
+            const roundCount = counts[name] || 0;
 
             const card = document.createElement('div');
             card.className = cardClass;
             card.innerHTML = `
                 <div class="member-name">
                     <span>${name}</span>
+                    <span class="round-badge" title="Skupaj plačanih/pogoščenih rund"><svg class="cup-icon sm"><use href="#icon-cup-sm"/></svg> ${roundCount}</span>
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
                     <button class="absent-toggle-btn" onclick="toggleAbsence('${name}')" title="Preklopi odsotnost">
                         ${dailyUnavailable[name] ? '❌ Odsoten' : '✔️ Prisoten'}
                     </button>
@@ -964,13 +972,11 @@
     }
 
     function openAdminModal() {
-        if (loggedInUser !== "Filipšek") return;
+        if (!adminUser()) { alert("Skrbniški dostop zahteva preverjen račun robi.filipsek@gmail.com."); return; }
         document.getElementById('adminModal').style.display = 'flex';
-        document.getElementById('teamsWebhookInput').value = teamsWebhookUrl || '';
-        document.getElementById('teamsMsgConfirmInput').value = teamsMsgConfirm || '';
-        document.getElementById('teamsMsgCantInput').value = teamsMsgCant || '';
-        document.getElementById('teamsMsgSponsorInput').value = teamsMsgSponsor || '';
+        document.getElementById('teamsWebhookInput').value = teamsWebhookUrl || ''; loadAdminActivity();
         document.getElementById('teamsMsgInviteInput').value = teamsMsgInvite || '';
+        document.getElementById('gridColumnsSelect').value = gridColumnsSetting || 'auto';
         renderAdminMembers();
     }
 
@@ -1102,20 +1108,75 @@
         performCloudAction(() => {
             saveStateSnapshot();
             teamsWebhookUrl = document.getElementById('teamsWebhookInput').value.trim();
-            teamsMsgConfirm = document.getElementById('teamsMsgConfirmInput').value.trim();
-            teamsMsgCant = document.getElementById('teamsMsgCantInput').value.trim();
-            teamsMsgSponsor = document.getElementById('teamsMsgSponsorInput').value.trim();
             teamsMsgInvite = document.getElementById('teamsMsgInviteInput').value.trim();
+            gridColumnsSetting = document.getElementById('gridColumnsSelect').value;
+
+            checkRoundCompletion();
+            advanceToNextEligiblePerson();
 
             saveLocalStorage();
         }, (success) => {
             alert(success ? "Spremembe uspešno shranjene in sinhronizirane!" : "Spremembe shranjene lokalno.");
             closeAdminModal();
             renderUI();
-        });
+        }, false); // mergeCounts=false: ročno spremenjeno št. rund (tudi navzdol) se ne sme prepisati nazaj navzgor
     }
 
-    window.onload = init;
+    // --- NAMESTITEV NA ZAČETNI ZASLON (PWA) ---
+    let deferredInstallPrompt = null;
+
+    function isRunningStandalone() {
+        return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const btn = document.getElementById('installBtn');
+        if (btn && !isRunningStandalone()) btn.classList.add('visible');
+    });
+
+    window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        const btn = document.getElementById('installBtn');
+        if (btn) btn.classList.remove('visible');
+    });
+
+    function isIOS() {
+        return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+    }
+
+    async function handleInstallClick() {
+        if (deferredInstallPrompt) {
+            deferredInstallPrompt.prompt();
+            const { outcome } = await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            const btn = document.getElementById('installBtn');
+            if (btn) btn.classList.remove('visible');
+            return;
+        }
+        if (isIOS()) {
+            alert("📲 Namestitev na iPhone/iPad:\n\n1. Tapni na ikono 'Deli' (kvadrat s puščico) v Safariju\n2. Izberi 'Dodaj na začetni zaslon'\n3. Potrdi z 'Dodaj'");
+        } else {
+            alert("📲 Za namestitev odpri meni brskalnika (⋮) in izberi 'Namesti aplikacijo' oz. 'Dodaj na začetni zaslon'.");
+        }
+    }
+
+    function setupInstallButton() {
+        const btn = document.getElementById('installBtn');
+        if (!btn) return;
+        if (isRunningStandalone()) {
+            btn.classList.remove('visible');
+        } else if (isIOS()) {
+            // iOS ne podpira beforeinstallprompt, gumb prikažemo takoj z navodili
+            btn.classList.add('visible');
+        }
+    }
+
+    window.onload = function() {
+        init();
+        setupInstallButton();
+    };
 </script>
 </body>
 </html>
