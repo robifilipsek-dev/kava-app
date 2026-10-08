@@ -38,11 +38,11 @@ body { font-family: Inter, system-ui, sans-serif; transition: background-color 0
 @keyframes pulse-green {
   0%, 100% {
     border-color: rgba(16, 185, 129, 1);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
   }
   50% {
-    border-color: rgba(52, 211, 153, 0.9);
-    box-shadow: 0 0 14px 4px rgba(16, 185, 129, 0.35);
+    border-color: rgba(52, 211, 153, 0.85);
+    box-shadow: 0 0 14px 3px rgba(16, 185, 129, 0.25);
   }
 }
 .pulse-green { animation: pulse-green 2.2s ease-in-out infinite; }
@@ -130,7 +130,7 @@ let S=norm({});
 // ===== LOGIKA VRSTE =====
 const valid=(s,n)=>!s.absent[n]&&!s.unav[n];
 
-// Najprej izbere osebo z najmanjšim številom rund. Če imata dve enako, velja vrstni red v ekipi.
+// Poišče osebo z najmanjšim številom rund. Če imata dve enako rund, velja vrstni red na seznamu.
 function fair(s,unpaidOnly){
   const c=[];
   for(let i=0;i<s.team.length;i++){
@@ -163,7 +163,7 @@ function pay(s,who,type,by,inTurn=true){
   checkRound(s);if(inTurn)adv(s);
 }
 
-// Funkcija za ponastavitev/izklop statusa "Časti danes"
+// Funkcija za izklop/preklic statusa "Časti danes"
 function clearTodayPayerState(s){
   if(!s.todayPayer) return;
   const payer = s.todayPayer;
@@ -202,14 +202,23 @@ function rollover(){
 }
 function startListeners(){
   stop();
-  unsubs.push(onSnapshot(doc(db,'kava','state'),sn=>{S=norm(sn.exists()?sn.data():{});loaded=true;rollover();render()},
-    e=>{console.error(e);toast('Podatkov ni mogoče naložiti. Preverite Firestore pravila.','err')}));
+  unsubs.push(onSnapshot(doc(db,'kava','state'),sn=>{
+    S=norm(sn.exists()?sn.data():{});
+    loaded=true;
+    rollover();
+    render();
+    if(user && (!me || !S.team.includes(me))) {
+      A.pick();
+    }
+  },e=>{console.error(e);toast('Podatkov ni mogoče naložiti. Preverite Firestore pravila.','err')}));
+  
   unsubs.push(onSnapshot(doc(db,'settings','main'),sn=>{
     const d=sn.exists()?sn.data():{};
     CFG={...DEF,...d};
     if(!Array.isArray(CFG.teamsMsgs))CFG.teamsMsgs=[...DEF.teamsMsgs];
     render();
   },e=>console.warn(e)));
+  
   if(isAdmin())unsubs.push(onSnapshot(collection(db,'presence'),sn=>{presence=sn.docs.map(d=>({id:d.id,...d.data()}));if(tab==='admin')render()},e=>console.warn(e)));
 }
 function stop(){unsubs.forEach(u=>u());unsubs=[];loaded=false;presence=[]}
@@ -264,6 +273,11 @@ async function triggerTeams(actionType,extraData={}){
 const A=window.A={
   ans(v){document.getElementById('modal').innerHTML='';ansRes&&ansRes(v);ansRes=null},
   tab(t){tab=t;render();scrollTo({top:0})},
+  toggleAdmin(){
+    tab = (tab === 'admin' ? 'main' : 'admin');
+    render();
+    scrollTo({top:0});
+  },
   toggleTheme(){
     isDark = !isDark;
     ls.set('kava_theme', isDark ? 'dark' : 'light');
@@ -351,7 +365,7 @@ const A=window.A={
       : `<button onclick="A.ans(false)" class="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm font-semibold">Prekliči</button>`;
 
     document.getElementById('modal').innerHTML=`<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md"><div class="bg-white dark:bg-slate-900 dark:text-slate-100 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center border border-slate-200 dark:border-slate-800">
-      <h3 class="font-bold text-lg">Kdo si na seznamu?</h3><p class="text-sm text-slate-600 dark:text-slate-400 mt-1 mb-3">Izberi svoje ime s seznama ekipe, da lahko uporabljaš aplikacijo.</p>
+      <h3 class="font-bold text-lg">Kdo si na seznamu?</h3><p class="text-sm text-slate-600 dark:text-slate-400 mt-1 mb-3">Izberi svoje ime s seznama ekipe, da vemo kdo uporablja aplikacijo.</p>
       <select id="pickSel" class="inp">${S.team.map(n=>`<option ${n===me?'selected':''}>${esc(n)}</option>`).join('')}</select>
       <div class="flex gap-3 mt-5">
         ${cancelBtn}
@@ -447,12 +461,30 @@ const A=window.A={
   async delUser(id){try{await deleteDoc(doc(db,'presence',id))}catch(e){toast('Brisanje ni uspelo.','err')}},
   async google(){
     const pr=new GoogleAuthProvider();pr.setCustomParameters({prompt:'select_account'});
-    try{await signInWithPopup(auth,pr)}catch(e){
+    try{
+      const res = await signInWithPopup(auth,pr);
+      if(res && res.user){
+        me = ls.get('kava_member_' + res.user.uid) || '';
+        if(!me || !S.team.includes(me)){
+          A.pick();
+        }
+      }
+    }catch(e){
       if(e.code==='auth/popup-blocked')return signInWithRedirect(auth,pr);
       if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast('Prijava ni uspela ('+(e.code||'napaka')+')','err');
     }
   },
-  async guest(){try{await signInAnonymously(auth)}catch(e){toast('Gostujoča prijava ni uspela. Preverite, ali je v Firebase omogočen "Anonymous".','err')}},
+  async guest(){
+    try{
+      const res = await signInAnonymously(auth);
+      if(res && res.user){
+        me = ls.get('kava_member_' + res.user.uid) || '';
+        if(!me || !S.team.includes(me)){
+          A.pick();
+        }
+      }
+    }catch(e){toast('Gostujoča prijava ni uspela. Preverite, ali je v Firebase omogočen "Anonymous".','err')}
+  },
   async logout(){
     try{if(user)await setDoc(doc(db,'presence',user.uid),{lastSeen:0},{merge:true})}catch(e){}
     await signOut(auth);
@@ -480,7 +512,7 @@ function header(){
   const showInst=!standalone()&&(installEv||isIOS);
   const myName=me&&S.team.includes(me)?me:'Izberi osebo';
   const adminBtn = isAdmin() ? `
-    <button onclick="A.tab(tab==='admin'?'main':'admin')" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 transition flex items-center gap-1.5" title="Skrbniške nastavitve">
+    <button onclick="A.toggleAdmin()" class="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 transition flex items-center gap-1.5 text-xs text-white" title="Skrbniške nastavitve">
       ⚙️ <span class="hidden sm:inline font-semibold">${tab==='admin'?'Meni kava':'Skrbnik'}</span>
     </button>
   ` : '';
@@ -508,36 +540,53 @@ function hero(){
 }
 
 function viewMain(){
-  const n=nextName(S);
-  const cols=CFG.cols==='auto'?(S.team.length%2?3:2):+CFG.cols;
+  const nextPerson = nextName(S);
+  const cols = CFG.cols==='auto'?(S.team.length%2?3:2):+CFG.cols;
   const isConfirmed = !!S.todayPayer;
 
-  const cards=S.team.map((name,i)=>{
-    const isPayer=S.todayPayer===name,isNext=!S.todayPayer&&name===n;
-    let cls='border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800',st='⏳ Čaka na vrsto';
+  const cards = S.team.map((name,i)=>{
+    const isPayer = S.todayPayer === name;
+    const isNext = name === nextPerson;
     
-    if(S.absent[name]){cls='border-slate-200 bg-slate-100 opacity-60 dark:bg-slate-800/50 dark:border-slate-800';st='🌴 Dopust / odsoten'}
-    else if(S.unav[name]){cls='border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-900/40';st='❌ Danes ne more'}
-    else if(isPayer){cls='border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-500 pulse-green';st='⭐ Časti danes'}
-    else if(isNext){cls='border-amber-400 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-500/80 ring-2 ring-amber-400/60';st='👉 Na vrsti'}
-    else if(S.paid[name]){cls='border-blue-200 bg-blue-50/50 dark:bg-slate-800/80 dark:border-slate-700';st='✅ Že dal'}
+    let cls = 'border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800', st = '⏳ Čaka na vrsto';
+    
+    if(S.absent[name]){
+      cls = 'border-slate-200 bg-slate-100 opacity-60 dark:bg-slate-800/50 dark:border-slate-800';
+      st = '🌴 Dopust / odsoten';
+    } else if(S.unav[name]){
+      cls = 'border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-900/40';
+      st = '❌ Danes ne more';
+    } else if(isPayer){
+      cls = 'border-2 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 dark:border-emerald-500 pulse-green';
+      st = '⭐ Časti danes';
+    } else if(isNext){
+      cls = 'border-amber-400 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-500/80 ring-2 ring-amber-400/60';
+      st = '👉 Na vrsti za kavo';
+    } else if(S.paid[name]){
+      cls = 'border-blue-200 bg-blue-50/50 dark:bg-slate-800/80 dark:border-slate-700';
+      st = '✅ Že dal';
+    }
     
     return `<div class="rounded-xl border p-3 transition-all ${cls}"><div class="flex items-center justify-between gap-1">
       <strong class="text-sm truncate ${name===me?'underline':''} ${isPayer ? 'text-emerald-600 dark:text-emerald-400 font-extrabold' : ''}">${esc(name)}</strong>
       <span class="text-[11px] font-bold ${isPayer ? 'text-emerald-800 bg-emerald-100 border-emerald-300 dark:bg-emerald-900/60 dark:text-emerald-300 dark:border-emerald-700' : 'text-blue-800 bg-blue-100 border-blue-300 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800'} border rounded-full px-2 py-0.5 whitespace-nowrap">☕ ${S.counts[name]||0}</span></div>
       <div class="flex justify-end mt-1.5"><button onclick="A.toggleUnav(${i})" class="text-[11px] px-2 py-0.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">${S.unav[name]?'❌ Odsoten':'✔️ Prisoten'}</button></div>
-      <div class="text-[11px] ${isPayer ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-500 dark:text-slate-400'} mt-1">${st}</div></div>`;
+      <div class="text-[11px] ${isPayer ? 'text-emerald-600 dark:text-emerald-400 font-bold' : isNext ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-slate-500 dark:text-slate-400'} mt-1">${st}</div></div>`;
   }).join('');
 
+  const displayTitle = isConfirmed ? '⭐ Danes potrjeno časti:' : '👉 Na vrsti da časti (najmanj rund):';
+  const displayName = isConfirmed ? S.todayPayer : (nextPerson || '-');
+  const displayClass = isConfirmed ? 'text-emerald-600 dark:text-emerald-400' : 'text-blue-600 dark:text-blue-400';
+
   return `<div class="${card} text-center mb-4 transition-all">
-    <div class="text-xs ${isConfirmed ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-500 dark:text-slate-400'}">${S.todayPayer?'⭐ Danes potrjeno časti:':'Na vrsti da časti:'}</div>
-    <div class="text-3xl sm:text-4xl my-1.5 font-extrabold ${isConfirmed ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}">${esc(S.todayPayer||n||'-')}</div>
+    <div class="text-xs ${isConfirmed ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-slate-500 dark:text-slate-400'}">${displayTitle}</div>
+    <div class="text-3xl sm:text-4xl my-1.5 font-extrabold ${displayClass}">${esc(displayName)}</div>
+    ${isConfirmed && nextPerson && nextPerson !== S.todayPayer ? `<div class="text-xs text-slate-500 dark:text-slate-400 mb-2">Naslednji na vrsti za naslednjo kavo: <strong>${esc(nextPerson)}</strong></div>` : ''}
     <div class="grid sm:grid-cols-2 gap-2 mt-4">
       <button onclick="A.confirm()" class="b bg-emerald-600 hover:bg-emerald-500">✅ Potrjujem rundo</button>
       <button onclick="A.cant()" class="b bg-red-600 hover:bg-red-500">✕ Danes ne more</button>
       <button onclick="A.sponsor()" class="b bg-amber-500 hover:bg-amber-400">⭐ Jaz častim (izven vrstnega reda)</button>
       <button onclick="A.invite()" class="b bg-indigo-600 hover:bg-indigo-500">⏰ Povabi na kavo (Teams)</button>
-      ${isConfirmed ? `<button onclick="A.clearTodayPayer()" class="b bg-rose-600 hover:bg-rose-500 text-white font-bold sm:col-span-2">❌ Izklopi "Časti danes" (Prekliči)</button>` : ''}
       <button onclick="A.undo()" class="b bg-slate-600 hover:bg-slate-500 dark:bg-slate-700 sm:col-span-2">↩️ Razveljavi (Undo)</button></div></div>
   <div class="mg" style="--c:${cols}">${cards}</div>
   <div class="text-xs text-slate-500 dark:text-slate-400 mt-4 flex items-center justify-between">
@@ -583,7 +632,7 @@ function viewAdmin(){
   }).join('');
   const online=presence.filter(u=>now-(u.lastSeen?.toMillis?.()||0)<=180000).length;
 
-  const payerOptions = `<option value="none" ${!S.todayPayer ? 'selected' : ''}>-- Izklopljeno (Nihče) --</option>` +
+  const payerOptions = `<option value="none" ${!S.todayPayer ? 'selected' : ''}>-- Izklopljeno (Prikaz: Na vrsti za kavo) --</option>` +
     S.team.map(n => `<option value="${esc(n)}" ${S.todayPayer === n ? 'selected' : ''}>${esc(n)}</option>`).join('');
 
   return `<div class="space-y-4">
@@ -595,8 +644,13 @@ function viewAdmin(){
     </div>
     <div class="grid sm:grid-cols-2 gap-3">
       <label class="${lbl}">Število stolpcev ekipe<select id="s_cols" class="inp mt-1">${['auto','2','3'].map(v=>`<option value="${v}" ${CFG.cols===v?'selected':''}>${v==='auto'?'Samodejno':v}</option>`).join('')}</select></label>
-      <label class="${lbl}">Urejanje statusa "Časti danes"<select onchange="A.setPayerAdmin(this.value)" class="inp mt-1 font-semibold text-blue-600 dark:text-blue-400">${payerOptions}</select></label>
+      <label class="${lbl}">Nastavitev statusa "Časti danes"<select onchange="A.setPayerAdmin(this.value)" class="inp mt-1 font-semibold text-blue-600 dark:text-blue-400">${payerOptions}</select></label>
     </div>
+    ${S.todayPayer ? `
+      <div class="pt-1">
+        <button onclick="A.clearTodayPayer()" class="b bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold">❌ Izklopi "Časti danes" (${esc(S.todayPayer)})</button>
+      </div>
+    ` : ''}
   </div>
 
   <div class="${card} space-y-4">
@@ -635,11 +689,9 @@ onAuthStateChanged(auth,u=>{
   if(u){
     me=ls.get('kava_member_'+u.uid)||'';
     startListeners();beat();
-    setTimeout(()=>{
-      if(user && (!me || !S.team.includes(me))) {
-        A.pick();
-      }
-    },800);
+    if(!me || !S.team.includes(me)) {
+      A.pick();
+    }
   }else{stop();me='';tab='main'}
   render();
 });
